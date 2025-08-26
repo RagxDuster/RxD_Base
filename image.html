@@ -6,151 +6,189 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
-    html { background: #F5EBFA; color: #222; font-family: 'Noto Sans JP', 'Kosugi Maru', 'M PLUS Rounded 1c', sans-serif; }
-    body { margin: 0; padding: 0; min-height: 100vh; }
-    .container { max-width: 620px; margin: 0 auto; padding: 24px 8px 48px 8px; }
-    .center { text-align: center; }
-    .logoimg { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 8px auto; display: block; }
-    h1 { margin: 0 0 16px 0; font-size: 1.7rem; font-weight: bold; letter-spacing: 0.03em;}
-    hr.cute { border: none; border-top: 2.5px dashed #FF93C2; margin: 18px auto 26px auto; width: 90%;}
-    .desc { text-align: center; font-size: 1.06rem; color: #555; margin-bottom: 18px; }
-    .cards { display: flex; flex-direction: column; gap: 20px;}
+    :root {
+      --bg: #F5EBFA;
+      --ink: #222;
+      --card: #fff;
+      --pink: #FF93C2;
+      --mint: #7FE7DB;
+      --sun: #FFF59F;
+      --ink-2: #555;
+      --line: #DDD;
+    }
+    html { background: var(--bg); color: var(--ink);
+      font-family: 'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
+    body { margin: 0; min-height: 100vh; }
+    .container { max-width: 780px; margin: 0 auto; padding: 24px 12px 56px; }
+    .logoimg { width: 56px; height: 56px; border-radius: 50%; display: block; margin: 0 auto 8px; }
+    h1 { margin: 0 0 12px; font-size: 1.9rem; font-weight: 800; letter-spacing: .03em; text-align: center; }
+    hr.cute { border: none; border-top: 2.5px dashed var(--pink); margin: 18px auto 26px; width: 90%; }
+    .desc { text-align: center; font-size: 1.06rem; color: var(--ink-2); margin-bottom: 20px; }
+    .cards { display: grid; grid-template-columns: 1fr; gap: 20px; }
+
     .card {
-      background: #fff;
-      border: 2.5px solid #FF93C2;
+      background: var(--card);
+      border: 2.5px solid var(--pink);
       border-radius: 16px;
       box-shadow: 0 2px 12px #7FE7DB20;
-      padding: 20px 20px 14px 20px;
+      padding: 16px;
       display: flex;
-      align-items: flex-start;
-      gap: 18px;
+      align-items: center;       /* ← サムネ横・本文右 */
+      gap: 14px;
       position: relative;
-      transition: box-shadow .18s;
+      transition: box-shadow .18s, border-color .18s;
+      flex-wrap: wrap;           /* 狭いときは中身だけ折り返し */
     }
-    .card:hover { box-shadow: 0 4px 24px #FF93C288; border-color: #7FE7DB; }
+    .card:hover { box-shadow: 0 4px 24px #FF93C288; border-color: var(--mint); }
+
     .thumb {
-      width: 62px; height: 62px;
-      border-radius: 12px;
-      object-fit: cover;
-      border: 2px solid #FFF59F;
-      background: #F5EBFA;
-      flex-shrink: 0;
+      width: 62px; height: 62px; border-radius: 12px; object-fit: cover;
+      border: 2px solid var(--sun); background: var(--bg); flex: 0 0 auto;
     }
-    .cardbody { flex: 1; }
-    .cardtitle {
-      font-size: 1.16rem;
-      font-weight: bold;
-      color: #FF93C2;
-      margin-bottom: 2px;
-    }
-    .carddesc { font-size: 1.01rem; color: #555; margin-bottom: 6px; }
+
+    .cardbody { flex: 1 1 280px; min-width: 0; } /* テキストは横に、狭ければ折り返し */
+    .cardtitle { font-size: 1.12rem; font-weight: 800; color: var(--pink); margin-bottom: 2px; }
+    .carddesc { font-size: 1rem; color: var(--ink-2); margin-bottom: 8px; }
+
     .promptbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 3px;
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; flex-wrap: wrap;     /* スマホでボタンが下に回れる */
     }
-    .promptinput {
-      background: #F8F7FD;
-      border: 1.5px solid #DDD;
-      border-radius: 6px;
-      font-size: 0.99rem;
-      padding: 4px 8px;
-      width: 200px;
-      color: #444;
-      letter-spacing: 0.01em;
-      margin-right: 0;
+    /* input/textarea 共通スタイル */
+    .promptinput, .promptarea {
+      background: #F8F7FD; border: 1.5px solid var(--line); border-radius: 8px;
+      font-size: .98rem; padding: 8px 10px; color: #444; letter-spacing: .01em;
+      flex: 1 1 300px; min-width: 200px; max-width: 100%;
     }
+    .promptarea {
+      resize: none; line-height: 1.5; overflow: hidden; /* 自動伸縮用 */
+    }
+
     .copybtn {
-      background: #7FE7DB;
-      color: #222;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      padding: 5px 12px;
-      cursor: pointer;
-      transition: background .18s;
-      font-size: 1rem;
-      letter-spacing: 0.02em;
+      background: var(--mint); color: var(--ink); font-weight: 800; border: none;
+      border-radius: 10px; padding: 8px 14px; cursor: pointer; transition: background .18s, transform .06s;
+      font-size: .98rem; letter-spacing: .02em; flex: 0 0 auto;
     }
-    .copybtn:hover { background: #FF93C2; color: #fff; }
-    .footer { text-align: center; margin-top: 40px; color: #B3A9D6; font-size: 0.96rem;}
+    .copybtn:hover { background: var(--pink); color: #fff; }
+    .copybtn:active { transform: translateY(1px); }
+    .copybtn[disabled] { opacity: .7; cursor: default; }
+
+    .footer { text-align: center; margin-top: 40px; color: #B3A9D6; font-size: .96rem; }
+
+    /* スマホ最適化：横並びは維持、サムネ少し小さく、余白軽量化 */
     @media (max-width: 600px) {
-      .container { padding: 10px 1vw 24px 1vw; }
-      .card { flex-direction: column; gap: 8px; padding: 15px 10px 10px 10px; }
-      .thumb { width: 42px; height: 42px; }
-      .promptinput { width: 98%; }
+      .container { padding: 14px 8px 36px; }
+      .thumb { width: 48px; height: 48px; border-radius: 10px; }
+      .card { padding: 12px; gap: 10px; }
+      .cardtitle { font-size: 1.06rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
     }
   </style>
-<script>
-  function copyPrompt(id, btn) {
-    const input = document.getElementById(id);
-    input.select();
-    document.execCommand('copy');
-    input.blur();
-    // ボタンのテキストを変更
-    const original = btn.textContent;
-    btn.textContent = "コピした！";
-    btn.disabled = true;
-    setTimeout(function() {
-      btn.textContent = original;
-      btn.disabled = false;
-    }, 1600); // 1.6秒後に戻る
-  }
-</script>
 
+  <script>
+    // 安全なコピー（Clipboard API優先、fallback付き）
+    async function copyPrompt(id, btn) {
+      const el = document.getElementById(id);
+      const text = (el?.value ?? el?.textContent ?? '').trim();
+      if (!text) return;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          // Fallback: 選択→execCommand
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          const sel = window.getSelection();
+          sel.removeAllRanges(); sel.addRange(range);
+          document.execCommand('copy');
+          sel.removeAllRanges();
+        }
+        flashCopied(btn);
+      } catch (_) {
+        flashCopied(btn, false);
+      }
+    }
+
+    // テキストエリアを内容に合わせて1行〜複数行に自動伸縮
+    function autosize(el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+
+    function flashCopied(btn, ok = true) {
+      const original = btn.textContent;
+      btn.textContent = ok ? 'こぴした！' : '失敗？';
+      btn.disabled = true;
+      setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1600);
+    }
+
+    // 起動時にすべてのtextareaをフィット
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.promptarea').forEach(ta => {
+        autosize(ta);
+        ta.addEventListener('input', () => autosize(ta));
+      });
+    });
+  </script>
 </head>
+
 <body>
   <div class="container">
     <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
     <h1>画像お題</h1>
     <hr class="cute">
-    <div class="desc">画像生成AIやAIパートナー向けのプロンプト見本。<br>気になったものをワンクリックでコピーできます！</div>
-    <div class="cards">
+    <p class="desc">画像生成AIやAIパートナー向けのプロンプト見本。<br>気になったものをワンクリックでコピーできます！</p>
 
-      <!-- カード1 -->
+    <div class="cards">
+      <!-- カード1：textarea版 -->
       <div class="card">
-        <img src="thumb-mugshot.png" class="thumb" alt="マグショット">
+        <img src="thumb-mugshot.png" class="thumb" alt="マグショットのサムネイル">
         <div class="cardbody">
           <div class="cardtitle">マグショット</div>
           <div class="carddesc">キャラの犯罪者風ポートレート。人気！</div>
           <div class="promptbox">
             <textarea id="prompt1" rows="1" class="promptarea" readonly>ここにコピーしたいプロンプト</textarea>
-            <button class="copybtn" onclick="copyPrompt('prompt1', this)">コピー</button>
+            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt1', this)">コピー</button>
           </div>
         </div>
       </div>
 
-      <!-- カード2 -->
+      <!-- カード2：input版 -->
       <div class="card">
-        <img src="thumb-y2k.png" class="thumb" alt="Y2Kプリクラ">
+        <img src="thumb-y2k.png" class="thumb" alt="Y2Kプリクラのサムネイル">
         <div class="cardbody">
           <div class="cardtitle">Y2Kプリクラ</div>
           <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
           <div class="promptbox">
-            <input id="prompt2" class="promptinput" type="text" value="y2k purikura, sparkling background, ..." readonly>
-            <button class="copybtn" onclick="copyPrompt('prompt2', this)">コピー</button>
+            <input id="prompt2" class="promptinput" type="text"
+                   value="y2k purikura, sparkling background, sticker frame, neon hearts, glitter text"
+                   readonly>
+            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt2', this)">コピー</button>
           </div>
         </div>
       </div>
 
-      <!-- カード3 -->
+      <!-- カード3：input版 -->
       <div class="card">
-        <img src="thumb-press.png" class="thumb" alt="プレス撮影">
+        <img src="thumb-press.png" class="thumb" alt="プレス撮影のサムネイル">
         <div class="cardbody">
           <div class="cardtitle">プレス撮影風</div>
           <div class="carddesc">報道写真のような臨場感ある1枚。</div>
           <div class="promptbox">
-            <input id="prompt3" class="promptinput" type="text" value="press conference, reporters, flashing lights, ..." readonly>
-            <button class="copybtn" onclick="copyPrompt('prompt3', this)">コピー</button>
+            <input id="prompt3" class="promptinput" type="text"
+                   value="press conference, reporters, flashing lights, telephoto compression, candid moment"
+                   readonly>
+            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt3', this)">コピー</button>
           </div>
         </div>
       </div>
+    </div>
 
-    </div>
-    <div class="footer">
-      &copy; 2025 Secret Base (Rag and Duster)
-    </div>
+    <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
   </div>
 </body>
 </html>
