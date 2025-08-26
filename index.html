@@ -2,152 +2,182 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>RxD Base</title>
+  <title>画像お題 | RxD Base</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="favicon.png">
-<style>
-  html { background: #F5EBFA; color: #222; font-family: 'Noto Sans JP', 'Kosugi Maru', 'M PLUS Rounded 1c', sans-serif; }
-  body { margin: 0; padding: 0; min-height: 100vh; }
-  .container { max-width: 560px; margin: 0 auto; padding: 24px 8px 48px 8px; }
-  .center { text-align: center; }
-  .logoimg {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    background: #FFF;
-    object-fit: cover;
-    margin: 0 auto 10px auto;
-    box-shadow: 0 2px 8px rgba(180,120,255,0.07);
-    display: block;
-    border: 3px solid #7FE7DB; /* 明るいアクアで縁取り */
-  }
-  h1 { margin: 0 0 12px 0; font-size: 2.1rem; font-weight: bold; letter-spacing: 0.03em;}
-  .cute {
-    border: none;
-    border-top: 2.5px dashed #FF93C2;
-    margin: 18px auto;
-    width: 90%;
-  }
-  .desc {
-    font-size: 1.08rem;
-    color: #555;
-    margin: 0 0 0 0;
-    line-height: 1.7;
-    text-align: left;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    background: #FFF59F20;   /* イエローの超薄い背景アクセント */
-    border-radius: 10px;
-    padding: 8px 14px 6px 14px;
-  }
-  .btnarea { display: flex; gap: 10px; flex-wrap: wrap; margin: 32px 0 16px 0;}
-  .genrebtn {
-    flex: 1 1 130px;
-    background: #FF93C2;
-    color: #fff;
-    border: none;
-    font-size: 1.08rem;
-    padding: 16px 0;
-    margin-bottom: 8px;
-    border-radius: 16px;
-    font-weight: bold;
-    transition: box-shadow .15s, background .2s;
-    box-shadow: 0 2px 8px #FFF59F50, 0 2px 10px #7FE7DB18;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    border: 2.5px solid #FFF59F;
-    letter-spacing: 0.02em;
-  }
-  .genrebtn:nth-child(2) {
-    background: #7FE7DB;
-    color: #222;
-    border-color: #FF93C2;
-  }
-  .genrebtn:nth-child(3) {
-    background: #FFF59F;
-    color: #222;
-    border-color: #7FE7DB;
-  }
-  .genrebtn:hover {
-    filter: brightness(1.06) saturate(1.12);
-    box-shadow: 0 4px 20px #FF93C255, 0 2px 8px #7FE7DB55;
-    transform: translateY(-1.5px) scale(1.035);
-    opacity: .98;
-  }
-  .left { text-align: left; }
-  .section { margin: 32px 0 0 0;}
-  .section h2 {
-    margin: 0 0 12px 0;
-    font-size: 1.18rem;
-    color: #FF93C2;
-    letter-spacing: 0.03em;
-    text-shadow: 0 1px 0 #FFF59F99;
-  }
-  ul.latest { padding: 0; margin: 0; list-style: none;}
-  ul.latest li { margin: 0 0 6px 0; }
-  .anchorlink {
-    color: #7FE7DB;
-    font-weight: bold;
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color .2s;
-  }
-  .anchorlink:hover {
-    color: #FF93C2;
-    text-decoration: underline wavy #FF93C2 2px;
-  }
-  .footer {
-    text-align: center;
-    margin-top: 40px;
-    color: #B3A9D6;
-    font-size: 0.96rem;
-    letter-spacing: 0.02em;
-  }
-  @media (max-width: 540px) {
-    .container { padding: 10px 2vw 24px 2vw; }
-    .logoimg { width: 50px; height: 50px;}
-    h1 { font-size: 1.22rem; }
-    .genrebtn { padding: 12px 0; font-size: 1rem; }
-    .desc { font-size: 0.96rem; }
-  }
-</style>
+  <style>
+    :root {
+      --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F; --ink2:#555; --line:#DDD;
+    }
+    html{ background:var(--bg); color:var(--ink);
+      font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
+    body{ margin:0; min-height:100vh; }
+    .container{ max-width:780px; margin:0 auto; padding:24px 12px 56px; }
+    .logoimg{ width:56px; height:56px; border-radius:50%; display:block; margin:0 auto 8px; }
+    h1{ margin:0 0 12px; font-size:1.9rem; font-weight:800; letter-spacing:.03em; text-align:center; }
+    hr.cute{ border:none; border-top:2.5px dashed var(--pink); margin:18px auto 26px; width:90%; }
+    .desc{ text-align:center; font-size:1.06rem; color:var(--ink2); margin-bottom:20px; }
 
+    .cards{ display:grid; grid-template-columns:1fr; gap:20px; }
+
+    .card{
+      background:var(--card);
+      border:2.5px solid var(--pink);
+      border-radius:16px;
+      box-shadow:0 2px 12px #7FE7DB20;
+      padding:16px;
+      display:flex;
+      align-items:center;           /* サムネ左／本文右 */
+      gap:14px;
+      transition:box-shadow .18s, border-color .18s;
+      flex-wrap:nowrap;             /* 中身は折り返さない＝横並びキープ */
+    }
+    .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
+
+    .thumb{
+      width:62px; height:62px; border-radius:12px; object-fit:cover;
+      border:2px solid var(--sun); background:var(--bg); flex:0 0 auto;
+    }
+
+    .cardbody{ flex:1 1 auto; min-width:0; }
+    .cardtitle{ font-size:1.12rem; font-weight:800; color:var(--pink); margin-bottom:2px; }
+    .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:8px; }
+
+    .promptbox{
+      display:flex; align-items:center; gap:8px;
+      flex-wrap:nowrap;               /* いつでも横並び固定 */
+      width:100%;
+    }
+
+    /* “見た目だけ1行”のtextarea（中身は改行保持） */
+    .promptarea{
+      background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
+      font-size:.95rem; color:#444; letter-spacing:.01em;
+      height:28px; line-height:28px;          /* 高さ1行固定 */
+      padding:0 8px;                          /* 行高に合わせる */
+      resize:none; overflow:hidden;            /* 複数行は隠す（横スクロールも出さない） */
+      white-space:nowrap;                      /* 折り返し禁止＝視覚1行 */
+      flex:1 1 260px; min-width:0; max-width:100%;
+    }
+
+    .copybtn{
+      background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
+      padding:8px 12px; cursor:pointer; transition:background .18s, transform .06s;
+      font-size:.95rem; flex:0 0 auto;
+    }
+    .copybtn:hover{ background:var(--pink); color:#fff; }
+    .copybtn:active{ transform:translateY(1px); }
+    .copybtn[disabled]{ opacity:.7; cursor:default; }
+
+    .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
+
+    /* スマホ最適化：横並び維持のままテキストエリアをさらに小さく */
+    @media (max-width:600px){
+      .container{ padding:14px 8px 36px; }
+      .thumb{ width:48px; height:48px; border-radius:10px; }
+      .card{ padding:12px; gap:10px; }
+      .cardtitle{ font-size:1.06rem; }
+      .promptbox{ gap:6px; }
+      .promptarea{ flex:1 1 140px; }  /* 小さく縮む＝ボタンは常に横 */
+      .copybtn{ padding:8px 10px; font-size:.92rem; }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *{ transition:none !important; animation:none !important; }
+    }
+  </style>
+
+  <script>
+    // クリップボードコピー（Clipboard API優先／安全でない環境はフォールバック）
+    async function copyPrompt(id, btn){
+      const el = document.getElementById(id);
+      const text = (el?.value ?? el?.textContent ?? '').replace(/\s+$/,''); // 末尾空白は整える
+      if(!text) return;
+
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(text);
+        }else{
+          // Fallback: 選択してexecCommand
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          const sel = window.getSelection();
+          sel.removeAllRanges(); sel.addRange(range);
+          document.execCommand('copy');
+          sel.removeAllRanges();
+        }
+        flashCopied(btn);
+      }catch(_){
+        flashCopied(btn, false);
+      }
+    }
+
+    function flashCopied(btn, ok=true){
+      const orig = btn.textContent;
+      btn.textContent = ok ? 'こぴした！' : '失敗？';
+      btn.disabled = true;
+      setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 1600);
+    }
+  </script>
 </head>
+
 <body>
   <div class="container">
-    <div class="center">
-      <img src="rxd-logo.png" alt="RxDアイコン" class="logoimg">
-      <h1>RxD Base</h1>
-      <hr class="cute">
-    </div>
-
-    <div class="desc left">
-      AI相方向けテキストお題・画像お題・画風指定など<br>
-      ※リンク/シェア/コピペ自由<br>
-      ※改変も完全自由、てか改変したほうがいいよ💋
-    </div>
+    <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
+    <h1>画像お題</h1>
     <hr class="cute">
+    <p class="desc">画像生成AIやAIパートナー向けのプロンプト見本。<br>気になったものをワンクリックでコピーできます！</p>
 
-    <div class="btnarea left">
-      <a href="text.html" class="genrebtn">📓文章お題📓</a>
-      <a href="image.html" class="genrebtn">🖼️画像お題🖼️</a>
-      <a href="style.html" class="genrebtn">🎨画風指定🎨</a>
+    <div class="cards">
+
+      <!-- カード1：textarea（見た目1行／コピーは改行保持） -->
+      <div class="card">
+        <img src="thumb-mugshot.png" class="thumb" alt="マグショット">
+        <div class="cardbody">
+          <div class="cardtitle">マグショット</div>
+          <div class="carddesc">キャラの犯罪者風ポートレート。人気！</div>
+          <div class="promptbox">
+            <textarea id="prompt1" class="promptarea" rows="1" wrap="off" readonly>
+mugshot, front and side profile, height chart wall, harsh flash lighting, centered face, neutral background, film grain, police booking board, modern manga x semi-real, 7000K daylight, clean, clear, noiseless
+            </textarea>
+            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt1', this)">コピー</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- カード2：textarea -->
+      <div class="card">
+        <img src="thumb-y2k.png" class="thumb" alt="Y2Kプリクラ">
+        <div class="cardbody">
+          <div class="cardtitle">Y2Kプリクラ</div>
+          <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
+          <div class="promptbox">
+            <textarea id="prompt2" class="promptarea" rows="1" wrap="off" readonly>
+y2k purikura, sparkling pastel bokeh, sticker frame, glitter text, doodle hearts & stars, soft skin smoothing, vignette, high saturation pop, confetti highlight eyes, clean and noiseless
+            </textarea>
+            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt2', this)">コピー</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- カード3：textarea -->
+      <div class="card">
+        <img src="thumb-press.png" class="thumb" alt="プレス撮影風">
+        <div class="cardbody">
+          <div class="cardtitle">プレス撮影風</div>
+          <div class="carddesc">報道写真のような臨場感ある1枚。</div>
+          <div class="promptbox">
+            <textarea id="prompt3" class="promptarea" rows="1" wrap="off" readonly>
+press conference, reporters raised hands, telephoto compression, rim light + flash pops, candid expression, shallow depth of field, newsroom backdrop, photojournalism vibe
+            </textarea>
+            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt3', this)">コピー</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="section left">
-      <h2>【最新お題へのショートカット】</h2>
-      <ul class="latest">
-        <li>テキスト：<a href="text.html#omega" class="anchorlink">オメガバース</a> ／ <a href="text.html#proletariat" class="anchorlink">プロレタリア文学</a></li>
-        <li>画像：<a href="image.html#mugshot" class="anchorlink">マグショット</a></li>
-        <li>画風指定：<a href="style.html#sparkle" class="anchorlink">キラキラ画風</a></li>
-      </ul>
-    </div>
-
-    <div class="footer center">
-      &copy; 2025 Secret Base (Rag and Duster)
-    </div>
+    <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
   </div>
 </body>
 </html>
