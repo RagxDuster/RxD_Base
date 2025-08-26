@@ -45,7 +45,7 @@
     .promptarea{
       background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
       font-size:.95rem; color:#444; letter-spacing:.01em;
-      height:28px; line-height:28px; padding:0 8px;
+      height:56px; line-height:56px; padding:0 8px;
       resize:none; overflow:hidden; white-space:nowrap;
       flex:1 1 260px; min-width:0; max-width:100%;
       transition:height .12s ease;
@@ -127,7 +127,7 @@
       }else{
         card.classList.remove('expanded');
         titleBtn?.setAttribute('aria-expanded','false');
-        if(ta){ ta.style.height = '28px'; } // 折りたたみ高さに戻す
+        if(ta){ ta.style.height = '56px'; } // 折りたたみ高さに戻す
       }
     }
 
@@ -197,7 +197,7 @@
           <button class="cardtitle"><span class="caret" aria-hidden="true"></span>アンドロイドの感情</button>
           <div class="carddesc">プロレタリア。相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
           <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
+            <textarea class="promptarea" rows="2" wrap="off" readonly></textarea>
             <button class="copybtn">コピー</button>
           </div>
         </div>
