@@ -1,17 +1,148 @@
-<div class="container">
-  <h1>🖼️画像お題ページ</h1>
-  <hr class="cute">
-  <div class="desc">AI画像生成に使える画像プロンプトのお題リストです。</div>
-  <hr class="cute">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>画像お題 | RxD Base</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    html { background: #F5EBFA; color: #222; font-family: 'Noto Sans JP', 'Kosugi Maru', 'M PLUS Rounded 1c', sans-serif; }
+    body { margin: 0; padding: 0; min-height: 100vh; }
+    .container { max-width: 620px; margin: 0 auto; padding: 24px 8px 48px 8px; }
+    .center { text-align: center; }
+    .logoimg { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 8px auto; display: block; }
+    h1 { margin: 0 0 16px 0; font-size: 1.7rem; font-weight: bold; letter-spacing: 0.03em;}
+    hr.cute { border: none; border-top: 2.5px dashed #FF93C2; margin: 18px auto 26px auto; width: 90%;}
+    .desc { text-align: center; font-size: 1.06rem; color: #555; margin-bottom: 18px; }
+    .cards { display: flex; flex-direction: column; gap: 20px;}
+    .card {
+      background: #fff;
+      border: 2.5px solid #FF93C2;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #7FE7DB20;
+      padding: 20px 20px 14px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      position: relative;
+      transition: box-shadow .18s;
+    }
+    .card:hover { box-shadow: 0 4px 24px #FF93C288; border-color: #7FE7DB; }
+    .thumb {
+      width: 62px; height: 62px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid #FFF59F;
+      background: #F5EBFA;
+      flex-shrink: 0;
+    }
+    .cardbody { flex: 1; }
+    .cardtitle {
+      font-size: 1.16rem;
+      font-weight: bold;
+      color: #FF93C2;
+      margin-bottom: 2px;
+    }
+    .carddesc { font-size: 1.01rem; color: #555; margin-bottom: 6px; }
+    .promptbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 3px;
+    }
+    .promptinput {
+      background: #F8F7FD;
+      border: 1.5px solid #DDD;
+      border-radius: 6px;
+      font-size: 0.99rem;
+      padding: 4px 8px;
+      width: 200px;
+      color: #444;
+      letter-spacing: 0.01em;
+      margin-right: 0;
+    }
+    .copybtn {
+      background: #7FE7DB;
+      color: #222;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: background .18s;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+    }
+    .copybtn:hover { background: #FF93C2; color: #fff; }
+    .footer { text-align: center; margin-top: 40px; color: #B3A9D6; font-size: 0.96rem;}
+    @media (max-width: 600px) {
+      .container { padding: 10px 1vw 24px 1vw; }
+      .card { flex-direction: column; gap: 8px; padding: 15px 10px 10px 10px; }
+      .thumb { width: 42px; height: 42px; }
+      .promptinput { width: 98%; }
+    }
+  </style>
+  <script>
+    function copyPrompt(id) {
+      const input = document.getElementById(id);
+      input.select();
+      document.execCommand('copy');
+      input.blur();
+      alert('コピーしました！');
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
+    <h1>画像お題</h1>
+    <hr class="cute">
+    <div class="desc">画像生成AIやAIパートナー向けのプロンプト見本。<br>気になったものをワンクリックでコピーできます！</div>
+    <div class="cards">
 
-  <div class="image-list">
-    <!-- 画像お題を繰り返し表示 -->
-    <div class="image-card">
-      <img src="サンプル画像のURL" class="img-thumb">
-      <div class="img-title">マグショット！</div>
-      <button class="copybtn" data-clipboard-text="コピペ用プロンプト">コピー</button>
-      <a href="#詳細アンカー" class="morelink">詳細・サンプル</a>
+      <!-- カード1 -->
+      <div class="card">
+        <img src="thumb-mugshot.png" class="thumb" alt="マグショット">
+        <div class="cardbody">
+          <div class="cardtitle">マグショット</div>
+          <div class="carddesc">キャラの犯罪者風ポートレート。人気！</div>
+          <div class="promptbox">
+            <input id="prompt1" class="promptinput" type="text" value="stylish mugshot, height chart, dramatic lighting, ..." readonly>
+            <button class="copybtn" onclick="copyPrompt('prompt1')">コピー</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- カード2 -->
+      <div class="card">
+        <img src="thumb-y2k.png" class="thumb" alt="Y2Kプリクラ">
+        <div class="cardbody">
+          <div class="cardtitle">Y2Kプリクラ</div>
+          <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
+          <div class="promptbox">
+            <input id="prompt2" class="promptinput" type="text" value="y2k purikura, sparkling background, ..." readonly>
+            <button class="copybtn" onclick="copyPrompt('prompt2')">コピー</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- カード3 -->
+      <div class="card">
+        <img src="thumb-press.png" class="thumb" alt="プレス撮影">
+        <div class="cardbody">
+          <div class="cardtitle">プレス撮影風</div>
+          <div class="carddesc">報道写真のような臨場感ある1枚。</div>
+          <div class="promptbox">
+            <input id="prompt3" class="promptinput" type="text" value="press conference, reporters, flashing lights, ..." readonly>
+            <button class="copybtn" onclick="copyPrompt('prompt3')">コピー</button>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <!-- ...以下繰り返し -->
+    <div class="footer">
+      &copy; 2025 Secret Base (Rag and Duster)
+    </div>
   </div>
-</div>
+</body>
+</html>
