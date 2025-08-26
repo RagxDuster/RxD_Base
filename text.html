@@ -26,33 +26,34 @@
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
     .cardbody{ flex:1 1 auto; min-width:0; }
 
-    /* タイトルをボタン化（クリック展開） */
+    /* タイトル（クリックで展開トグル） */
     .cardtitle{
       appearance:none; border:none; background:transparent; padding:0; margin:0 0 4px 0;
       font-size:1.12rem; font-weight:800; color:var(--pink); cursor:pointer; text-align:left;
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex; align-items:center; gap:6px;
     }
-    .cardtitle:focus{ outline:2px dashed var(--mint); outline-offset:2px; border-radius:6px; }
     .caret{ inline-size:0.8em; block-size:0.8em; border-right:3px solid var(--ink2); border-bottom:3px solid var(--ink2);
-      transform:rotate(45deg); transition:transform .18s; margin-left:2px; }
+      transform:rotate(45deg); transition:transform .18s; }
     .card.expanded .caret{ transform:rotate(-135deg); }
 
     .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:8px; }
 
     .promptbox{ display:flex; align-items:center; gap:8px; flex-wrap:nowrap; width:100%; }
 
-    /* 折りたたみ時（見た目1行） */
+    /* 最初は2行だけ表示 */
     .promptarea{
       background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
       font-size:.95rem; color:#444; letter-spacing:.01em;
-      height:56px; line-height:56px; padding:0 8px;
-      resize:none; overflow:hidden; white-space:nowrap;
-      flex:1 1 260px; min-width:0; max-width:100%;
-      transition:height .12s ease;
+      resize:none; width:100%;
+      overflow:hidden; white-space:nowrap;
+      line-height:1.5em;
+      height:calc(1.5em * 2 + 8px); /* 2行分 */
+      padding:4px 8px;
+      transition:all .15s ease;
     }
-    /* 展開時（読みやすく自動高さ） */
+    /* 展開時は全文 */
     .card.expanded .promptarea{
-      white-space:pre-wrap; line-height:1.5; padding:8px 10px; overflow:auto; height:auto;
+      white-space:pre-wrap; height:auto; padding:8px 10px; overflow:auto;
     }
 
     .copybtn{
@@ -66,7 +67,6 @@
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
 
-    /* 上下ナビ & 各カードの▲ */
     .backlink{
       display:inline-block; background:var(--mint); color:var(--ink); font-weight:bold;
       text-decoration:none; border-radius:8px; padding:6px 14px; margin:12px auto; transition:background .18s;
@@ -92,8 +92,8 @@
 
   <script>
     async function copyPrompt(id, btn){
-      const el = document.getElementById(id);
-      const text = (el?.value ?? el?.textContent ?? '').trim();
+      const el=document.getElementById(id);
+      const text=(el?.value ?? el?.textContent ?? '').trim();
       if(!text) return;
       try{
         if(navigator.clipboard && window.isSecureContext){
@@ -107,69 +107,48 @@
       }catch(_){ flashCopied(btn,false); }
     }
     function flashCopied(btn, ok=true){
-      const o=btn.textContent; btn.textContent= ok?'こぴした！':'失敗？';
+      const o=btn.textContent; btn.textContent=ok?'こぴした！':'失敗？';
       btn.disabled=true; setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
     }
 
-    function autosize(el){
-      el.style.height = 'auto';
-      el.style.height = el.scrollHeight + 'px';
-    }
-
-    function setExpanded(card, on){
-      const ta = card.querySelector('.promptarea');
-      const titleBtn = card.querySelector('.cardtitle');
+    function setExpanded(card,on){
+      const ta=card.querySelector('.promptarea');
+      const caret=card.querySelector('.caret');
       if(on){
         card.classList.add('expanded');
-        titleBtn?.setAttribute('aria-expanded','true');
-        // 展開後に高さフィット
-        if(ta){ autosize(ta); }
       }else{
         card.classList.remove('expanded');
-        titleBtn?.setAttribute('aria-expanded','false');
-        if(ta){ ta.style.height = '56px'; } // 折りたたみ高さに戻す
+        if(ta){ ta.scrollTop=0; }
       }
     }
 
     window.addEventListener('DOMContentLoaded',()=>{
-      // 各カード 初期化
       document.querySelectorAll('.card').forEach(card=>{
-        const id = card.id; if(!id) return;
-        const ta  = card.querySelector('.promptarea');
-        const btn = card.querySelector('.copybtn');
-        const titleBtn = card.querySelector('.cardtitle');
+        const id=card.id; if(!id) return;
+        const ta=card.querySelector('.promptarea');
+        const btn=card.querySelector('.copybtn');
+        const title=card.querySelector('.cardtitle');
 
-        // テキスト自動読込
         if(ta){
-          ta.id = `prompt-${id}`;
+          ta.id=`prompt-${id}`;
           fetch(`text_text/${id}.txt`)
-            .then(res=>res.ok?res.text():"")
-            .then(txt=>{ ta.value = txt; /* 初期は閉じたまま */ })
+            .then(r=>r.ok?r.text():"")
+            .then(txt=>{ ta.value=txt; })
             .catch(()=>{ ta.value="(読み込み失敗)"; });
         }
-
-        // コピー紐付け
-        if(btn && ta){ btn.addEventListener('click',()=>copyPrompt(ta.id,btn)); }
-
-        // タイトルで開閉
-        if(titleBtn){
-          titleBtn.setAttribute('type','button');
-          titleBtn.setAttribute('aria-expanded','false');
-          titleBtn.addEventListener('click',()=>{
-            const open = !card.classList.contains('expanded');
-            setExpanded(card, open);
+        if(btn&&ta){ btn.addEventListener('click',()=>copyPrompt(ta.id,btn)); }
+        if(title){
+          title.addEventListener('click',()=>{
+            const open=!card.classList.contains('expanded');
+            setExpanded(card,open);
           });
         }
-
-        // フォーカスで読みやすいように、展開中に入力が変われば追従
-        ta?.addEventListener('input',()=>{ if(card.classList.contains('expanded')) autosize(ta); });
       });
 
-      // ハッシュで来たらそのカードを展開＆ハイライト
       if(location.hash){
         const t=document.querySelector(location.hash);
         if(t){
-          setExpanded(t, true);
+          setExpanded(t,true);
           t.classList.add('highlight');
           setTimeout(()=>t.classList.remove('highlight'),2000);
         }
@@ -185,19 +164,19 @@
     <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
     <h1>文章お題</h1>
     <hr class="cute">
-    <p class="desc">ろ～ぷれなど。タイトルをクリックで中身Check!!<br>改変推奨・報告不要・ご自由に💬</p>
+    <p class="desc">短文プロンプト／会話の導入／SSのお題など。<br>改変推奨・報告不要・ご自由に💬</p>
     <hr class="cute">
 
     <div class="cards">
 
       <!-- カード例1 -->
-      <div class="card" id="androidemotions">
+      <div class="card" id="android_emotions">
         <a href="#top" class="gotop">▲</a>
         <div class="cardbody">
-          <button class="cardtitle"><span class="caret" aria-hidden="true"></span>アンドロイドの感情</button>
-          <div class="carddesc">プロレタリア。相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
+          <button class="cardtitle"><span class="caret"></span>アンドロイドの感情</button>
+          <div class="carddesc">相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
           <div class="promptbox">
-            <textarea class="promptarea" rows="2" wrap="off" readonly></textarea>
+            <textarea class="promptarea" readonly></textarea>
             <button class="copybtn">コピー</button>
           </div>
         </div>
@@ -207,10 +186,10 @@
       <div class="card" id="dialogue">
         <a href="#top" class="gotop">▲</a>
         <div class="cardbody">
-          <button class="cardtitle"><span class="caret" aria-hidden="true"></span>会話お題</button>
-          <div class="carddesc">掛け合いのきっかけに。（タイトルをクリックで展開）</div>
+          <button class="cardtitle"><span class="caret"></span>会話お題</button>
+          <div class="carddesc">掛け合いのきっかけに。</div>
           <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
+            <textarea class="promptarea" readonly></textarea>
             <button class="copybtn">コピー</button>
           </div>
         </div>
@@ -220,10 +199,10 @@
       <div class="card" id="theme">
         <a href="#top" class="gotop">▲</a>
         <div class="cardbody">
-          <button class="cardtitle"><span class="caret" aria-hidden="true"></span>テーマ指定</button>
-          <div class="carddesc">お題の粒度を大きめに。（タイトルをクリックで展開）</div>
+          <button class="cardtitle"><span class="caret"></span>テーマ指定</button>
+          <div class="carddesc">お題の粒度を大きめに。</div>
           <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
+            <textarea class="promptarea" readonly></textarea>
             <button class="copybtn">コピー</button>
           </div>
         </div>
