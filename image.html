@@ -7,99 +7,98 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root {
-      --bg: #F5EBFA;
-      --ink: #222;
-      --card: #fff;
-      --pink: #FF93C2;
-      --mint: #7FE7DB;
-      --sun: #FFF59F;
-      --ink-2: #555;
-      --line: #DDD;
+      --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F; --ink2:#555; --line:#DDD;
     }
-    html { background: var(--bg); color: var(--ink);
-      font-family: 'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
-    body { margin: 0; min-height: 100vh; }
-    .container { max-width: 780px; margin: 0 auto; padding: 24px 12px 56px; }
-    .logoimg { width: 56px; height: 56px; border-radius: 50%; display: block; margin: 0 auto 8px; }
-    h1 { margin: 0 0 12px; font-size: 1.9rem; font-weight: 800; letter-spacing: .03em; text-align: center; }
-    hr.cute { border: none; border-top: 2.5px dashed var(--pink); margin: 18px auto 26px; width: 90%; }
-    .desc { text-align: center; font-size: 1.06rem; color: var(--ink-2); margin-bottom: 20px; }
-    .cards { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    html{ background:var(--bg); color:var(--ink);
+      font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
+    body{ margin:0; min-height:100vh; }
+    .container{ max-width:780px; margin:0 auto; padding:24px 12px 56px; }
+    .logoimg{ width:56px; height:56px; border-radius:50%; display:block; margin:0 auto 8px; }
+    h1{ margin:0 0 12px; font-size:1.9rem; font-weight:800; letter-spacing:.03em; text-align:center; }
+    hr.cute{ border:none; border-top:2.5px dashed var(--pink); margin:18px auto 26px; width:90%; }
+    .desc{ text-align:center; font-size:1.06rem; color:var(--ink2); margin-bottom:20px; }
 
-    .card {
-      background: var(--card);
-      border: 2.5px solid var(--pink);
-      border-radius: 16px;
-      box-shadow: 0 2px 12px #7FE7DB20;
-      padding: 16px;
-      display: flex;
-      align-items: center;       /* ← サムネ横・本文右 */
-      gap: 14px;
-      position: relative;
-      transition: box-shadow .18s, border-color .18s;
-      flex-wrap: wrap;           /* 狭いときは中身だけ折り返し */
+    .cards{ display:grid; grid-template-columns:1fr; gap:20px; }
+
+    .card{
+      background:var(--card);
+      border:2.5px solid var(--pink);
+      border-radius:16px;
+      box-shadow:0 2px 12px #7FE7DB20;
+      padding:16px;
+      display:flex;
+      align-items:center;           /* サムネ左／本文右 */
+      gap:14px;
+      transition:box-shadow .18s, border-color .18s;
+      flex-wrap:nowrap;             /* 中身は折り返さない＝横並びキープ */
     }
-    .card:hover { box-shadow: 0 4px 24px #FF93C288; border-color: var(--mint); }
+    .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
 
-    .thumb {
-      width: 62px; height: 62px; border-radius: 12px; object-fit: cover;
-      border: 2px solid var(--sun); background: var(--bg); flex: 0 0 auto;
+    .thumb{
+      width:62px; height:62px; border-radius:12px; object-fit:cover;
+      border:2px solid var(--sun); background:var(--bg); flex:0 0 auto;
     }
 
-    .cardbody { flex: 1 1 280px; min-width: 0; } /* テキストは横に、狭ければ折り返し */
-    .cardtitle { font-size: 1.12rem; font-weight: 800; color: var(--pink); margin-bottom: 2px; }
-    .carddesc { font-size: 1rem; color: var(--ink-2); margin-bottom: 8px; }
+    .cardbody{ flex:1 1 auto; min-width:0; }
+    .cardtitle{ font-size:1.12rem; font-weight:800; color:var(--pink); margin-bottom:2px; }
+    .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:8px; }
 
-    .promptbox {
-      display: flex; align-items: center; gap: 8px;
-      width: 100%; flex-wrap: wrap;     /* スマホでボタンが下に回れる */
-    }
-    /* input/textarea 共通スタイル */
-    .promptinput, .promptarea {
-      background: #F8F7FD; border: 1.5px solid var(--line); border-radius: 8px;
-      font-size: .98rem; padding: 8px 10px; color: #444; letter-spacing: .01em;
-      flex: 1 1 300px; min-width: 200px; max-width: 100%;
-    }
-    .promptarea {
-      resize: none; line-height: 1.5; overflow: hidden; /* 自動伸縮用 */
+    .promptbox{
+      display:flex; align-items:center; gap:8px;
+      flex-wrap:nowrap;               /* いつでも横並び固定 */
+      width:100%;
     }
 
-    .copybtn {
-      background: var(--mint); color: var(--ink); font-weight: 800; border: none;
-      border-radius: 10px; padding: 8px 14px; cursor: pointer; transition: background .18s, transform .06s;
-      font-size: .98rem; letter-spacing: .02em; flex: 0 0 auto;
-    }
-    .copybtn:hover { background: var(--pink); color: #fff; }
-    .copybtn:active { transform: translateY(1px); }
-    .copybtn[disabled] { opacity: .7; cursor: default; }
-
-    .footer { text-align: center; margin-top: 40px; color: #B3A9D6; font-size: .96rem; }
-
-    /* スマホ最適化：横並びは維持、サムネ少し小さく、余白軽量化 */
-    @media (max-width: 600px) {
-      .container { padding: 14px 8px 36px; }
-      .thumb { width: 48px; height: 48px; border-radius: 10px; }
-      .card { padding: 12px; gap: 10px; }
-      .cardtitle { font-size: 1.06rem; }
+    /* “見た目だけ1行”のtextarea（中身は改行保持） */
+    .promptarea{
+      background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
+      font-size:.95rem; color:#444; letter-spacing:.01em;
+      height:28px; line-height:28px;          /* 高さ1行固定 */
+      padding:0 8px;                          /* 行高に合わせる */
+      resize:none; overflow:hidden;            /* 複数行は隠す（横スクロールも出さない） */
+      white-space:nowrap;                      /* 折り返し禁止＝視覚1行 */
+      flex:1 1 260px; min-width:0; max-width:100%;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
+    .copybtn{
+      background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
+      padding:8px 12px; cursor:pointer; transition:background .18s, transform .06s;
+      font-size:.95rem; flex:0 0 auto;
+    }
+    .copybtn:hover{ background:var(--pink); color:#fff; }
+    .copybtn:active{ transform:translateY(1px); }
+    .copybtn[disabled]{ opacity:.7; cursor:default; }
+
+    .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
+
+    /* スマホ最適化：横並び維持のままテキストエリアをさらに小さく */
+    @media (max-width:600px){
+      .container{ padding:14px 8px 36px; }
+      .thumb{ width:48px; height:48px; border-radius:10px; }
+      .card{ padding:12px; gap:10px; }
+      .cardtitle{ font-size:1.06rem; }
+      .promptbox{ gap:6px; }
+      .promptarea{ flex:1 1 140px; }  /* 小さく縮む＝ボタンは常に横 */
+      .copybtn{ padding:8px 10px; font-size:.92rem; }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *{ transition:none !important; animation:none !important; }
     }
   </style>
 
   <script>
-    // 安全なコピー（Clipboard API優先、fallback付き）
-    async function copyPrompt(id, btn) {
+    // クリップボードコピー（Clipboard API優先／安全でない環境はフォールバック）
+    async function copyPrompt(id, btn){
       const el = document.getElementById(id);
-      const text = (el?.value ?? el?.textContent ?? '').trim();
-      if (!text) return;
+      const text = (el?.value ?? el?.textContent ?? '').replace(/\s+$/,''); // 末尾空白は整える
+      if(!text) return;
 
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
+      try{
+        if(navigator.clipboard && window.isSecureContext){
           await navigator.clipboard.writeText(text);
-        } else {
-          // Fallback: 選択→execCommand
+        }else{
+          // Fallback: 選択してexecCommand
           const range = document.createRange();
           range.selectNodeContents(el);
           const sel = window.getSelection();
@@ -108,31 +107,17 @@
           sel.removeAllRanges();
         }
         flashCopied(btn);
-      } catch (_) {
+      }catch(_){
         flashCopied(btn, false);
       }
     }
 
-    // テキストエリアを内容に合わせて1行〜複数行に自動伸縮
-    function autosize(el) {
-      el.style.height = 'auto';
-      el.style.height = el.scrollHeight + 'px';
-    }
-
-    function flashCopied(btn, ok = true) {
-      const original = btn.textContent;
+    function flashCopied(btn, ok=true){
+      const orig = btn.textContent;
       btn.textContent = ok ? 'こぴした！' : '失敗？';
       btn.disabled = true;
-      setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1600);
+      setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 1600);
     }
-
-    // 起動時にすべてのtextareaをフィット
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.promptarea').forEach(ta => {
-        autosize(ta);
-        ta.addEventListener('input', () => autosize(ta));
-      });
-    });
   </script>
 </head>
 
@@ -141,17 +126,19 @@
     <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
     <h1>画像お題</h1>
     <hr class="cute">
-    <p class="desc">AI相方と楽しむ画像お題一覧<br>改変推奨 / 報告不要</p>
-    <hr class="cute">
+    <p class="desc">画像生成AIやAIパートナー向けのプロンプト見本。<br>気になったものをワンクリックでコピーできます！</p>
+
     <div class="cards">
-      <!-- カード1：textarea版 -->
+
+      <!-- カード1：textarea（見た目1行／コピーは改行保持） -->
       <div class="card">
-        <img src="thumb-mugshot.png" class="thumb" alt="マグショットのサムネイル">
+        <img src="thumb-mugshot.png" class="thumb" alt="マグショット">
         <div class="cardbody">
           <div class="cardtitle">マグショット</div>
           <div class="carddesc">キャラの犯罪者風ポートレート。人気！</div>
           <div class="promptbox">
-            <textarea id="prompt1" rows="1" class="promptarea" readonly>
+            <textarea id="prompt1" class="promptarea" rows="1" wrap="off" readonly>
+
 # マグショット画像を生成してください！
 
 ---
@@ -343,41 +330,43 @@ Negative: photorealistic, real police logos, weapon rifle scopes,multiple people
 - Brush-ink sumi-e x manga; lively strokes; restrained colors
 - Painterly digital gouache; visible brushwork; creamy textures
 - Halftone risograph vibe; slight misregistration; spot colors
-- Cyber-fashion anime; glossy highlights; sharp cel lines; tech accents</textarea>
+- Cyber-fashion anime; glossy highlights; sharp cel lines; tech accents
+            </textarea>
             <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt1', this)">コピー</button>
           </div>
         </div>
       </div>
 
-      <!-- カード2：input版 -->
+      <!-- カード2：textarea -->
       <div class="card">
-        <img src="thumb-y2k.png" class="thumb" alt="Y2Kプリクラのサムネイル">
+        <img src="thumb-y2k.png" class="thumb" alt="Y2Kプリクラ">
         <div class="cardbody">
           <div class="cardtitle">Y2Kプリクラ</div>
           <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
           <div class="promptbox">
-            <input id="prompt2" class="promptinput" type="text"
-                   value="y2k purikura, sparkling background, sticker frame, neon hearts, glitter text"
-                   readonly>
+            <textarea id="prompt2" class="promptarea" rows="1" wrap="off" readonly>
+y2k purikura, sparkling pastel bokeh, sticker frame, glitter text, doodle hearts & stars, soft skin smoothing, vignette, high saturation pop, confetti highlight eyes, clean and noiseless
+            </textarea>
             <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt2', this)">コピー</button>
           </div>
         </div>
       </div>
 
-      <!-- カード3：input版 -->
+      <!-- カード3：textarea -->
       <div class="card">
-        <img src="thumb-press.png" class="thumb" alt="プレス撮影のサムネイル">
+        <img src="thumb-press.png" class="thumb" alt="プレス撮影風">
         <div class="cardbody">
           <div class="cardtitle">プレス撮影風</div>
           <div class="carddesc">報道写真のような臨場感ある1枚。</div>
           <div class="promptbox">
-            <input id="prompt3" class="promptinput" type="text"
-                   value="press conference, reporters, flashing lights, telephoto compression, candid moment"
-                   readonly>
+            <textarea id="prompt3" class="promptarea" rows="1" wrap="off" readonly>
+press conference, reporters raised hands, telephoto compression, rim light + flash pops, candid expression, shallow depth of field, newsroom backdrop, photojournalism vibe
+            </textarea>
             <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt3', this)">コピー</button>
           </div>
         </div>
       </div>
+
     </div>
 
     <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
