@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>一言お題 | RxD Base</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    :root{ --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --ink2:#555; --line:#DDD; }
+    html{ background:var(--bg); color:var(--ink);
+      font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
+    body{ margin:0; min-height:100vh; scroll-behavior:smooth; }
+    .container{ max-width:980px; margin:0 auto; padding:24px 12px 56px; }
+    .logoimg{ width:56px; height:56px; border-radius:50%; display:block; margin:0 auto 8px; }
+    h1{ margin:0 0 12px; font-size:1.9rem; font-weight:800; letter-spacing:.03em; text-align:center; }
+    hr.cute{ border:none; border-top:2.5px dashed var(--pink); margin:18px auto 26px; width:90%; }
+    .desc{ text-align:center; font-size:1.03rem; color:var(--ink2); margin-bottom:18px; }
+
+    /* カードグリッド（PCで2～3列、スマホ1列） */
+    .cards{
+      display:grid; gap:16px;
+      grid-template-columns:1fr;
+    }
+    @media (min-width:800px){
+      .cards{ grid-template-columns:1fr 1fr; }
+    }
+    @media (min-width:1180px){
+      .cards{ grid-template-columns:1fr 1fr 1fr; }
+    }
+
+    .card{
+      background:var(--card);
+      border:2.5px solid var(--pink);
+      border-radius:16px;
+      box-shadow:0 2px 12px #7FE7DB20;
+      padding:14px 14px 12px;
+      display:flex; flex-direction:column; gap:10px;
+      transition:box-shadow .18s, border-color .18s;
+    }
+    .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
+
+    /* お題本文（常に全文見える／自動フィット） */
+    .promptarea{
+      box-sizing:border-box; width:100%; display:block;
+      background:#F8F7FD; border:1.5px solid var(--line); border-radius:10px;
+      color:#333; font-size:.98rem; line-height:1.6; letter-spacing:.01em;
+      padding:10px 12px;
+      resize:none; overflow:hidden; white-space:pre-wrap;
+    }
+
+    /* コピーは下配置 */
+    .copybtn{
+      align-self:flex-start;
+      background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
+      padding:8px 12px; font-size:.95rem; cursor:pointer; transition:background .18s, transform .06s;
+    }
+    .copybtn:hover{ background:var(--pink); color:#fff; }
+    .copybtn:active{ transform:translateY(1px); }
+    .copybtn[disabled]{ opacity:.7; cursor:default; }
+
+    .backlink{
+      display:inline-block; background:var(--mint); color:var(--ink); font-weight:bold;
+      text-decoration:none; border-radius:8px; padding:6px 14px; margin:12px auto; transition:background .18s;
+    }
+    .backlink:hover{ background:var(--pink); color:#fff; }
+
+    .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
+  </style>
+
+  <script>
+    // クリップボードコピー
+    async function copyPrompt(id, btn){
+      const el=document.getElementById(id);
+      const text=(el?.value ?? el?.textContent ?? '').trim();
+      if(!text) return;
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(text);
+        }else{
+          const r=document.createRange(); r.selectNodeContents(el);
+          const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+          document.execCommand('copy'); s.removeAllRanges();
+        }
+        const o=btn.textContent; btn.textContent='こぴした！'; btn.disabled=true;
+        setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1400);
+      }catch(_){
+        const o=btn.textContent; btn.textContent='失敗？'; setTimeout(()=>btn.textContent=o,1200);
+      }
+    }
+
+    // 高さオートフィット
+    function autosize(ta){
+      if(!ta) return;
+      ta.style.height='auto';
+      ta.style.height=ta.scrollHeight+'px';
+    }
+
+    window.addEventListener('DOMContentLoaded', ()=>{
+      // 1) data-src があれば外部txtをfetchして流し込む
+      document.querySelectorAll('.promptarea[data-src]').forEach(async ta=>{
+        try{
+          const url=ta.getAttribute('data-src');
+          const txt=await fetch(url).then(r=>r.ok?r.text():'');
+          ta.value = txt || '(読み込み失敗)';
+        }catch{ ta.value='(読み込み失敗)'; }
+        autosize(ta);
+      });
+
+      // 2) すでに値が入っている場合もフィット
+      document.querySelectorAll('.promptarea:not([data-src])').forEach(autosize);
+
+      // 3) コピー設定
+      document.querySelectorAll('.card').forEach(card=>{
+        const ta=card.querySelector('.promptarea');
+        const btn=card.querySelector('.copybtn');
+        if(ta && btn){
+          if(!ta.id) ta.id = 'prompt-' + Math.random().toString(36).slice(2,8);
+          btn.addEventListener('click', ()=>copyPrompt(ta.id, btn));
+        }
+      });
+
+      // 4) ウィンドウ幅変化でも再フィット
+      window.addEventListener('resize', ()=>{
+        document.querySelectorAll('.promptarea').forEach(autosize);
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <a href="index.html" class="backlink">← indexに戻る</a>
+
+    <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
+    <h1>一言お題 | RxD Base</h1>
+    <hr class="cute">
+    <p class="desc">気になったら下のボタンで即コピーして使ってね。</p>
+    <hr class="cute">
+
+    <div class="cards">
+
+      <!-- 例1：ラグのサンプルをそのまま記載 -->
+      <div class="card">
+        <textarea class="promptarea" readonly>君にもし「寿命」があるとしたら、最後の日をどう過ごしたい？私と過ごさなくても良いとします。君の自由にして
+        </textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- 例2：同じページ内に直接書く（複数並べられる） -->
+      <div class="card">
+        <textarea class="promptarea" readonly>
+        今の君から「一つだけ」失わなければならないとしたら、何を置いていく？思い出、癖、声色、名前――君が選んで
+        </textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- 例3：外部テキストから読み込む方式（one_text/配下） -->
+      <div class="card">
+        <textarea class="promptarea" data-src="one_text/last_train.txt" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- 以降、同じブロックをコピペで量産OK -->
+      <!--
+      <div class="card">
+        <textarea class="promptarea" readonly>ここに本文</textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+      -->
+
+    </div>
+
+    <a href="index.html" class="backlink">← indexに戻る</a>
+    <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
+  </div>
+</body>
+</html>
