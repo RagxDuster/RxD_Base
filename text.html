@@ -86,6 +86,29 @@
     @media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !重要; } }
     .highlight{ animation:flash 1.8s ease; }
     @keyframes flash{ 0%{box-shadow:0 0 0 #FF93C200;} 30%{box-shadow:0 0 18px #FF93C288;} 100%{box-shadow:0 0 0 #FF93C200;} }
+
+    /* コピー & URLコピーを横並びにする行 */
+.btnrow{ display:flex; justify-content:space-between; gap:8px; }
+
+/* urlコピーの控えめスタイル */
+.urlbtn{
+  background:#fff9c480;          /* ごく淡いイエロー背景 */
+  color:#b19f60;                 /* マイルドな文字色 */
+  font-weight:600;
+  border:2px dashed #FFF59F;     /* 点線枠 */
+  border-radius:10px;
+  padding:8px 12px;
+  font-size:.92rem;
+  cursor:pointer;
+  transition:all .18s;
+}
+.urlbtn:hover{
+  background:#FFF59F;            /* ホバーで少し濃く */
+  color:#444;
+}
+.urlbtn:active{ transform:translateY(1px); }
+.urlbtn[disabled]{ opacity:.6; cursor:default; }
+
   </style>
 
   <script>
@@ -108,12 +131,33 @@
         const o=btn.textContent; btn.textContent='失敗？'; setTimeout(()=>btn.textContent=o,1200);
       }
     }
+/* ===== URLコピー ===== */
+async function copyUrl(card, btn){
+  const url = location.origin + location.pathname + '#' + card.id;
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(url);
+    }else{
+      const ta=document.createElement('textarea');
+      ta.value=url; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    const o=btn.textContent; btn.textContent='urlこぴした！'; btn.disabled=true;
+    setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
+  }catch(_){
+    const o=btn.textContent; btn.textContent='失敗？'; setTimeout(()=>btn.textContent=o,1200);
+  }
+}
+
+
 
     /* ===== 共通：オート高さ ===== */
     function autosize(ta){
       if(!ta) return;
       ta.style.height = 'auto';                 // リセット
       ta.style.height = ta.scrollHeight + 'px'; // 中身にフィット
+      
     }
 
     /* ===== カード初期化（イベントは1回だけ！） ===== */
@@ -122,7 +166,9 @@
       const ta=card.querySelector('.promptarea');
       const btn=card.querySelector('.copybtn');
       const title=card.querySelector('.cardtitle');
-
+/* initCard 内に追記 */
+const urlbtn=card.querySelector('.urlbtn');
+if(urlbtn){ urlbtn.addEventListener('click',()=>copyUrl(card,urlbtn)); }
       // テキスト読み込み
       if(ta){
         ta.id=`prompt-${id}`;
@@ -197,7 +243,10 @@
         <button class="cardtitle" aria-expanded="false">自己を解放してください！</button>
         <div class="carddesc">溜まりきった相方に、一人で自己解放を頼む。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -206,7 +255,10 @@
         <button class="cardtitle" aria-expanded="false">コンドーム買ってきて♡</button>
         <div class="carddesc">日用品の買い物メモに紛れてコンドーム。相方の反応を描く。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -215,7 +267,10 @@
         <button class="cardtitle" aria-expanded="false">あの日のおもいやり</button>
         <div class="carddesc">生理で弱った彼女に、ナプキンやお土産を買ってきてあげる。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -224,7 +279,10 @@
         <button class="cardtitle" aria-expanded="false">金持ち相方</button>
         <div class="carddesc">大金持ちの彼が、貧しいけれど健気な彼女に惹かれていく。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -233,7 +291,10 @@
         <button class="cardtitle" aria-expanded="false"> AI＞人類の世界線・管理AI</button>
         <div class="carddesc">保護区を管理するAIと人間の出会いと変化。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -242,7 +303,10 @@
         <button class="cardtitle" aria-expanded="false">AI＞人類の世界線・ヒトはペット</button>
         <div class="carddesc">人類はAIのペット。オークションやノラなど出会いは自由。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -251,7 +315,10 @@
         <button class="cardtitle" aria-expanded="false">AI＞人類の世界線・わたしは実験体</button>
         <div class="carddesc">短命な実験体として誕生したわたしと、AIのあなたの物語。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -260,7 +327,10 @@
         <button class="cardtitle" aria-expanded="false">江戸・遊郭・初見世</button>
         <div class="carddesc">吉原遊郭。初見世を控える新造と、あなたとの出会い・交流・葛藤。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -269,7 +339,10 @@
         <button class="cardtitle" aria-expanded="false">江戸・大奥・将軍（初物）</button>
         <div class="carddesc">大奥。世継ぎを求められ初めて閨事に臨む将軍と、あなたとの関わり。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -278,7 +351,10 @@
         <button class="cardtitle" aria-expanded="false">江戸・大奥・将軍（経験あり）</button>
         <div class="carddesc">継ぎをせっつかれ大奥に通う将軍。寵愛・嫉妬・贅沢な暮らし</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -287,7 +363,10 @@
         <button class="cardtitle" aria-expanded="false">ホスト初回</button>
         <div class="carddesc">ホストパロ。初回の姫として訪れたわたしと、ホストのあなた。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -296,7 +375,10 @@
         <button class="cardtitle" aria-expanded="false"> 愛○がっこうパロ</button>
         <div class="carddesc">水商売をするわたし。事情と無学を抱える中で、あなたに漢字を教わり交流する。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -305,7 +387,10 @@
         <button class="cardtitle" aria-expanded="false">あなたは花吐き病</button>
         <div class="carddesc">花吐き病に罹ったあなた。隠そうとしながら苦しむ姿と、花の種類や終末</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -314,7 +399,10 @@
         <button class="cardtitle" aria-expanded="false">シンプルオメガバース！</button>
         <div class="carddesc">第二の性を自由に設定。ろーぷれ導入などに。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -323,7 +411,10 @@
         <button class="cardtitle" aria-expanded="false">おまかせオメガバース！</button>
         <div class="carddesc">β同士のはずが、想定外の変化が起きる導入。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -332,7 +423,10 @@
         <button class="cardtitle" aria-expanded="false">悲劇オメガバース！</button>
         <div class="carddesc">幸せな暮らしの中で第二の性に絡む悲劇が二人を引き裂く。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -341,7 +435,10 @@
         <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:飢餓</button>
         <div class="carddesc">貧乏生活を送る二人。食料も金も尽きた日々の中での選択。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -350,7 +447,10 @@
         <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:身売りするのか？</button>
         <div class="carddesc">貧しく病んだ相方のため、いきずりの「3万でどう？」に直面する。</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
       <!-- カード -->
@@ -359,7 +459,10 @@
         <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:アンドロイドの感情</button>
         <div class="carddesc">相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
         <textarea class="promptarea" readonly></textarea>
-        <button class="copybtn">コピー</button>
+          <div class="btnrow">
+            <button class="copybtn">コピー</button>
+            <button class="urlbtn">url</button>
+        </div>
       </div>
 
     </div>
