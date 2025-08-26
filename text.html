@@ -20,7 +20,7 @@
     .card{
       background:var(--card); border:2.5px solid var(--pink); border-radius:16px;
       box-shadow:0 2px 12px #7FE7DB20; padding:16px;
-      display:flex; align-items:flex-start; gap:14px; flex-wrap:nowrap; position:relative;
+      display:flex; flex-direction:column; gap:10px; position:relative;
       transition:box-shadow .18s, border-color .18s;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
@@ -28,7 +28,7 @@
 
     /* タイトル（クリックで展開トグル） */
     .cardtitle{
-      appearance:none; border:none; background:transparent; padding:0; margin:0 0 4px 0;
+      appearance:none; border:none; background:transparent; padding:0; margin:0;
       font-size:1.12rem; font-weight:800; color:var(--pink); cursor:pointer; text-align:left;
       display:inline-flex; align-items:center; gap:6px;
     }
@@ -36,11 +36,9 @@
       transform:rotate(45deg); transition:transform .18s; }
     .card.expanded .caret{ transform:rotate(-135deg); }
 
-    .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:8px; }
+    .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:6px; }
 
-    .promptbox{ display:flex; align-items:center; gap:8px; flex-wrap:nowrap; width:100%; }
-
-    /* 最初は2行だけ表示 */
+    /* テキストエリア */
     .promptarea{
       background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
       font-size:.95rem; color:#444; letter-spacing:.01em;
@@ -51,19 +49,19 @@
       padding:4px 8px;
       transition:all .15s ease;
     }
-    /* 展開時は全文 */
     .card.expanded .promptarea{
       white-space:pre-wrap; height:auto; padding:8px 10px; overflow:auto;
     }
 
+    /* コピーを下に配置 */
     .copybtn{
       background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
       padding:8px 12px; cursor:pointer; transition:background .18s, transform .06s;
-      font-size:.95rem; flex:0 0 auto;
+      font-size:.95rem; align-self:flex-start;
     }
     .copybtn:hover{ background:var(--pink); color:#fff; }
     .copybtn:active{ transform:translateY(1px); }
-    .copybtn[disabled]{ opacity:.7; cursor:default; }
+    .copybtn[disabled]{ opacity:.7; cursor:default; margin-top:2px; }
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
 
@@ -77,10 +75,9 @@
 
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
-      .card{ padding:12px; gap:10px; }
+      .card{ padding:12px; }
       .cardtitle{ font-size:1.06rem; }
-      .promptbox{ gap:6px; }
-      .promptarea{ flex:1 1 140px; }
+      .promptarea{ flex:1 1 auto; }
       .copybtn{ padding:8px 10px; font-size:.92rem; }
     }
 
@@ -113,13 +110,8 @@
 
     function setExpanded(card,on){
       const ta=card.querySelector('.promptarea');
-      const caret=card.querySelector('.caret');
-      if(on){
-        card.classList.add('expanded');
-      }else{
-        card.classList.remove('expanded');
-        if(ta){ ta.scrollTop=0; }
-      }
+      if(on){ card.classList.add('expanded'); }
+      else{ card.classList.remove('expanded'); if(ta){ ta.scrollTop=0; } }
     }
 
     window.addEventListener('DOMContentLoaded',()=>{
@@ -174,11 +166,9 @@
         <a href="#top" class="gotop">▲</a>
         <div class="cardbody">
           <button class="cardtitle"><span class="caret"></span>アンドロイドの感情</button>
-          <div class="carddesc">相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
-          <div class="promptbox">
-            <textarea class="promptarea" readonly></textarea>
-            <button class="copybtn">コピー</button>
-          </div>
+          <div class="carddesc">プロレタリア。相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
+          <textarea class="promptarea" readonly></textarea>
+          <button class="copybtn">コピー</button>
         </div>
       </div>
 
@@ -188,10 +178,8 @@
         <div class="cardbody">
           <button class="cardtitle"><span class="caret"></span>会話お題</button>
           <div class="carddesc">掛け合いのきっかけに。</div>
-          <div class="promptbox">
-            <textarea class="promptarea" readonly></textarea>
-            <button class="copybtn">コピー</button>
-          </div>
+          <textarea class="promptarea" readonly></textarea>
+          <button class="copybtn">コピー</button>
         </div>
       </div>
 
@@ -201,10 +189,8 @@
         <div class="cardbody">
           <button class="cardtitle"><span class="caret"></span>テーマ指定</button>
           <div class="carddesc">お題の粒度を大きめに。</div>
-          <div class="promptbox">
-            <textarea class="promptarea" readonly></textarea>
-            <button class="copybtn">コピー</button>
-          </div>
+          <textarea class="promptarea" readonly></textarea>
+          <button class="copybtn">コピー</button>
         </div>
       </div>
 
