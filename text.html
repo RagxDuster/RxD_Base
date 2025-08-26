@@ -57,7 +57,7 @@
       height:calc(1.5em * 2 + 8px);      /* 2行分だけ表示 */
     }
     .promptarea.expanded{
-      white-space:pre-wrap; height:auto; padding:8px 10px; overflow:auto; /* 全文 */
+      white-space:pre-wrap; height:auto; padding:8px 10px; overflow:hidden; /* 全文 */
     }
 
     /* コピーは下に配置 */
@@ -157,6 +157,73 @@
       }
     });
   </script>
+
+  <script>
+  // 追加：オート高さ調整
+  function autosize(ta){
+    if(!ta) return;
+    ta.style.height = 'auto';               // リセット
+    ta.style.height = ta.scrollHeight + 'px'; // 中身に合わせて確定
+  }
+
+  function initCard(card){
+    const id=card.id; if(!id) return;
+    const ta=card.querySelector('.promptarea');
+    const btn=card.querySelector('.copybtn');
+    const title=card.querySelector('.cardtitle');
+
+    if(ta){
+      ta.id=`prompt-${id}`;
+      ta.classList.add('clamped'); // 初期2行
+      fetch(`text_text/${id}.txt`)
+        .then(r=>r.ok?r.text():"")
+        .then(txt=>{
+          ta.value=txt;
+          // もし展開状態で読み込まれたら高さ合わせ
+          if(ta.classList.contains('expanded')) autosize(ta);
+        })
+        .catch(()=>{ ta.value="(読み込み失敗)"; });
+    }
+
+    if(btn&&ta){ btn.addEventListener('click',()=>copyPrompt(ta.id,btn)); }
+
+    if(title && ta){
+      title.setAttribute('type','button');
+      title.setAttribute('aria-expanded','false');
+      title.addEventListener('click',()=>{
+        const open = title.getAttribute('aria-expanded') === 'false';
+        title.setAttribute('aria-expanded', open ? 'true' : 'false');
+        ta.classList.toggle('expanded', open);
+        ta.classList.toggle('clamped', !open);
+        if(open){
+          autosize(ta);                      // ← 展開時に即フィット
+        }else{
+          ta.scrollTop=0;                    // 2行に戻す
+          ta.style.height = '';              // 高さリセット（CSSのclampedに戻す）
+        }
+      });
+
+      // 展開中にウィンドウ幅が変わったら再計算
+      window.addEventListener('resize', ()=>{
+        if(ta.classList.contains('expanded')) autosize(ta);
+      });
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.card').forEach(initCard);
+
+    if(location.hash){
+      const t=document.querySelector(location.hash);
+      if(t){
+        const title=t.querySelector('.cardtitle');
+        title?.click();                      // 展開
+        t.classList.add('highlight');
+        setTimeout(()=>t.classList.remove('highlight'),2000);
+      }
+    }
+  });
+</script>
 </head>
 
 <body id="top">
