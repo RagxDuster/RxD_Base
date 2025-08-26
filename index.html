@@ -9,8 +9,7 @@
 <style>
   :root{
     --bg:#F5EBFA; --ink:#222; --ink2:#555;
-    --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F;
-    --lav:#E7D8FF; /* ← 4個目ボタンの新色（ラベンダー） */
+    --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F; --lav:#E7D8FF;
   }
   html{ background:var(--bg); color:var(--ink);
         font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',sans-serif; }
@@ -31,38 +30,34 @@
     padding:8px 14px 6px;
   }
 
-  /* ===== ボタンエリア（Flexで“固定幅カード”配置） ===== */
+  /* ===== ボタンをCSS Gridでレイアウト ===== */
   .btnarea{
-    display:flex; flex-wrap:wrap; gap:12px; margin:32px 0 16px;
-    justify-content:center; /* ← 最終行を中央寄せ＆横に伸ばさない */
+    display:grid; gap:12px; margin:32px 0 16px;
+    grid-template-columns:repeat(2, 1fr); /* ← スマホは2列固定 */
   }
+  @media (min-width:720px){
+    .btnarea{ grid-template-columns:repeat(3, 1fr); } /* ← PCは3列固定 */
+  }
+
   .genrebtn{
     display:inline-flex; align-items:center; justify-content:center;
     text-decoration:none; cursor:pointer; font-weight:700; letter-spacing:.02em;
     border-radius:16px; border:2.5px solid var(--sun);
     box-shadow:0 2px 8px #FFF59F50, 0 2px 10px #7FE7DB18;
     transition:transform .15s, box-shadow .2s, filter .2s;
-    /* “固定幅カード”化：PCはカード幅240pxで折返し。横にビヨーン禁止 */
-    width:240px; min-height:56px; padding:12px 0; font-size:1.08rem;
+    min-height:56px; padding:14px 0; font-size:1.08rem;
     background:var(--pink); color:#fff;
   }
-  /* 2番目（ミント） */
   .genrebtn:nth-child(2){ background:var(--mint); color:var(--ink); border-color:var(--pink); }
-  /* 3番目（イエロー） */
   .genrebtn:nth-child(3){ background:var(--sun);  color:var(--ink); border-color:var(--mint); }
-  /* 4番目（ラベンダーで可愛く） */
-  .genrebtn:nth-child(4){
-    background:var(--lav); color:var(--ink); border-color:var(--pink);
-    box-shadow:0 2px 8px #C6B8FF55, 0 2px 10px #7FE7DB18;
-  }
+  .genrebtn:nth-child(4){ background:var(--lav);  color:var(--ink); border-color:var(--pink);
+                           box-shadow:0 2px 8px #C6B8FF55, 0 2px 10px #7FE7DB18; }
   .genrebtn:hover{
     filter:brightness(1.06) saturate(1.08);
     box-shadow:0 4px 20px #FF93C255, 0 2px 8px #7FE7DB55;
     transform:translateY(-1.5px) scale(1.03);
   }
-  .genrebtn:focus-visible{
-    outline:3px dashed #00000040; outline-offset:3px;
-  }
+  .genrebtn:focus-visible{ outline:3px dashed #00000040; outline-offset:3px; }
 
   .left{ text-align:left; }
   .section{ margin:32px 0 0; }
@@ -72,23 +67,14 @@
   }
   ul.latest{ padding:0; margin:0; list-style:none; }
   ul.latest li{ margin:0 0 6px; }
-  .anchorlink{
-    color:var(--mint); font-weight:700; text-decoration:underline; transition:color .2s;
-  }
+  .anchorlink{ color:var(--mint); font-weight:700; text-decoration:underline; transition:color .2s; }
   .anchorlink:hover{ color:var(--pink); text-decoration:underline wavy var(--pink) 2px; }
 
   .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; letter-spacing:.02em; }
 
-  /* ===== スマホ：常に2列で揃える（幅によってガタつかない） ===== */
-  @media (max-width:540px){
-    .container{ padding:10px 2vw 24px; }
-    .logoimg{ width:50px; height:50px; }
-    h1{ font-size:1.22rem; }
-    .desc{ font-size:.96rem; }
-    .genrebtn{
-      width:calc((100% - 12px) / 2);  /* gap 12px を考慮して2列 */
-      min-height:52px; font-size:1rem; padding:12px 0;
-    }
+  /* さらに極端に狭い端末(≤360px)だけ1列にフォールバック */
+  @media (max-width:360px){
+    .btnarea{ grid-template-columns:1fr; }
   }
 </style>
 </head>
@@ -108,10 +94,10 @@
     <hr class="cute">
 
     <div class="btnarea left">
-      <a href="text.html"        class="genrebtn">📓文章お題📓</a>
-      <a href="image.html"       class="genrebtn">🖼️画像お題🖼️</a>
-      <a href="one_liners.html"  class="genrebtn">💬一言お題💬</a>
-      <a href="style.html"       class="genrebtn">🎨画風指定🎨</a>
+      <a href="text.html"       class="genrebtn">📓文章お題📓</a>
+      <a href="image.html"      class="genrebtn">🖼️画像お題🖼️</a>
+      <a href="one_liners.html" class="genrebtn">💬一言お題💬</a>
+      <a href="style.html"      class="genrebtn">🎨画風指定🎨</a>
     </div>
 
     <div class="section left">
