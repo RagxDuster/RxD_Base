@@ -82,15 +82,23 @@
       .promptinput { width: 98%; }
     }
   </style>
-  <script>
-    function copyPrompt(id) {
-      const input = document.getElementById(id);
-      input.select();
-      document.execCommand('copy');
-      input.blur();
-      alert('コピーしました！');
-    }
-  </script>
+<script>
+  function copyPrompt(id, btn) {
+    const input = document.getElementById(id);
+    input.select();
+    document.execCommand('copy');
+    input.blur();
+    // ボタンのテキストを変更
+    const original = btn.textContent;
+    btn.textContent = "コピした！";
+    btn.disabled = true;
+    setTimeout(function() {
+      btn.textContent = original;
+      btn.disabled = false;
+    }, 1600); // 1.6秒後に戻る
+  }
+</script>
+
 </head>
 <body>
   <div class="container">
@@ -107,8 +115,8 @@
           <div class="cardtitle">マグショット</div>
           <div class="carddesc">キャラの犯罪者風ポートレート。人気！</div>
           <div class="promptbox">
-            <input id="prompt1" class="promptinput" type="text" value="stylish mugshot, height chart, dramatic lighting, ..." readonly>
-            <button class="copybtn" onclick="copyPrompt('prompt1')">コピー</button>
+            <textarea id="prompt1" rows="1" class="promptarea" readonly>ここにコピーしたいプロンプト</textarea>
+            <button class="copybtn" onclick="copyPrompt('prompt1', this)">コピー</button>
           </div>
         </div>
       </div>
@@ -121,7 +129,7 @@
           <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
           <div class="promptbox">
             <input id="prompt2" class="promptinput" type="text" value="y2k purikura, sparkling background, ..." readonly>
-            <button class="copybtn" onclick="copyPrompt('prompt2')">コピー</button>
+            <button class="copybtn" onclick="copyPrompt('prompt2', this)">コピー</button>
           </div>
         </div>
       </div>
@@ -134,7 +142,7 @@
           <div class="carddesc">報道写真のような臨場感ある1枚。</div>
           <div class="promptbox">
             <input id="prompt3" class="promptinput" type="text" value="press conference, reporters, flashing lights, ..." readonly>
-            <button class="copybtn" onclick="copyPrompt('prompt3')">コピー</button>
+            <button class="copybtn" onclick="copyPrompt('prompt3', this)">コピー</button>
           </div>
         </div>
       </div>
