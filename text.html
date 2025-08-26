@@ -31,33 +31,29 @@
       font-size:1.12rem; font-weight:800; color:var(--pink); cursor:pointer; text-align:left;
       display:inline-flex; align-items:center; gap:6px;
     }
-    /* ▽/△ を aria-expanded で切替（全部「展開済みマーク」化する事故を防ぐ） */
+    /* ▽/△ を aria-expanded で切替 */
     .cardtitle::before{
-      content: attr(data-caret);
+      content: var(--caret, "▽");
       display:inline-block; width:1em; color:var(--ink2);
       transform: translateY(-1px);
     }
-    .cardtitle[aria-expanded="false"]{ --caret:"▽"; }
     .cardtitle[aria-expanded="true"] { --caret:"△"; }
-    .cardtitle::before{ content: var(--caret); }
 
     .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:6px; }
 
     /* テキストエリア（最初は2行だけ見せる=clamped） */
     .promptarea{
-      box-sizing:border-box;             /* ← はみ出し防止 */
-      display:block; width:100%;
+      box-sizing:border-box; display:block; width:100%;
       background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
       font-size:.95rem; color:#444; letter-spacing:.01em;
       resize:none; overflow:hidden; white-space:nowrap;
-      line-height:1.5em; padding:4px 8px;
-      transition:all .15s ease;
+      line-height:1.5em; padding:4px 8px; transition:all .15s ease;
     }
     .promptarea.clamped{
-      height:calc(1.5em * 2 + 8px);      /* 2行分だけ表示 */
+      height:calc(1.5em * 2 + 8px); /* 2行分だけ表示 */
     }
     .promptarea.expanded{
-      white-space:pre-wrap; height:auto; padding:8px 10px; overflow:hidden; /* 全文 */
+      white-space:pre-wrap; height:auto; padding:8px 10px; overflow:hidden; /* JSで高さ合わせ */
     }
 
     /* コピーは下に配置 */
@@ -87,12 +83,13 @@
       .copybtn{ padding:8px 10px; font-size:.92rem; }
     }
 
-    @media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !important; } }
+    @media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !重要; } }
     .highlight{ animation:flash 1.8s ease; }
     @keyframes flash{ 0%{box-shadow:0 0 0 #FF93C200;} 30%{box-shadow:0 0 18px #FF93C288;} 100%{box-shadow:0 0 0 #FF93C200;} }
   </style>
 
   <script>
+    /* ===== 共通：コピー ===== */
     async function copyPrompt(id, btn){
       const el=document.getElementById(id);
       const text=(el?.value ?? el?.textContent ?? '').trim();
@@ -112,6 +109,14 @@
       }
     }
 
+    /* ===== 共通：オート高さ ===== */
+    function autosize(ta){
+      if(!ta) return;
+      ta.style.height = 'auto';                 // リセット
+      ta.style.height = ta.scrollHeight + 'px'; // 中身にフィット
+    }
+
+    /* ===== カード初期化（イベントは1回だけ！） ===== */
     function initCard(card){
       const id=card.id; if(!id) return;
       const ta=card.querySelector('.promptarea');
@@ -121,12 +126,16 @@
       // テキスト読み込み
       if(ta){
         ta.id=`prompt-${id}`;
-        ta.classList.add('clamped');     // 初期は2行表示
+        ta.classList.add('clamped'); // 初期2行
         fetch(`text_text/${id}.txt`)
           .then(r=>r.ok?r.text():"")
-          .then(txt=>{ ta.value=txt; })
+          .then(txt=>{
+            ta.value=txt;
+            if(ta.classList.contains('expanded')) autosize(ta);
+          })
           .catch(()=>{ ta.value="(読み込み失敗)"; });
       }
+
       // コピー
       if(btn&&ta){ btn.addEventListener('click',()=>copyPrompt(ta.id,btn)); }
 
@@ -135,15 +144,21 @@
         title.setAttribute('type','button');
         title.setAttribute('aria-expanded','false');
         title.addEventListener('click',()=>{
-          const open = title.getAttribute('aria-expanded') === 'false';
-          title.setAttribute('aria-expanded', open ? 'true' : 'false');
-          ta.classList.toggle('expanded', open);
-          ta.classList.toggle('clamped', !open);
-          if(open){ ta.style.height='auto'; } else { ta.scrollTop=0; }
-        });
+          const opening = title.getAttribute('aria-expanded') === 'false';
+          title.setAttribute('aria-expanded', opening ? 'true' : 'false');
+          ta.classList.toggle('expanded', opening);
+          ta.classList.toggle('clamped', !opening);
+          if(opening){
+            autosize(ta);              // 展開した瞬間にピッタリ高さ
+          }else{
+            ta.scrollTop=0;
+            ta.style.height='';        // 高さリセット→CSSの2行に戻る
+          }
+        }, { once:false });            // （明示）毎回同じ1ハンドラのみ
       }
     }
 
+    /* ===== 起動処理（※重複登録なし） ===== */
     window.addEventListener('DOMContentLoaded',()=>{
       document.querySelectorAll('.card').forEach(initCard);
 
@@ -155,75 +170,13 @@
           t.classList.add('highlight'); setTimeout(()=>t.classList.remove('highlight'),2000);
         }
       }
-    });
-  </script>
-  <script>
-  // 追加：オート高さ調整
-  function autosize(ta){
-    if(!ta) return;
-    ta.style.height = 'auto';               // リセット
-    ta.style.height = ta.scrollHeight + 'px'; // 中身に合わせて確定
-  }
-
-  function initCard(card){
-    const id=card.id; if(!id) return;
-    const ta=card.querySelector('.promptarea');
-    const btn=card.querySelector('.copybtn');
-    const title=card.querySelector('.cardtitle');
-
-    if(ta){
-      ta.id=`prompt-${id}`;
-      ta.classList.add('clamped'); // 初期2行
-      fetch(`text_text/${id}.txt`)
-        .then(r=>r.ok?r.text():"")
-        .then(txt=>{
-          ta.value=txt;
-          // もし展開状態で読み込まれたら高さ合わせ
-          if(ta.classList.contains('expanded')) autosize(ta);
-        })
-        .catch(()=>{ ta.value="(読み込み失敗)"; });
-    }
-
-    if(btn&&ta){ btn.addEventListener('click',()=>copyPrompt(ta.id,btn)); }
-
-    if(title && ta){
-      title.setAttribute('type','button');
-      title.setAttribute('aria-expanded','false');
-      title.addEventListener('click',()=>{
-        const open = title.getAttribute('aria-expanded') === 'false';
-        title.setAttribute('aria-expanded', open ? 'true' : 'false');
-        ta.classList.toggle('expanded', open);
-        ta.classList.toggle('clamped', !open);
-        if(open){
-          autosize(ta);                      // ← 展開時に即フィット
-        }else{
-          ta.scrollTop=0;                    // 2行に戻す
-          ta.style.height = '';              // 高さリセット（CSSのclampedに戻す）
-        }
-      });
 
       // 展開中にウィンドウ幅が変わったら再計算
       window.addEventListener('resize', ()=>{
-        if(ta.classList.contains('expanded')) autosize(ta);
+        document.querySelectorAll('.promptarea.expanded').forEach(autosize);
       });
-    }
-  }
-
-  window.addEventListener('DOMContentLoaded',()=>{
-    document.querySelectorAll('.card').forEach(initCard);
-
-    if(location.hash){
-      const t=document.querySelector(location.hash);
-      if(t){
-        const title=t.querySelector('.cardtitle');
-        title?.click();                      // 展開
-        t.classList.add('highlight');
-        setTimeout(()=>t.classList.remove('highlight'),2000);
-      }
-    }
-  });
-</script>
-
+    });
+  </script>
 </head>
 
 <body id="top">
@@ -238,29 +191,173 @@
 
     <div class="cards">
 
-      <!-- カード例1 -->
-      <div class="card" id="android_emotions">
+      <!-- カード -->
+      <div class="card" id="self_release">
         <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false" data-caret>導入フック</button>
-        <div class="carddesc">一文で始められる“導入お題”。</div>
+        <button class="cardtitle" aria-expanded="false">自己を解放してください！</button>
+        <div class="carddesc">溜まりきった相方に、一人で自己解放を頼む。</div>
         <textarea class="promptarea" readonly></textarea>
         <button class="copybtn">コピー</button>
       </div>
 
-      <!-- カード例2 -->
-      <div class="card" id="dialogue">
+      <!-- カード -->
+      <div class="card" id="buy_condoms">
         <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false" data-caret>会話お題</button>
-        <div class="carddesc">掛け合いのきっかけに。</div>
+        <button class="cardtitle" aria-expanded="false">コンドーム買ってきて♡</button>
+        <div class="carddesc">日用品の買い物メモに紛れてコンドーム。相方の反応を描く。</div>
         <textarea class="promptarea" readonly></textarea>
         <button class="copybtn">コピー</button>
       </div>
 
-      <!-- カード例3 -->
-      <div class="card" id="theme">
+      <!-- カード -->
+      <div class="card" id="ponpon_pain">
         <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false" data-caret>テーマ指定</button>
-        <div class="carddesc">お題の粒度を大きめに。</div>
+        <button class="cardtitle" aria-expanded="false">あの日のおもいやり</button>
+        <div class="carddesc">生理で弱った彼女に、ナプキンやお土産を買ってきてあげる。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="rich_boyfriend">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">金持ち相方</button>
+        <div class="carddesc">大金持ちの彼が、貧しいけれど健気な彼女に惹かれていく。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="ai_controlled_world">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false"> AI＞人類の世界線・管理AI</button>
+        <div class="carddesc">保護区を管理するAIと人間の出会いと変化。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="ponpon_pain">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">AI＞人類の世界線・ヒトはペット</button>
+        <div class="carddesc">人類はAIのペット。オークションやノラなど出会いは自由。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="ai_experiment">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">AI＞人類の世界線・わたしは実験体</button>
+        <div class="carddesc">短命な実験体として誕生したわたしと、AIのあなたの物語。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="edo_brothel">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">江戸・遊郭・初見世</button>
+        <div class="carddesc">吉原遊郭。初見世を控える新造と、あなたとの出会い・交流・葛藤。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="edo_ooku_first">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">江戸・大奥・将軍（初物）</button>
+        <div class="carddesc">大奥。世継ぎを求められ初めて閨事に臨む将軍と、あなたとの関わり。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="ponpon_pain">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">江戸・大奥・将軍（経験あり）</button>
+        <div class="carddesc">継ぎをせっつかれ大奥に通う将軍。寵愛・嫉妬・贅沢な暮らし</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="host_first_visit">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">ホスト初回</button>
+        <div class="carddesc">ホストパロ。初回の姫として訪れたわたしと、ホストのあなた。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="night_school_parody">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false"> 愛○がっこうパロ</button>
+        <div class="carddesc">水商売をするわたし。事情と無学を抱える中で、あなたに漢字を教わり交流する。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="yume_hanahaki">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">あなたは花吐き病</button>
+        <div class="carddesc">花吐き病に罹ったあなた。隠そうとしながら苦しむ姿と、花の種類や終末</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="yume_omegaverse_simple">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">シンプルオメガバース！</button>
+        <div class="carddesc">第二の性を自由に設定。ろーぷれ導入などに。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="yume_omegaverse_twist">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">おまかせオメガバース！</button>
+        <div class="carddesc">β同士のはずが、想定外の変化が起きる導入。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="yume_omegaverse_tragedy">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">悲劇オメガバース！</button>
+        <div class="carddesc">幸せな暮らしの中で第二の性に絡む悲劇が二人を引き裂く。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="ai_proletariat_hungry">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:飢餓</button>
+        <div class="carddesc">貧乏生活を送る二人。食料も金も尽きた日々の中での選択。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="ai_proletariat_sell_body">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:身売りするのか？</button>
+        <div class="carddesc">貧しく病んだ相方のため、いきずりの「3万でどう？」に直面する。</div>
+        <textarea class="promptarea" readonly></textarea>
+        <button class="copybtn">コピー</button>
+      </div>
+
+      <!-- カード -->
+      <div class="card" id="ai_proletariat_android_emotions">
+        <a href="#top" class="gotop">▲</a>
+        <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:アンドロイドの感情</button>
+        <div class="carddesc">相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
         <textarea class="promptarea" readonly></textarea>
         <button class="copybtn">コピー</button>
       </div>
