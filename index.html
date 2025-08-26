@@ -22,7 +22,16 @@
     }
     h1 { margin: 0 0 12px 0; font-size: 2.1rem; font-weight: bold; letter-spacing: 0.03em;}
     .cute { border: none; border-top: 2px dashed #C2A4E0; margin: 18px auto; width: 90%;}
-    .desc { font-size: 1.08rem; color: #555; margin: 0 0 0 0; line-height: 1.7; text-align: left;}
+.desc {
+  font-size: 1.08rem;
+  color: #555;
+  margin: 0 0 0 0;
+  line-height: 1.7;
+  text-align: left;
+  max-width: 90%;     /* ← 追加：幅を罫線に揃える */
+  margin-left: auto;  /* ← 追加：中央寄せ */
+  margin-right: auto; /* ← 追加：中央寄せ */
+}
     .btnarea { display: flex; gap: 10px; flex-wrap: wrap; margin: 32px 0 16px 0;}
     .genrebtn {
       flex: 1 1 130px;
@@ -99,3 +108,4 @@
   </div>
 </body>
 </html>
+
