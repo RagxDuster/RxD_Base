@@ -11,7 +11,7 @@
     }
     html{ background:var(--bg); color:var(--ink);
       font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
-    body{ margin:0; min-height:100vh; }
+    body{ margin:0; min-height:100vh; scroll-behavior:smooth; }
     .container{ max-width:780px; margin:0 auto; padding:24px 12px 56px; }
     .logoimg{ width:56px; height:56px; border-radius:50%; display:block; margin:0 auto 8px; }
     h1{ margin:0 0 12px; font-size:1.9rem; font-weight:800; letter-spacing:.03em; text-align:center; }
@@ -31,6 +31,7 @@
       gap:14px;
       transition:box-shadow .18s, border-color .18s;
       flex-wrap:nowrap;
+      position:relative;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
 
@@ -69,6 +70,29 @@
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
 
+    /* ボタン */
+    .toplink, .backlink{
+      display:inline-block;
+      background:var(--mint);
+      color:var(--ink);
+      font-weight:bold;
+      text-decoration:none;
+      border-radius:8px;
+      padding:6px 14px;
+      margin:12px auto;
+      transition:background .18s;
+    }
+    .toplink:hover, .backlink:hover{ background:var(--pink); color:#fff; }
+
+    /* 各カード右上の戻る▲ */
+    .gotop{
+      position:absolute; top:8px; right:12px;
+      font-size:0.9rem;
+      text-decoration:none;
+      color:var(--ink2);
+    }
+    .gotop:hover{ color:var(--pink); }
+
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
       .thumb{ width:48px; height:48px; border-radius:10px; }
@@ -83,7 +107,6 @@
       *{ transition:none !important; animation:none !important; }
     }
 
-    /* リンクで飛んできたときに光る */
     .highlight { animation: flash 1.8s ease; }
     @keyframes flash {
       0% { box-shadow:0 0 0 #FF93C200; }
@@ -120,7 +143,6 @@
       setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},1600);
     }
 
-    // idをベースに画像srcとtextarea idを自動設定
     window.addEventListener("DOMContentLoaded",()=>{
       document.querySelectorAll(".card").forEach(card=>{
         const id=card.id;
@@ -128,12 +150,29 @@
         const img=card.querySelector("img.thumb");
         const ta=card.querySelector(".promptarea");
         const btn=card.querySelector(".copybtn");
-        if(img && !img.src) img.src=`image_odai/${id}.png`;
-        if(ta){ ta.id=`prompt-${id}`; }
-        if(btn && ta){ btn.addEventListener("click",()=>copyPrompt(ta.id,btn)); }
+
+        // 画像とalt
+        if(img){
+          img.src=`image_sample/${id}.png`;
+          img.alt=`${id} sample image`;
+        }
+
+        // テキスト読み込み
+        if(ta){
+          ta.id=`prompt-${id}`;
+          fetch(`image_text/${id}.txt`)
+            .then(res=>res.ok?res.text():"")
+            .then(txt=>{ ta.value=txt; })
+            .catch(()=>{ ta.value="(読み込み失敗)"; });
+        }
+
+        // コピー紐付け
+        if(btn && ta){
+          btn.addEventListener("click",()=>copyPrompt(ta.id,btn));
+        }
       });
 
-      // リンクで飛んできたときに光る
+      // ハッシュリンクで光らせる
       if(location.hash){
         const target=document.querySelector(location.hash);
         if(target){
@@ -145,8 +184,11 @@
   </script>
 </head>
 
-<body>
+<body id="top">
   <div class="container">
+    <!-- 上に戻るボタン -->
+    <a href="index.html" class="backlink">← indexに戻る</a>
+
     <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
     <h1>画像お題</h1>
     <hr class="cute">
@@ -157,14 +199,13 @@
 
       <!-- カード1 -->
       <div class="card" id="mugshot">
-        <img class="thumb" alt="マグショット">
+        <a href="#top" class="gotop">▲</a>
+        <img class="thumb">
         <div class="cardbody">
           <div class="cardtitle">ランダムマグショット</div>
           <div class="carddesc">ランダム要素のある犯罪者風ポトレ！</div>
           <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly>
-ここにマグショット用のプロンプトを書く
-            </textarea>
+            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
             <button class="copybtn">コピー</button>
           </div>
         </div>
@@ -172,14 +213,13 @@
 
       <!-- カード2 -->
       <div class="card" id="y2k">
-        <img class="thumb" alt="Y2Kプリクラ">
+        <a href="#top" class="gotop">▲</a>
+        <img class="thumb">
         <div class="cardbody">
           <div class="cardtitle">Y2Kプリクラ</div>
           <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
           <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly>
-ここにY2Kプリクラ用のプロンプトを書く
-            </textarea>
+            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
             <button class="copybtn">コピー</button>
           </div>
         </div>
@@ -187,14 +227,13 @@
 
       <!-- カード3 -->
       <div class="card" id="press">
-        <img class="thumb" alt="プレス撮影風">
+        <a href="#top" class="gotop">▲</a>
+        <img class="thumb">
         <div class="cardbody">
           <div class="cardtitle">プレス撮影風</div>
           <div class="carddesc">報道写真のような臨場感ある1枚。</div>
           <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly>
-ここにプレス撮影風のプロンプトを書く
-            </textarea>
+            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
             <button class="copybtn">コピー</button>
           </div>
         </div>
@@ -202,6 +241,7 @@
 
     </div>
 
+    <a href="index.html" class="backlink">← indexに戻る</a>
     <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
   </div>
 </body>
