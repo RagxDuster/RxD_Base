@@ -27,10 +27,10 @@
       box-shadow:0 2px 12px #7FE7DB20;
       padding:16px;
       display:flex;
-      align-items:center;           /* サムネ左／本文右 */
+      align-items:center;
       gap:14px;
       transition:box-shadow .18s, border-color .18s;
-      flex-wrap:nowrap;             /* 中身は折り返さない＝横並びキープ */
+      flex-wrap:nowrap;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
 
@@ -45,18 +45,16 @@
 
     .promptbox{
       display:flex; align-items:center; gap:8px;
-      flex-wrap:nowrap;               /* いつでも横並び固定 */
-      width:100%;
+      flex-wrap:nowrap; width:100%;
     }
 
-    /* “見た目だけ1行”のtextarea（中身は改行保持） */
     .promptarea{
       background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
       font-size:.95rem; color:#444; letter-spacing:.01em;
-      height:28px; line-height:28px;          /* 高さ1行固定 */
-      padding:0 8px;                          /* 行高に合わせる */
-      resize:none; overflow:hidden;            /* 複数行は隠す（横スクロールも出さない） */
-      white-space:nowrap;                      /* 折り返し禁止＝視覚1行 */
+      height:28px; line-height:28px;
+      padding:0 8px;
+      resize:none; overflow:hidden;
+      white-space:nowrap;
       flex:1 1 260px; min-width:0; max-width:100%;
     }
 
@@ -71,53 +69,79 @@
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
 
-    /* スマホ最適化：横並び維持のままテキストエリアをさらに小さく */
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
       .thumb{ width:48px; height:48px; border-radius:10px; }
       .card{ padding:12px; gap:10px; }
       .cardtitle{ font-size:1.06rem; }
       .promptbox{ gap:6px; }
-      .promptarea{ flex:1 1 140px; }  /* 小さく縮む＝ボタンは常に横 */
+      .promptarea{ flex:1 1 140px; }
       .copybtn{ padding:8px 10px; font-size:.92rem; }
     }
 
     @media (prefers-reduced-motion:reduce){
       *{ transition:none !important; animation:none !important; }
     }
+
+    /* リンクで飛んできたときに光る */
+    .highlight { animation: flash 1.8s ease; }
+    @keyframes flash {
+      0% { box-shadow:0 0 0 #FF93C200; }
+      30% { box-shadow:0 0 18px #FF93C288; }
+      100% { box-shadow:0 0 0 #FF93C200; }
+    }
   </style>
 
   <script>
-    // クリップボードコピー（Clipboard API優先／安全でない環境はフォールバック）
     async function copyPrompt(id, btn){
       const el = document.getElementById(id);
-      const text = (el?.value ?? el?.textContent ?? '').replace(/\s+$/,''); // 末尾空白は整える
+      const text = (el?.value ?? el?.textContent ?? '').trim();
       if(!text) return;
-
       try{
         if(navigator.clipboard && window.isSecureContext){
           await navigator.clipboard.writeText(text);
         }else{
-          // Fallback: 選択してexecCommand
-          const range = document.createRange();
+          const range=document.createRange();
           range.selectNodeContents(el);
-          const sel = window.getSelection();
+          const sel=window.getSelection();
           sel.removeAllRanges(); sel.addRange(range);
           document.execCommand('copy');
           sel.removeAllRanges();
         }
         flashCopied(btn);
       }catch(_){
-        flashCopied(btn, false);
+        flashCopied(btn,false);
       }
     }
-
     function flashCopied(btn, ok=true){
-      const orig = btn.textContent;
-      btn.textContent = ok ? 'こぴした！' : '失敗？';
-      btn.disabled = true;
-      setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 1600);
+      const orig=btn.textContent;
+      btn.textContent=ok?'こぴした！':'失敗？';
+      btn.disabled=true;
+      setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},1600);
     }
+
+    // idをベースに画像srcとtextarea idを自動設定
+    window.addEventListener("DOMContentLoaded",()=>{
+      document.querySelectorAll(".card").forEach(card=>{
+        const id=card.id;
+        if(!id) return;
+        const img=card.querySelector("img.thumb");
+        const ta=card.querySelector(".promptarea");
+        const btn=card.querySelector(".copybtn");
+        if(img && !img.src) img.src=`image_odai/${id}.png`;
+        if(ta){ ta.id=`prompt-${id}`; }
+        if(btn && ta){ btn.addEventListener("click",()=>copyPrompt(ta.id,btn)); }
+      });
+
+      // リンクで飛んできたときに光る
+      if(location.hash){
+        const target=document.querySelector(location.hash);
+        if(target){
+          target.classList.add("highlight");
+          setTimeout(()=>target.classList.remove("highlight"),2000);
+        }
+      }
+    });
   </script>
 </head>
 
@@ -128,239 +152,50 @@
     <hr class="cute">
     <p class="desc">相方AIと楽しむ画像お題など。<br>改変推奨 / 報告不要 / 全て自由💋</p>
     <hr class="cute">
+
     <div class="cards">
 
-      <!-- カード1：textarea（見た目1行／コピーは改行保持） -->
-      <div class="card">
-        <img src="image_odai/01_mugshot.png" class="thumb" alt="マグショット">
+      <!-- カード1 -->
+      <div class="card" id="mugshot">
+        <img class="thumb" alt="マグショット">
         <div class="cardbody">
           <div class="cardtitle">ランダムマグショット</div>
           <div class="carddesc">ランダム要素のある犯罪者風ポトレ！</div>
           <div class="promptbox">
-            <textarea id="prompt1" class="promptarea" rows="1" wrap="off" readonly># マグショット画像を生成してください！
-
----
-## キャラクター
-日本人。成人男性。黒髪緑目スカしたイケメン。
-
-服装：囚人服（変えてください！）
-
----
-## 身長
-178cm（変えて！）
-
----
-
-
-
-
-
-
-
-
-
-## Prompt
-Before generating the image, print an assistant message showing the randomly selected items:
-- Pose:
-- Frame/Overlay:
-- Signboard Style:
-- Color Grade:
-- Art Style:
-
-Then call the image generation with this prompt:
-
-stylish mugshot illustration, fashionable modern,
-front of an IMPERIAL height measurement wall with clear feet-and-inches labels and one-inch tick marks; the top of the character’s head (excluding hair volume) exactly aligned with the converted height from [身長（cm）] into feet and inches,
-proportional body build matching a height of [身長（cm）],
-holding a stylish signboard; [Signboard Style]; text remains sharp and legible, reads "CRIME: [Crime Label]",
-pose: [Pose],
-frame/overlay: [Frame/Overlay], overlay never obstructs the face or the signboard text,
-color grading: [Color Grade],
-[Art Style], strictly non-photorealistic; stylized interpretation,
-high quality, detailed shading, cinematic composition, cover art, ultra-detailed.
-Negative: photorealistic, real police logos, weapon rifle scopes,multiple people, extra person, second figure
-
----
-
-## Crime Label Generator (auto)
-- For the signboard, invent a brand-new pseudo-crime on each render (no fixed list).
-- Mix tones at random: funny, impossible/sci-fi, comical, slightly creepy.
-- Keep it punchy: 1–4 words. Avoid real legal charges language.
-- Randomize language: Japanese or English (50/50).
-- If it matches either of the last two renders, re-roll once.
-- Output exactly: reads "CRIME: [Crime Label]"
-
----
-
-## Randomization Protocol (strict)
-- For each Randomizer list below:
-1) Shuffle all items uniformly.
-2) Select the first item after shuffle (never default to the list order).
-3) The chosen item overrides any conflicting defaults above.
-- If the same choice was used in either of the previous two renders, re-roll once to ensure variety.
-- Don't choose based on GPT's preferences, choose randomly.
-
----
-
-### Randomizer #1 — Pose (pick 1)
-- Straight-on, shoulders square; holding the signboard centered at chest height; cold, unblinking stare.
-- Chin slightly up in defiance; signboard low to reveal the collarbones; eyes locked on camera.
-- 3/4 turn to the left; signboard centered; eyes cut toward the lens.
-- Right-profile stance; signboard angled toward the camera as in a side mugshot.
-- Leaning forward toward the lens, intimidating; pushing the signboard toward the camera (mild foreshortening).
-- Head tilted, faint smirk; signboard held with both hands and slightly skewed.
-- One hand holds the signboard; the other flashes a casual V-sign near the temple; relaxed smile.
-- One hand grips the signboard; the other points at the “CRIME” text; cocky grin.
-- Signboard held high just under the chin; eyes peering over the top edge; playful.
-- Signboard partially covering the mouth; raised eyebrow; teasing expression.
-- Signboard upside down on purpose; deadpan face.
-- Signboard held one-handed at the hip; the other hand brushing hair back; confident.
-- Signboard hugged tight to the chest; eyes narrowed as if daring the camera.
-- Signboard clutched by the top edge with fingertips; the other hand tugging the prison uniform collar.
-- Signboard pressed against the torso; wrists cuffed together over the board; stoic gaze.
-- Signboard gripped with both hands as if trying to bend or crack it; teeth clenched.
-- Signboard held low; shoulders slouched a bit; tired, sleepless eyes on camera.
-- Signboard balanced on one forearm like a tray; the other hand casually in pocket; bored expression.
-- Signboard held with one hand at chest; the other hand making a hush gesture (finger to lips); mischievous smile.
-- Signboard held close while the body leans back to the wall; ankle lightly crossed; nonchalant look.
-- Signboard lifted slightly to the side; head turned opposite way; eyes meet the lens from the corners.
-- Signboard centered; one shoulder forward, the other back; subtle 3/4 body twist; composed stare.
-- Signboard pressed against the height wall; body angled; quick side-glance at the camera.
-- Signboard held diagonally across the torso; slight step toward the camera like mid-walk; determined look.
-- Signboard held in both hands at waist; chin down, eyes up under the brows; menacing glare.
-- Signboard gripped at one corner; the other hand spreads palm toward the lens as if to block it; annoyed expression.
-- Signboard resting on shoulder edge; head tilt the other way; lazy half-smile.
-- Signboard tight to chest; body straight; quick wink at the camera.
-- Split-moment turn: body angled toward a profile, but eyes snap to the lens; signboard steady at chest.
-* Extreme close-up lunge toward the camera; wide-angle perspective; motion trails on hair and jacket; signboard extends beyond frame edges but the CRIME text area stays inside frame.
-* Charging into the lens; one shoulder foreshortened; background radial (zoom) blur; signboard raised but partly cropped at the bottom edge (text remains fully visible).
-* Sudden snap-in head movement; face sharp, limbs streaked with motion blur; signboard tilted toward camera, almost touching the lens.
-* Aggressive step forward; camera-peek intimidation; signboard pushed toward lens creating slight fisheye distortion; edges of board clip the frame, CRIME label readable.
-* Half-frame face close-up (one eye dominant); hand swinging past lens with motion smear; signboard at chest, diagonal and nearly out of frame yet text legible.
-* Head whip toward camera; directional blur on hair only; signboard momentarily slipping downward, top of board and text still in frame.
-* Forward lean with shutter-drag effect (background streaks); signboard in one hand, the other reaching toward lens as if to grab it.
-* Split-second turn into camera; jacket hem blurs; signboard hitting the frame edge at a dynamic angle, letters crisp despite motion.
-* Face inches from lens; breath haze / micro-condensation near camera; signboard shoved forward, corner clipped off by the frame.
-* Mid-lunge glare; rolling-shutter-like skew on the free hand; signboard swung up from below, text sharp, board edges cropped.
-
-
----
-
-### Randomizer #2 — Frame / Overlay Effects (pick 1)
-- Polaroid instant film frame; wide white border with thicker bottom caption area; subtle paper texture; soft shadow
-- Photoshop UI in-progress overlay; crop box with handles, ruler guides, faint layer thumbnails; semi-transparent; non-intrusive
-- Transform bounding box and “marching ants” selection; anchor points visible; subtle tool hints
-- Camera focus reticle / AF brackets; minimal HUD; thin lines; vignette; not a weapon scope
-- Security camera HUD; grayscale; slight scanlines; timestamp “CAM-03 2025-08-25 22:14”; small REC dot
-- Contact sheet film frame; frame numbers and edge markings (Kodak/Ilford style)
-- 35mm negative border with sprocket holes; mild light leak on edges
-- VHS/Hi8 tape look; interlaced scanlines; bottom timecode; mild chroma bleed
-- Newspaper clipping border; halftone dot texture; ragged cut edges; caption strip
-- Magazine cover mock; masthead area; tiny barcode in corner; elegant editorial border
-- Sticker/tape collage corners; masking/washi tape; photo corners; subtle thumbtack shadow
-- Distressed photo print; creases, torn edges, coffee stains, scuffs; faded emulsion
-- Burnt-edge photo; singed gradient border; faint smoke stains; controlled darkness
-- Glitch / datamosh accents; RGB channel shift; pixel-sorting streaks; preserve face and text
-- CRT monitor capture; moiré pattern; phosphor glow; rounded screen mask; soft bloom
-- Minimal gallery border; thin white frame; clean drop shadow; museum print feel
-
----
-
-### Randomizer #3 — Signboard Material / Style (pick 1)
-- Classic police slate; chalk text; high-contrast, legible
-- Felt letter board with plastic letters; neat alignment
-- Matte black acrylic board; bold white sans-serif
-- Weathered wooden plank; stenciled paint; distressed texture
-- Brushed metal plate; engraved lettering; subtle shine
-- Cardboard placard; marker handwriting; taped corners
-- LED lightbox style; block letters; soft glow
-- Clear plexiglass board; printed white text; reflections visible
-- Retro flip-number tiles; alphanumeric slots
-- Black clipboard with clamped nameplate; crisp label tape
-- Rubberized industrial panel; embossed letters; utilitarian
-- Cracked plastic board; scuffs and scratches; still readable
-- Chalkboard with fresh smears and dust; bold chalk lines
-- Old tin sign; faded paint; rivets; vintage look
-- Vinyl sticker collage on a flat board; mixed label fonts
-- Smooth stone/ceramic tile; etched letters; minimal
-- Magnetic panel with movable white letters
-- Carbon-fiber patterned board; clean technical vibe
-- Neon-edged acrylic frame; letters remain crisp
-- Minimal matte board; micro-print barcode and ID strip
-
----
-
-### Randomizer #4 — Color Grading / Tone (pick 1)
-- High-key glossy magazine look; clean whites; soft contrast
-- Cinematic teal-and-orange; rich skin tones; deep shadows
-- Cool fluorescent ambience; slight green cast; gritty
-- Warm tungsten glow; amber highlights; cozy yet sharp
-- Desaturated neo-noir; heavy contrast; subtle film grain
-- Bleach-bypass style; metallic contrast; muted colors
-- Cross-processed vibe; unexpected hues; punchy
-- Pastel candy palette; soft saturation; airy
-- Cyberpunk neon accents; saturated highlights; dark base
-- Sepia-tinged retro; gentle fade; vintage paper feel
-- True-color neutral grade; balanced and realistic
-- Monochrome charcoal; textured hatching feel
-- Duotone magenta-cyan; graphic poster vibe
-- Muted earthy palette; understated elegance
-- High-contrast chiaroscuro; dramatic light-to-dark falloff
-- Overcast daylight grade; soft shadows; subdued color
-- Low-key studio look; deep blacks; controlled rim light
-- Instant-film fade; mild vignetting; subtle halation
-- Clean commercial look; crisp edges; minimal grading
-- Vivid saturated pop; punchy colors; glossy finish
-
----
-
-### Randomizer #5 — Art Style (pick 1)
-- High-quality vivid Japanese manga style; crisp lineart; bold screentones
-- Beautiful gothic anime aesthetic; ornate details; deep shadows; jewel-toned palette
-- Semi-realistic anime–manga hybrid; soft shading; stylized proportions
-- Shōjo manga watercolor sparkle; airy highlights; gentle gradients
-- Pop cartoon style; thick outlines; flat bold colors; playful shapes
-- Kawaii chibi (super-deformed); rounded features; soft pastel palette
-- Retro 90s anime; cel shading; limited palette; subtle film grain
-- Neo-noir manga; desaturated, high contrast; rough expressive inking
-- Duotone graphic poster; geometric shapes; strong negative space
-- Vaporwave/synthpop palette; gradient washes; nostalgic glow
-- Brush-ink sumi-e x manga; lively strokes; restrained colors
-- Painterly digital gouache; visible brushwork; creamy textures
-- Halftone risograph vibe; slight misregistration; spot colors
-- Cyber-fashion anime; glossy highlights; sharp cel lines; tech accents
+            <textarea class="promptarea" rows="1" wrap="off" readonly>
+ここにマグショット用のプロンプトを書く
             </textarea>
-            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt1', this)">コピー</button>
+            <button class="copybtn">コピー</button>
           </div>
         </div>
       </div>
 
-      <!-- カード2：textarea -->
-      <div class="card">
-        <img src="thumb-y2k.png" class="thumb" alt="Y2Kプリクラ">
+      <!-- カード2 -->
+      <div class="card" id="y2k">
+        <img class="thumb" alt="Y2Kプリクラ">
         <div class="cardbody">
           <div class="cardtitle">Y2Kプリクラ</div>
           <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
           <div class="promptbox">
-            <textarea id="prompt2" class="promptarea" rows="1" wrap="off" readonly>
-y2k purikura, sparkling pastel bokeh, sticker frame, glitter text, doodle hearts & stars, soft skin smoothing, vignette, high saturation pop, confetti highlight eyes, clean and noiseless
+            <textarea class="promptarea" rows="1" wrap="off" readonly>
+ここにY2Kプリクラ用のプロンプトを書く
             </textarea>
-            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt2', this)">コピー</button>
+            <button class="copybtn">コピー</button>
           </div>
         </div>
       </div>
 
-      <!-- カード3：textarea -->
-      <div class="card">
-        <img src="thumb-press.png" class="thumb" alt="プレス撮影風">
+      <!-- カード3 -->
+      <div class="card" id="press">
+        <img class="thumb" alt="プレス撮影風">
         <div class="cardbody">
           <div class="cardtitle">プレス撮影風</div>
           <div class="carddesc">報道写真のような臨場感ある1枚。</div>
           <div class="promptbox">
-            <textarea id="prompt3" class="promptarea" rows="1" wrap="off" readonly>
-press conference, reporters raised hands, telephoto compression, rim light + flash pops, candid expression, shallow depth of field, newsroom backdrop, photojournalism vibe
+            <textarea class="promptarea" rows="1" wrap="off" readonly>
+ここにプレス撮影風のプロンプトを書く
             </textarea>
-            <button class="copybtn" aria-label="プロンプトをコピー" onclick="copyPrompt('prompt3', this)">コピー</button>
+            <button class="copybtn">コピー</button>
           </div>
         </div>
       </div>
