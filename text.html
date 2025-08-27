@@ -10,7 +10,7 @@
     :root{
       --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB;
       --ink2:#555; --line:#DDD; --sun:#FFF59F;
-      --target-accent: var(--mint);    /* ← 強調色はここで変更可 */
+      --target-accent: var(--mint); /* ← 強調色はここだけで変更可 */
     }
     html{ background:var(--bg); color:var(--ink);
       font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
@@ -30,12 +30,12 @@
       box-shadow:0 2px 12px #7FE7DB20;
       transition:box-shadow .18s, border-color .18s, background .18s;
       position:relative;
-      scroll-margin-top: 16px; /* ハッシュジャンプの停止位置 */
+      scroll-margin-top: 16px; /* ハッシュジャンプで止まる位置 */
       overflow:hidden;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
 
-    /* ハッシュ一致での強調（JS付与） */
+    /* ハッシュ一致での強調（JSが .is-target を付与） */
     .card.is-target{
       background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%);
       border-color:var(--target-accent);
@@ -44,10 +44,11 @@
     .card.is-target .cardtitle{ color:var(--target-accent); }
     .card:target{ background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%); border-color:var(--target-accent); }
 
-    /* ヘッダ（タイトル押下で開閉） */
+    /* ヘッダ：タイトル押下で開閉 */
     .cardhead{
       display:flex; gap:10px; align-items:flex-start;
-      padding:14px 16px 8px 16px; cursor:pointer; user-select:none;
+      padding:14px 16px 8px 64px; /* ← 左に余白：urlボタンと重ならない */
+      cursor:pointer; user-select:none;
     }
     .toggle{
       flex:0 0 auto; width:22px; height:22px; line-height:22px;
@@ -58,11 +59,13 @@
     .cardtitle{ font-size:1.12rem; font-weight:800; color:var(--pink); }
     .carddesc{ font-size:1rem; color:var(--ink2); margin-top:2px; }
 
-    /* 本文部（閉じている時はhiddenで非表示） */
-    .cardcontent{
-      padding:0 16px 14px 16px; display:block;
+    /* 本文部：最初は “1行プレビュー表示” にする（カードに .is-collapsed が付く） */
+    .cardcontent{ padding:0 16px 14px 16px; display:block; }
+    .card.is-collapsed .promptarea{
+      height:28px; line-height:28px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
+              mask-image: linear-gradient(to right, black 85%, transparent);
     }
-    .cardcontent[hidden]{ display:none; }
 
     .promptarea{
       box-sizing:border-box; width:100%; display:block;
@@ -72,9 +75,7 @@
       resize:none; overflow:hidden; white-space:pre-wrap;
     }
 
-    .btnrow{
-      margin-top:10px; display:flex; gap:8px; align-items:center; justify-content:flex-start;
-    }
+    .btnrow{ margin-top:10px; display:flex; gap:8px; align-items:center; justify-content:flex-start; }
     .copybtn{
       background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
       padding:8px 12px; font-size:.95rem; cursor:pointer; transition:background .18s, transform .06s;
@@ -107,7 +108,7 @@
 
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
-      .cardhead{ padding:12px 12px 6px; }
+      .cardhead{ padding:12px 12px 6px 56px; } /* モバイル時、少し詰める */
       .cardcontent{ padding:0 12px 12px; }
       .copybtn{ padding:8px 10px; font-size:.92rem; }
     }
@@ -131,7 +132,7 @@
     <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
     <h1>文章お題</h1>
     <hr class="cute">
-    <p class="desc">タイトルを押すと本文が開く。<br>改変推奨 / 報告不要 / 全て自由💋</p>
+    <p class="desc">タイトルを押すと全文が開くよ。<br>改変推奨 / 報告不要 / 全て自由💋</p>
     <hr class="cute">
 
     <div class="cards" id="cards"><div style="opacity:.6">読み込み中…</div></div>
@@ -141,7 +142,7 @@
   </div>
 
   <script>
-    // --- utils ---
+    /* ===== utils ===== */
     async function copyPrompt(id, btn){
       const el = document.getElementById(id);
       const text = (el?.value ?? el?.textContent ?? '').trim();
@@ -154,12 +155,12 @@
           const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
           document.execCommand('copy'); s.removeAllRanges();
         }
-        flash(btn, true);
-      }catch(_){ flash(btn, false); }
+        flash(btn,true);
+      }catch(_){ flash(btn,false); }
     }
     function flash(btn, ok){
-      const o=btn.textContent; btn.textContent = ok?'こぴした！':'失敗？';
-      btn.disabled=true; setTimeout(()=>{ btn.textContent=o; btn.disabled=false; }, 1600);
+      const o=btn.textContent; btn.textContent= ok?'こぴした！':'失敗？';
+      btn.disabled=true; setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
     }
     function copyUrl(cardId, btn){
       const url = `${location.origin}${location.pathname}#${encodeURIComponent(cardId)}`;
@@ -170,16 +171,10 @@
         const o=btn.textContent; btn.textContent="失敗？"; setTimeout(()=>btn.textContent=o,1200);
       });
     }
-    function humanizeId(id){
-      return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
-    }
-    function autosize(ta){
-      if(!ta) return;
-      ta.style.height='auto';
-      ta.style.height=ta.scrollHeight+'px';
-    }
+    function humanizeId(id){ return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase()); }
+    function autosize(ta){ if(!ta) return; ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; }
 
-    // --- hash target highlight ---
+    /* ===== hash target highlight & jump ===== */
     function setTargetCardClass(){
       document.querySelectorAll('.card.is-target').forEach(c=>c.classList.remove('is-target'));
       if(!location.hash) return;
@@ -193,42 +188,39 @@
       const id = decodeURIComponent(location.hash.slice(1));
       const el = document.getElementById(id);
       if(!el) return;
-      // 対象カードは自動で開く
-      openCard(el, false);
+      openCard(el,false);                              // 直リンク時は自動で開く
       el.scrollIntoView({behavior, block:'center'});
       el.classList.add('highlight');
       setTimeout(()=> el.classList.remove('highlight'), 2000);
     }
     window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
 
-    // --- open/close ---
+    /* ===== open/close ===== */
     function openCard(card, scroll=true){
       const head = card.querySelector('.cardhead');
-      const content = card.querySelector('.cardcontent');
-      if(!content || !head) return;
-      content.hidden = false;
+      if(!head) return;
       head.setAttribute('aria-expanded','true');
-      head.querySelector('.toggle').textContent = '▲';
-      // テキストエリアの高さ調整
+      head.querySelector('.toggle').textContent='▲';
+      card.classList.remove('is-collapsed');
       const ta = card.querySelector('.promptarea');
-      if(ta) autosize(ta);
+      if(ta){ ta.style.whiteSpace='pre-wrap'; autosize(ta); }
       if(scroll) card.scrollIntoView({behavior:'smooth', block:'center'});
     }
     function closeCard(card){
       const head = card.querySelector('.cardhead');
-      const content = card.querySelector('.cardcontent');
-      if(!content || !head) return;
-      content.hidden = true;
+      if(!head) return;
       head.setAttribute('aria-expanded','false');
-      head.querySelector('.toggle').textContent = '▽';
+      head.querySelector('.toggle').textContent='▽';
+      card.classList.add('is-collapsed');
+      const ta = card.querySelector('.promptarea');
+      if(ta){ ta.style.whiteSpace=''; ta.style.height=''; } // CSSに任せる
     }
     function toggleCard(card){
-      const content = card.querySelector('.cardcontent');
-      if(content?.hidden) openCard(card);
+      if(card.classList.contains('is-collapsed')) openCard(card);
       else closeCard(card);
     }
 
-    // --- build ---
+    /* ===== build ===== */
     async function buildCards(){
       const wrap = document.getElementById('cards');
       if(!wrap) return;
@@ -253,9 +245,9 @@
           const title = hasThree ? (parts[1]||'').trim() : humanizeId(id);
           const desc  = hasThree ? (parts[2]||'').trim() : (parts[1]||'').trim();
 
-          // card
+          // ---- card ----
           const card = document.createElement('div');
-          card.className = 'card';
+          card.className = 'card is-collapsed';   // 最初は折りたたみ
           card.id = id;
 
           const gotop = document.createElement('a');
@@ -279,7 +271,7 @@
 
           head.appendChild(tg); head.appendChild(titleBox);
 
-          const content = document.createElement('div'); content.className = 'cardcontent'; content.hidden = true;
+          const content = document.createElement('div'); content.className = 'cardcontent';
 
           const ta = document.createElement('textarea');
           ta.className = 'promptarea'; ta.readOnly = true; ta.id = `prompt-${id}`;
@@ -298,7 +290,7 @@
           card.appendChild(content);
           wrap.appendChild(card);
 
-          // イベント（開閉）
+          // 開閉イベント
           head.addEventListener('click', ()=> toggleCard(card));
           head.addEventListener('keydown', (e)=>{
             if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggleCard(card); }
@@ -309,9 +301,9 @@
             .then(r=>r.ok?r.text():'')
             .then(t=>{
               ta.value = t || '(読み込み失敗)';
-              autosize(ta);
+              if(!card.classList.contains('is-collapsed')) autosize(ta);
             })
-            .catch(()=>{ ta.value='(読み込み失敗)'; autosize(ta); });
+            .catch(()=>{ ta.value='(読み込み失敗)'; });
         }
 
         if(!wrap.children.length){
