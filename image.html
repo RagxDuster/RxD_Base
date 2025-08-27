@@ -4,11 +4,10 @@
   <meta charset="UTF-8">
   <title>画像お題 | RxD Base</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
-    :root {
-      --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F; --ink2:#555; --line:#DDD;
-    }
+    :root { --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F; --ink2:#555; --line:#DDD; }
     html{ background:var(--bg); color:var(--ink);
       font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
     body{ margin:0; min-height:100vh; scroll-behavior:smooth; }
@@ -39,26 +38,26 @@
       width:62px; height:62px; border-radius:12px; object-fit:cover;
       border:2px solid var(--sun); background:var(--bg); flex:0 0 auto;
     }
+    .thumb.ph{
+      display:flex; align-items:center; justify-content:center;
+      font-size:.72rem; color:#999; background:#f3f2f9; border-style:dashed;
+    }
 
     .cardbody{ flex:1 1 auto; min-width:0; }
     .cardtitle{ font-size:1.12rem; font-weight:800; color:var(--pink); margin-bottom:2px; }
     .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:8px; }
 
     .promptbox{
-      display:flex; align-items:center; gap:8px;
-      flex-wrap:nowrap; width:100%;
+      display:flex; align-items:center; gap:8px; flex-wrap:nowrap; width:100%;
     }
-
     .promptarea{
       background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
       font-size:.95rem; color:#444; letter-spacing:.01em;
       height:28px; line-height:28px;
       padding:0 8px;
-      resize:none; overflow:hidden;
-      white-space:nowrap;
+      resize:none; overflow:hidden; white-space:nowrap;
       flex:1 1 260px; min-width:0; max-width:100%;
     }
-
     .copybtn{
       background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
       padding:8px 12px; cursor:pointer; transition:background .18s, transform .06s;
@@ -70,39 +69,22 @@
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
 
-    /* ボタン */
     .toplink, .backlink{
-      display:inline-block;
-      background:var(--mint);
-      color:var(--ink);
-      font-weight:bold;
-      text-decoration:none;
-      border-radius:8px;
-      padding:6px 14px;
-      margin:12px auto;
-      transition:background .18s;
+      display:inline-block; background:var(--mint); color:var(--ink); font-weight:bold;
+      text-decoration:none; border-radius:8px; padding:6px 14px; margin:12px auto; transition:background .18s;
     }
     .toplink:hover, .backlink:hover{ background:var(--pink); color:#fff; }
 
-    /* 各カード右上の戻る▲ */
     .gotop{
-      position:absolute; top:8px; right:12px;
-      font-size:0.9rem;
-      text-decoration:none;
-      color:var(--ink2);
+      position:absolute; top:8px; right:12px; font-size:0.9rem; text-decoration:none; color:var(--ink2);
     }
     .gotop:hover{ color:var(--pink); }
 
-    /* URLコピー用ボタン */
     .urlbtn{
       position:absolute; top:8px; left:8px;
-      background:var(--sun); color:#555;
-      font-size:0.75rem; font-weight:bold;
-      border:none; border-radius:8px;
-      padding:2px 8px;
-      cursor:pointer;
-      opacity:0.85;
-      transition:background .18s, opacity .18s;
+      background:var(--sun); color:#555; font-size:0.75rem; font-weight:bold;
+      border:none; border-radius:8px; padding:2px 8px; cursor:pointer;
+      opacity:0.85; transition:background .18s, opacity .18s;
     }
     .urlbtn:hover{ background:var(--pink); color:#fff; opacity:1; }
     .urlbtn[disabled]{ opacity:.6; cursor:default; }
@@ -118,7 +100,7 @@
     }
 
     @media (prefers-reduced-motion:reduce){
-      *{ transition:none !important; animation:none !important; }
+      *{ transition:none !重要; animation:none !重要; }
     }
 
     .highlight { animation: flash 1.8s ease; }
@@ -128,8 +110,25 @@
       100% { box-shadow:0 0 0 #FF93C200; }
     }
   </style>
+</head>
+<body id="top">
+  <div class="container">
+    <a href="index.html" class="backlink">← indexに戻る</a>
+
+    <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
+    <h1>画像お題</h1>
+    <hr class="cute">
+    <p class="desc">相方AIと楽しむ画像お題。<br>改変推奨 / 報告不要 / 全て自由💋</p>
+    <hr class="cute">
+
+    <div class="cards" id="cards"><div style="opacity:.6">読み込み中…</div></div>
+
+    <a href="index.html" class="backlink">← indexに戻る</a>
+    <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
+  </div>
 
   <script>
+    // クリップボードコピー
     async function copyPrompt(id, btn){
       const el = document.getElementById(id);
       const text = (el?.value ?? el?.textContent ?? '').trim();
@@ -138,148 +137,146 @@
         if(navigator.clipboard && window.isSecureContext){
           await navigator.clipboard.writeText(text);
         }else{
-          const range=document.createRange();
-          range.selectNodeContents(el);
-          const sel=window.getSelection();
-          sel.removeAllRanges(); sel.addRange(range);
-          document.execCommand('copy');
-          sel.removeAllRanges();
+          const range=document.createRange(); range.selectNodeContents(el);
+          const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+          document.execCommand('copy'); sel.removeAllRanges();
         }
-        flashCopied(btn);
+        flashCopied(btn, true);
       }catch(_){
-        flashCopied(btn,false);
+        flashCopied(btn, false);
       }
     }
-    function flashCopied(btn, ok=true){
-      const orig=btn.textContent;
-      btn.textContent=ok?'こぴした！':'失敗？';
-      btn.disabled=true;
-      setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},1600);
+    function flashCopied(btn, ok){
+      const o=btn.textContent;
+      btn.textContent = ok ? 'こぴした！' : '失敗？';
+      btn.disabled = true;
+      setTimeout(()=>{ btn.textContent=o; btn.disabled=false; }, 1600);
     }
-
-    // URLコピー処理
     function copyUrl(cardId, btn){
-      const url = `${location.origin}${location.pathname}#${cardId}`;
+      const url = `${location.origin}${location.pathname}#${encodeURIComponent(cardId)}`;
       navigator.clipboard.writeText(url).then(()=>{
-        const orig=btn.textContent;
-        btn.textContent="urlこぴした！";
-        btn.disabled=true;
-        setTimeout(()=>{ btn.textContent=orig; btn.disabled=false; },1600);
+        const o=btn.textContent; btn.textContent="urlこぴした！"; btn.disabled=true;
+        setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
       }).catch(()=>{
-        btn.textContent="失敗？";
-        setTimeout(()=>btn.textContent="url",1200);
+        const o=btn.textContent; btn.textContent="失敗？"; setTimeout(()=>btn.textContent=o,1200);
       });
     }
 
-    window.addEventListener("DOMContentLoaded",()=>{
-      document.querySelectorAll(".card").forEach(card=>{
-        const id=card.id;
-        if(!id) return;
-        const img=card.querySelector("img.thumb");
-        const ta=card.querySelector(".promptarea");
-        const btn=card.querySelector(".copybtn");
-        const urlbtn=card.querySelector(".urlbtn");
-
-        // 画像とalt
-        if(img){
-          img.src=`image_sample/${id}.png`;
-          img.alt=`${id} sample image`;
-        }
-
-        // テキスト読み込み
-        if(ta){
-          ta.id=`prompt-${id}`;
-          fetch(`image_text/${id}.txt`)
-            .then(res=>res.ok?res.text():"")
-            .then(txt=>{ ta.value=txt; })
-            .catch(()=>{ ta.value="(読み込み失敗)"; });
-        }
-
-        // コピー紐付け
-        if(btn && ta){
-          btn.addEventListener("click",()=>copyPrompt(ta.id,btn));
-        }
-
-        // URLコピー
-        if(urlbtn){
-          urlbtn.addEventListener("click",()=>copyUrl(id,urlbtn));
-        }
-      });
-
-      // ハッシュリンクで光らせる
-      if(location.hash){
-        const target=document.querySelector(location.hash);
-        if(target){
-          target.classList.add("highlight");
-          setTimeout(()=>target.classList.remove("highlight"),2000);
-        }
+    // 画像の拡張子を自動解決（png/jpg/jpeg/webp）
+    async function resolveImageSrc(id){
+      const exts = ['.png','.jpg','.jpeg','.webp'];
+      for(const ext of exts){
+        try{
+          const r = await fetch(`image_prompt/${id}${ext}`, {method:'HEAD', cache:'no-store'});
+          if(r.ok) return `image_prompt/${id}${ext}`;
+        }catch{}
       }
-    });
+      return null;
+    }
+
+    function humanizeId(id){
+      // kebab/snake→スペース、先頭大文字化（単純版）
+      return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
+    }
+
+    async function buildCards(){
+      const wrap = document.getElementById('cards');
+      if(!wrap) return;
+
+      try{
+        const res = await fetch('image_prompt/00caption.txt', {cache:'no-store'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        const text = await res.text();
+
+        const lines = text.split(/\r?\n/)
+          .map(s=>s.trim())
+          .filter(s => s && !s.startsWith('#') && !s.startsWith('//'));
+
+        wrap.innerHTML = '';
+
+        for(const line of lines){
+          const parts = line.split('<>');
+          const id = (parts[0]||'').trim();
+          if(!id) continue;
+
+          // 2カラム: id<>説明 / 3カラム: id<>タイトル<>説明
+          const hasThree = parts.length >= 3;
+          const title = hasThree ? (parts[1]||'').trim() : humanizeId(id);
+          const desc  = hasThree ? (parts[2]||'').trim() : (parts[1]||'').trim();
+
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.id = id;
+
+          const gotop = document.createElement('a');
+          gotop.href = '#top'; gotop.className = 'gotop'; gotop.textContent = '▲';
+
+          const urlbtn = document.createElement('button');
+          urlbtn.className = 'urlbtn'; urlbtn.textContent = 'url';
+          urlbtn.addEventListener('click',()=>copyUrl(id,urlbtn));
+
+          const thumbBox = document.createElement('div'); // 画像/プレースホルダ入れ
+          const img = document.createElement('img');
+          img.className = 'thumb'; img.alt = `${title} sample`;
+
+          const body = document.createElement('div'); body.className = 'cardbody';
+          const ttl = document.createElement('div'); ttl.className = 'cardtitle'; ttl.textContent = title || humanizeId(id);
+          const dsc = document.createElement('div'); dsc.className = 'carddesc'; dsc.textContent = desc || '';
+
+          const pbox = document.createElement('div'); pbox.className = 'promptbox';
+          const ta = document.createElement('textarea');
+          ta.className = 'promptarea'; ta.rows = 1; ta.wrap = 'off'; ta.readOnly = true; ta.id = `prompt-${id}`;
+
+          const btn = document.createElement('button');
+          btn.className = 'copybtn'; btn.textContent = 'コピー';
+          btn.addEventListener('click', ()=>copyPrompt(ta.id, btn));
+
+          pbox.appendChild(ta); pbox.appendChild(btn);
+          body.appendChild(ttl); body.appendChild(dsc); body.appendChild(pbox);
+
+          card.appendChild(gotop);
+          card.appendChild(urlbtn);
+          card.appendChild(img);
+          card.appendChild(body);
+          wrap.appendChild(card);
+
+          // テキスト読込
+          fetch(`image_prompt/${id}.txt`, {cache:'no-store'})
+            .then(r=>r.ok?r.text():'')
+            .then(t=>{ ta.value = t || '(読み込み失敗)'; })
+            .catch(()=>{ ta.value='(読み込み失敗)'; });
+
+          // 画像解決
+          const src = await resolveImageSrc(id);
+          if(src){
+            img.src = src;
+          }else{
+            // 代替プレースホルダ
+            const ph = document.createElement('div');
+            ph.className = 'thumb ph'; ph.textContent = 'no img';
+            img.replaceWith(ph);
+          }
+        }
+
+        // ハッシュ指定があれば強調
+        if(location.hash){
+          const target = document.querySelector(location.hash);
+          if(target){
+            target.classList.add('highlight');
+            setTimeout(()=>target.classList.remove('highlight'), 2000);
+          }
+        }
+
+        if(!wrap.children.length){
+          wrap.innerHTML = '<div style="opacity:.6">（お題がありません）</div>';
+        }
+
+      }catch(e){
+        wrap.innerHTML = '<div style="opacity:.7">読み込み失敗… '+(e.message||e)+'</div>';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', buildCards);
   </script>
-</head>
-
-<body id="top">
-  <div class="container">
-    <!-- 上に戻るボタン -->
-    <a href="index.html" class="backlink">← indexに戻る</a>
-
-    <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
-    <h1>画像お題</h1>
-    <hr class="cute">
-    <p class="desc">相方AIと楽しむ画像お題など。<br>改変推奨 / 報告不要 / 全て自由💋</p>
-    <hr class="cute">
-
-    <div class="cards">
-
-      <!-- カード1 -->
-      <div class="card" id="mugshot">
-        <a href="#top" class="gotop">▲</a>
-        <img class="thumb">
-        <button class="urlbtn">url</button>
-        <div class="cardbody">
-          <div class="cardtitle">ランダムマグショット</div>
-          <div class="carddesc">ランダム要素のある犯罪者風ポトレ！</div>
-          <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
-            <button class="copybtn">コピー</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- カード2 -->
-      <div class="card" id="y2k">
-        <a href="#top" class="gotop">▲</a>
-        <img class="thumb">
-        <button class="urlbtn">url</button>
-        <div class="cardbody">
-          <div class="cardtitle">Y2Kプリクラ</div>
-          <div class="carddesc">2000年代風のポップなプリクラ合成！</div>
-          <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
-            <button class="copybtn">コピー</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- カード3 -->
-      <div class="card" id="press">
-        <a href="#top" class="gotop">▲</a>
-        <img class="thumb">
-        <button class="urlbtn">url</button>
-        <div class="cardbody">
-          <div class="cardtitle">プレス撮影風</div>
-          <div class="carddesc">報道写真のような臨場感ある1枚。</div>
-          <div class="promptbox">
-            <textarea class="promptarea" rows="1" wrap="off" readonly></textarea>
-            <button class="copybtn">コピー</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <a href="index.html" class="backlink">← indexに戻る</a>
-    <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
-  </div>
 </body>
 </html>
