@@ -82,6 +82,19 @@
       position:absolute; top:8px; right:12px; font-size:0.9rem; text-decoration:none; color:var(--ink2);
     }
     .gotop:hover{ color:var(--pink); }
+/* URLの #ID と一致したカードの強調表示 */
+.card.is-target{
+  background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%);
+  border-color:var(--mint);
+  box-shadow:0 0 0 3px #7FE7DB66, 0 8px 28px #FF93C244;
+}
+.card.is-target .cardtitle{ color:var(--mint); }
+.card.is-target .urlbtn{ background:var(--pink); color:#fff; }
+
+/* JSオフ時の保険（:targetが効く環境なら同じ見た目に） */
+.card:target{ background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%); border-color:var(--mint); }
+.card:target .cardtitle{ color:var(--mint); }
+.card:target .urlbtn{ background:var(--pink); color:#fff; }
 
     .urlbtn{
       position:absolute; top:8px; left:8px;
@@ -178,17 +191,29 @@
       return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
     }
 
-    // --- ハッシュスクロール（生成後に発火させる） ---
-    function focusCardByHash(behavior='smooth'){
-      if(!location.hash) return;
-      const id = decodeURIComponent(location.hash.slice(1));
-      const el = document.getElementById(id);
-      if(!el) return;
-      el.scrollIntoView({behavior, block:'center'});
-      el.classList.add('highlight');
-      setTimeout(()=> el.classList.remove('highlight'), 2000);
-    }
-    window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
+function setTargetCardClass(){
+  // いったん全カードから外す
+  document.querySelectorAll('.card.is-target').forEach(c=>c.classList.remove('is-target'));
+  if(!location.hash) return;
+  const id = decodeURIComponent(location.hash.slice(1));
+  const el = document.getElementById(id);
+  if(el) el.classList.add('is-target');
+}
+
+function focusCardByHash(behavior='smooth'){
+  setTargetCardClass();                 // ← 見た目を更新
+  if(!location.hash) return;
+  const id = decodeURIComponent(location.hash.slice(1));
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({behavior, block:'center'});
+  el.classList.add('highlight');        // 既存の点滅アニメ（2秒で自動除去）
+  setTimeout(()=> el.classList.remove('highlight'), 2000);
+}
+
+// すでにあるリスナーがあればOK。なければ追加。
+window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
+
 
     // --- カード生成 ---
     async function buildCards(){
@@ -265,6 +290,10 @@
             ph.className = 'thumb ph'; ph.textContent = 'no img';
             img.replaceWith(ph);
           }
+          // カード生成が終わった直後
+requestAnimationFrame(()=> focusCardByHash('auto'));
+setTimeout(()=> focusCardByHash('auto'), 150); // レイアウト遅延の保険
+
         }
 
         if(!wrap.children.length){
