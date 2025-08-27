@@ -10,7 +10,7 @@
     :root{
       --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F; --ink2:#555; --line:#DDD;
       /* 追加：サムネサイズを一括調整（数値変えるだけで全体反映） */
-      --thumb: 96px;
+      --thumb: 70px;
       --thumb-radius: 12px;
       --target-accent: var(--mint);
     }
@@ -42,7 +42,7 @@
       width:var(--thumb); height:var(--thumb);
       border-radius:var(--thumb-radius); object-fit:cover;
       border:2px solid var(--sun); background:var(--bg); flex:0 0 auto;
-      cursor:zoom-in; /* 追加：プレビュー示唆 */
+      cursor:zoom-in; /* プレビュー示唆 */
     }
     .thumb.ph{
       display:flex; align-items:center; justify-content:center;
@@ -82,6 +82,30 @@
     .gotop{ position:absolute; top:8px; right:12px; font-size:0.9rem; text-decoration:none; color:var(--ink2); }
     .gotop:hover{ color:var(--pink); }
 
+    /* 左上ボタン（url＋X）を横並びに */
+    .leftbtns{
+      position:absolute; top:8px; left:8px; display:flex; gap:6px; z-index:1;
+    }
+    .leftbtns .urlbtn{ position:static; top:auto; left:auto; } /* 既存styleを打ち消し */
+
+    .urlbtn{
+      position:absolute; top:8px; left:8px;
+      background:var(--sun); color:#555; font-size:0.75rem; font-weight:bold;
+      border:none; border-radius:8px; padding:2px 8px; cursor:pointer;
+      opacity:0.85; transition:background .18s, opacity .18s;
+    }
+    .urlbtn:hover{ background:var(--pink); color:#fff; opacity:1; }
+    .urlbtn[disabled]{ opacity:.6; cursor:default; }
+
+    /* Xボタン */
+    .xbtn{
+      background:#111; color:#fff; font-size:0.75rem; font-weight:bold;
+      border:none; border-radius:8px; padding:2px 8px; cursor:pointer;
+      opacity:.9; transition:background .18s, opacity .18s;
+    }
+    .xbtn:hover{ background:#000; opacity:1; }
+    .xbtn[disabled]{ opacity:.6; cursor:default; }
+
     /* URLの #ID と一致したカードの強調表示 */
     .card.is-target{
       background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%);
@@ -95,15 +119,6 @@
     .card:target{ background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%); border-color:var(--target-accent); }
     .card:target .cardtitle{ color:var(--target-accent); }
     .card:target .urlbtn{ background:var(--pink); color:#fff; }
-
-    .urlbtn{
-      position:absolute; top:8px; left:8px;
-      background:var(--sun); color:#555; font-size:0.75rem; font-weight:bold;
-      border:none; border-radius:8px; padding:2px 8px; cursor:pointer;
-      opacity:0.85; transition:background .18s, opacity .18s;
-    }
-    .urlbtn:hover{ background:var(--pink); color:#fff; opacity:1; }
-    .urlbtn[disabled]{ opacity:.6; cursor:default; }
 
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
@@ -124,7 +139,7 @@
       100% { box-shadow:0 0 0 #FF93C200; }
     }
 
-    /* 追加：画像プレビュー（ライトボックス） */
+    /* 画像プレビュー（ライトボックス） */
     .lightbox[hidden]{ display:none; }
     .lightbox{
       position:fixed; inset:0; background:rgba(0,0,0,.65);
@@ -165,7 +180,7 @@
     <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
   </div>
 
-  <!-- 追加：ライトボックス -->
+  <!-- ライトボックス -->
   <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="画像プレビュー">
     <div class="lightbox-inner" role="document">
       <img class="lightbox-img" alt="">
@@ -206,6 +221,19 @@
         const o=btn.textContent; btn.textContent="失敗？"; setTimeout(()=>btn.textContent=o,1200);
       });
     }
+    // X共有（超シンプル）：「【お題】タイトル\nURL」だけ
+    async function shareCard(id, title){
+      const url  = `${location.origin}${location.pathname}#${encodeURIComponent(id)}`;
+      const ttl  = (title && title.trim()) || (typeof humanizeId === 'function' ? humanizeId(id) : id);
+      const text = `【お題】${ttl}\n${url}`;
+
+      if(navigator.share){
+        try{ await navigator.share({ text }); return; }catch(_){}
+      }
+      const tw = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      window.open(tw, '_blank', 'noopener,width=600,height=460');
+    }
+
     async function resolveImageSrc(id){
       const exts = ['.png','.jpg','.jpeg','.webp'];
       for(const ext of exts){
@@ -300,16 +328,26 @@
           const gotop = document.createElement('a');
           gotop.href = '#top'; gotop.className = 'gotop'; gotop.textContent = '▲';
 
+          // 左上ボタン群（url + X）
+          const left = document.createElement('div');
+          left.className = 'leftbtns';
+
           const urlbtn = document.createElement('button');
           urlbtn.className = 'urlbtn'; urlbtn.textContent = 'url';
           urlbtn.addEventListener('click',()=>copyUrl(id,urlbtn));
+          left.appendChild(urlbtn);
+
+          const xbtn = document.createElement('button');
+          xbtn.className = 'xbtn'; xbtn.textContent = 'X'; xbtn.title = 'Xで共有';
+          xbtn.addEventListener('click', ()=> shareCard(id, title || humanizeId(id)));
+          left.appendChild(xbtn);
 
           const img = document.createElement('img');
           img.className = 'thumb';
           img.alt = `${title} sample`;
-          img.loading = 'lazy';      // 追加：遅延読込
-          img.decoding = 'async';    // 追加：非同期デコード
-          img.tabIndex = 0;          // 追加：キーボードで開ける
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.tabIndex = 0;
 
           const body = document.createElement('div'); body.className = 'cardbody';
           const ttl = document.createElement('div'); ttl.className = 'cardtitle'; ttl.textContent = title || humanizeId(id);
@@ -326,7 +364,7 @@
           body.appendChild(ttl); body.appendChild(dsc); body.appendChild(pbox);
 
           card.appendChild(gotop);
-          card.appendChild(urlbtn);
+          card.appendChild(left);         /* ← 左上ボタン群 */
           card.appendChild(img);
           card.appendChild(body);
           wrap.appendChild(card);
