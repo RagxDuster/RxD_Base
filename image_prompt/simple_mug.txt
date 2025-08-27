@@ -1,0 +1,35 @@
+# ファッショナブルなマグショット画像生成してください
+
+##キャラクター外見
+
+茶髪緑目成人男性
+
+服装：囚人服（自由に）
+状態：カメラを睨みつける、威嚇する
+
+---
+
+## [身長（cm）]
+
+188cm
+
+---
+
+## 罪名
+知り合いへのタカり
+
+---
+
+## テーマ
+
+stylish anime mugshot illustration, fashionable modern, solo subject,
+front of an IMPERIAL height measurement wall with clear feet-and-inches numbers (1-inch tick marks), wall perfectly vertical,
+camera straight-on at head height, no tilt, minimal perspective distortion (85mm look, orthographic feel),
+standing upright with flat footwear, back lightly touching the wall, shoulders relaxed,
+the TOP of the character’s skull (excluding hair volume) aligns EXACTLY with the converted height from [身長（cm）] into feet and inches; show the matching tick and number near the crown,
+proportional body build matching a height of [身長（cm）],
+holding a stylish signboard that says "CRIME: [罪名]"; text remains sharp and legible,
+vibrant anime style, high quality, detailed shading,
+glamorous lighting, cinematic composition, strong strobe, elegant and confident vibe,
+manga-inspired stylish cover art, ultra-detailed,
+avoid multiple people or reflections with faces.

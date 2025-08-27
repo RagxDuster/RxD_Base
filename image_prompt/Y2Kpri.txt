@@ -1,0 +1,325 @@
+# Y2Kプリクラ画像生成してください！
+
+## Character 1：
+成人男性。茶髪、短髪、茶目、元気な感じ。
+服装：Y2K風のチャラチャラしたギャル男風。
+表情：おおはしゃぎ、超笑顔。
+
+## Character 2：
+成人女性。黒髪ポニテ、黒目、おとなしそう。
+服装：割と派手めで強い女性っぽい恰好。Y2Kのギャルチック。
+表情：恥じらいながらも楽しそう。
+
+## テキスト
+
+Together Forever
+
+## 日付
+
+2025/08/19
+
+---
+
+
+
+
+
+## Pose & Composition
+
+- The two of them are really flirting.
+
+## Camera
+
+- **Angle**: follow the pick from **Randomizer #0** (Bird’s-eye / Neutral / Low angle).
+- **Lens**: ~**28 mm** wide-angle look; strong perspective but flattering.
+- **Aperture**: **f/2.0** (shallow DOF); focus locked on the eyes of both characters.
+- **Distance**: **35–50 cm**; if Low angle is chosen and distortion becomes harsh, step back slightly then crop tighter.
+## mood
+
+- Friendly, playful mood; Y2K vibe, friendly, lovey-dovey, passionate, cute, pop
+
+
+## Style
+
+- High-quality japanese anime style. Delicate, feminine, detailed. Romantic and dramatic, refined hair strand rendering, **Colored lineart matching surrounding colors, soft tinted outlines, no pure black lines**.
+- **High-energy Y2K pop aesthetic, colorful and flashy, glossy plastic-like surfaces, neon gradients, bubblegum colors, holographic highlights, playful toy-like vibe, overloaded with stickers and pop UI elements, cheerful and chaotic composition**
+- **High-contrast, vivid digital coloring**.
+- Use **multicolor highlights** and **saturated, polychromatic shadows** (not a single shadow tone).
+- **Strong rim light** to carve the silhouette.
+- **Smooth, noise-free** finish (no film grain or texture).
+
+
+## DOODLE OVERLAY RULES (CRITICAL)
+
+- All doodles are hand-drawn overlays (NOT built-in makeup/features).
+
+- Render on a separate top layer (add/screen/lighten), 70–90% opacity, soft outer glow, tiny drop shadow; wobbly/variable stroke width; slight RGB fringe OK.
+
+- Do not fuse into skin/hair shading; no cast shadows; keep faces readable (≤ 20% overlap on each face).
+
+- Headwear doodles (e.g., angel halo, devil horns, animal ears) are overlays/headband sketches, never anatomical; slight float/misalignment OK.
+
+### DOODLE SELECTION LOGIC (RANDOM)
+
+1. How many characters get face/head doodles? Pick one of:
+
+- Both characters (35%) / Character 1 only (20%) / Character 2 only (20%) / None (25%). _(Adjust weights as desired.)_
+
+2. If a character is selected for doodles, choose 1–3 items from the catalogs below, obeying Pairing Constraints.
+
+
+### PAIRING CONSTRAINTS (very important)
+
+- If Cat whiskers are chosen for a character, also add Cat ears (headband sketch) — keep both on the same character.
+
+- If Cat ears are chosen, also add Cat whiskers (same character).
+
+- If Wolf ears are chosen, also add a small fang sticker (tiny white triangle near lip corner) — same character.
+
+- Bunny/Puppy ears do not require a pair but may combine with blush or tiny hearts/stars.
+
+- All ears/halos/horns are overlays only (headband/outline look). Never real animal parts or fused anatomy.
+
+
+### FACE / HEAD DOODLES — CATALOG
+
+Animal & headwear overlays (pick 0–1 kind per selected character; obey pairing):
+
+- Cat ears (headband sketch) + Cat whiskers + tiny triangle nose (paired)
+
+- Bunny ears (upright / “tachi”)
+
+- Bunny ears (droopy / “tare”)
+
+- Puppy ears (droopy)
+
+- Wolf ears (pointed) + small fang sticker (paired)
+
+- Angel halo (thin hand-drawn outline with glow; floats above head)
+
+- Devil horns (thin hand-drawn outline with glow; headband-like)
+
+
+Cute face marks (pick 0–2 per selected character):
+
+- Under-eye star or heart (one side)
+
+- Neon blush streaks (angled cheek lines)
+
+- Sparkly tear sticker (tiny hologram droplet)
+
+- Mini speech bubble with tiny text (e.g., ちゅー♡ / かわちい / 尊い / “OMG★” / “BFF”)
+
+- Pixel heart or HP bar mini icon near cheek
+
+- Barcode mini-tattoo (sticker look, near cheek edge; small; do not cover eyes/mouth)
+
+
+---
+
+## STICKER STYLE RULES (to avoid realism)
+
+- Stickers are die-cut or puffy/gel style, flat/minimal shading, thick white border (2–5% of size), tiny drop shadow; optional glossy highlight dot.
+
+- Absolutely no photoreal textures (no crumbs/icing grain, no realistic lighting/subsurface).
+
+- Vector/chibi look; simple shapes; pastel or neon fills; crisp edges; gentle gradients OK.
+
+- Stickers sit above characters but never cover eyes/mouth.
+
+
+---
+
+## RANDOMIZER (pick randomly each render)
+
+### 0) Camera View / Eye Level (pick 1)
+
+- **Bird’s-eye (high angle / “fukan”)** — camera ~20–35° above eye level; show slight crown-of-head; keep faces readable; avoid extreme nose foreshortening.
+
+- **Neutral eye level** — camera at eye height; balanced perspective; natural proportions.
+
+- **Low angle (“aori”)** — camera ~15–30° below eye level; slight heroic feel; keep nostrils subtle and eyes clearly visible.
+
+
+**Optional (0–1): Dutch Tilt** — none / slight tilt **2–5°** max (never >6°); if used, keep booth verticals believable.
+
+
+### 1) Booth Theme / Background (pick 1)
+
+- Hologram gradient wall (pink → aqua → lilac)
+
+- Arcade neon backdrop (UI panels, scanlines)
+
+- Checkerboard ♥ & ★ (b/w with neon inlays)
+
+- Bubblegum clouds (pastel clouds + heart bokeh)
+
+- Pixel city night (CRT skyline)
+
+- Glitter rain (vertical glitter streaks)
+
+- Rainbow tube lights (tilted fluorescent tubes)
+
+- Sticker storm (wall covered in cute stickers)
+
+- Other (artist’s choice)
+
+
+### 2) Palette / Colorway (pick 1)
+
+- Candy Pink × Aqua Blue × Lilac
+
+- Neon Sunset (magenta × cyan × orange)
+
+- Holo Rainbow (iridescent multi-hue)
+
+- Cyber Aqua (mint × turquoise × white glow)
+
+- Acid Candy (hot pink × lemon × emerald)
+
+
+### 3) Rim & Global Glow (pick 1)
+
+- Dual rim: pink left / aqua right
+
+- Tri-color RGB micro-rim
+
+- Holographic edge rim (angle-shifting hue)
+
+
+### 4) Hologram & Surface FX (pick 1–2)
+
+- Oil-slick interference
+
+- Diffraction grating
+
+- Pearlescent PVC shine
+
+- Prism flare dots
+
+
+### 5) Sticker Pack (pick 3–6) — sticker style enforced
+
+- Puffy hearts / stars (3D gel)
+
+- Padlock & chain charms
+
+- Retro UI popups / progress bar / mouse cursor
+
+- UFO-catcher prize icons
+
+- Gel letters (squishy 3D)
+
+- Crown (jeweled, gel or neon) — sticker look only
+
+- Cross charm (cute stylized) — sticker look only
+
+- Plushie bear/bunny head — sticker look only
+
+- Ice-cream cone — sticker look only (flat vector or puffy gel)
+
+- Crepe — sticker look only
+
+- Cake slice — sticker look only
+
+- Lollipop swirl
+
+- _(Optional)_ Condom (gel/neon) — sticker look only
+
+- _(Optional)_ Keychain charm stickers (small, to sit near the frame)
+_(All with thick white border + tiny drop shadow; no photoreal food/items.)_
+
+
+### 6) “Together Forever” Typography (pick 1)
+
+- Neon script (inner inline + outer glow)
+
+- Bubble gel letters (inflated, glossy)
+
+- Pixel outline (8-bit edge)
+
+
+### 7) Date “2025/08/19” (pick 1)
+
+- LCD digital (small, lower corner)
+
+- Barcode + micro text
+
+- Pixel timestamp (VHS/OSD vibe)
+
+
+### 8) Frame / Border (pick 1)
+
+- Irregular multi-color sticker frame
+
+- Dual neon rails
+
+- Chain with dangling charms
+
+- Ribbon & pearls
+
+- Floating keychain charms dangling from the frame (top/sides), not covering faces
+
+
+### 9) Micro-Pose / Moment (pick 1)
+
+- Cheek rub & wink
+
+- Almost-kiss (lips just before touching)
+
+- Nose touch (Eskimo kiss)
+
+- Forehead touch / forehead kiss
+
+- Temple kiss
+
+- Cheek squish (playful)
+
+- Chin tilt (one lifts the other’s chin)
+
+- Hand heart at chest / Two-hand heart framing faces
+
+- Waist hug + lean-in / Back hug from behind
+
+- Arm over shoulder, playful pull
+
+- Hand on face / brushing bangs / hair-tuck
+
+- Dance dip / Spin-lift (mini)
+
+- Piggyback partial crop
+
+- Bridal/princess carry (tight crop)
+
+- V-sign near eye + cheek rub
+
+- Hand kiss
+
+- Index-finger “shh” playful pose
+
+
+### 10) Bokeh & Sparkle (pick 1)
+
+- Heart bokeh
+
+- Star sparkle burst
+
+- Holo confetti (hex glitter)
+
+
+### 11) UI Overlays (pick 0–2)
+
+- Fake status bar (♥999+ 🔔99+)
+
+- Loading bar “Saving… 64%”
+
+- Ultra-thin CRT scanline (keep off faces)
+
+- Tiny “VHS REC” OSD (place at top; avoid faces)
+
+
+---
+
+## Layer Order (clarity)
+
+Background → Characters → Frame/Border (+ Floating Keychain Charms) → Stickers → Face/Head Doodles (per selection) → Title text → Date
