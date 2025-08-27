@@ -31,6 +31,9 @@
       transition:box-shadow .18s, border-color .18s;
       flex-wrap:nowrap;
       position:relative;
+
+      /* ハッシュスクロール時、ヘッダに被らない余白 */
+      scroll-margin-top: 16px;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
 
@@ -100,7 +103,7 @@
     }
 
     @media (prefers-reduced-motion:reduce){
-      *{ transition:none !重要; animation:none !重要; }
+      *{ transition:none !important; animation:none !important; }
     }
 
     .highlight { animation: flash 1.8s ease; }
@@ -128,7 +131,7 @@
   </div>
 
   <script>
-    // クリップボードコピー
+    // --- ユーティリティ ---
     async function copyPrompt(id, btn){
       const el = document.getElementById(id);
       const text = (el?.value ?? el?.textContent ?? '').trim();
@@ -161,8 +164,6 @@
         const o=btn.textContent; btn.textContent="失敗？"; setTimeout(()=>btn.textContent=o,1200);
       });
     }
-
-    // 画像の拡張子を自動解決（png/jpg/jpeg/webp）
     async function resolveImageSrc(id){
       const exts = ['.png','.jpg','.jpeg','.webp'];
       for(const ext of exts){
@@ -173,12 +174,23 @@
       }
       return null;
     }
-
     function humanizeId(id){
-      // kebab/snake→スペース、先頭大文字化（単純版）
       return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
     }
 
+    // --- ハッシュスクロール（生成後に発火させる） ---
+    function focusCardByHash(behavior='smooth'){
+      if(!location.hash) return;
+      const id = decodeURIComponent(location.hash.slice(1));
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.scrollIntoView({behavior, block:'center'});
+      el.classList.add('highlight');
+      setTimeout(()=> el.classList.remove('highlight'), 2000);
+    }
+    window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
+
+    // --- カード生成 ---
     async function buildCards(){
       const wrap = document.getElementById('cards');
       if(!wrap) return;
@@ -215,7 +227,6 @@
           urlbtn.className = 'urlbtn'; urlbtn.textContent = 'url';
           urlbtn.addEventListener('click',()=>copyUrl(id,urlbtn));
 
-          const thumbBox = document.createElement('div'); // 画像/プレースホルダ入れ
           const img = document.createElement('img');
           img.className = 'thumb'; img.alt = `${title} sample`;
 
@@ -226,7 +237,6 @@
           const pbox = document.createElement('div'); pbox.className = 'promptbox';
           const ta = document.createElement('textarea');
           ta.className = 'promptarea'; ta.rows = 1; ta.wrap = 'off'; ta.readOnly = true; ta.id = `prompt-${id}`;
-
           const btn = document.createElement('button');
           btn.className = 'copybtn'; btn.textContent = 'コピー';
           btn.addEventListener('click', ()=>copyPrompt(ta.id, btn));
@@ -240,36 +250,30 @@
           card.appendChild(body);
           wrap.appendChild(card);
 
-          // テキスト読込
+          // テキスト読み込み
           fetch(`image_prompt/${id}.txt`, {cache:'no-store'})
             .then(r=>r.ok?r.text():'')
             .then(t=>{ ta.value = t || '(読み込み失敗)'; })
             .catch(()=>{ ta.value='(読み込み失敗)'; });
 
-          // 画像解決
+          // 画像解決（無ければプレースホルダ）
           const src = await resolveImageSrc(id);
           if(src){
             img.src = src;
           }else{
-            // 代替プレースホルダ
             const ph = document.createElement('div');
             ph.className = 'thumb ph'; ph.textContent = 'no img';
             img.replaceWith(ph);
           }
         }
 
-        // ハッシュ指定があれば強調
-        if(location.hash){
-          const target = document.querySelector(location.hash);
-          if(target){
-            target.classList.add('highlight');
-            setTimeout(()=>target.classList.remove('highlight'), 2000);
-          }
-        }
-
         if(!wrap.children.length){
           wrap.innerHTML = '<div style="opacity:.6">（お題がありません）</div>';
         }
+
+        // 生成が完了したタイミングでハッシュへ確実にジャンプ
+        requestAnimationFrame(()=> focusCardByHash('auto'));    // 直後
+        setTimeout(()=> focusCardByHash('auto'), 150);          // レイアウト遅延対策
 
       }catch(e){
         wrap.innerHTML = '<div style="opacity:.7">読み込み失敗… '+(e.message||e)+'</div>';
