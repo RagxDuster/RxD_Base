@@ -61,8 +61,14 @@
 
     /* 本文部：最初は “1行プレビュー表示” にする（カードに .is-collapsed が付く） */
     .cardcontent{ padding:0 10px 10px 10px; display:block; }
-    .card.is-collapsed .promptarea{
-      height:40px; line-height:40px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+.card.is-collapsed .promptarea{
+  /* 2行ぶんだけ表示して残りは隠す */
+  white-space: pre-wrap;     /* 折り返し有効 */
+  line-height: 1.6;
+  overflow: hidden;
+
+  /* 2行の高さ + 上下パディング(10px + 10px) */
+  height: calc(1.6em * 2 + 20px);
       -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
               mask-image: linear-gradient(to right, black 85%, transparent);
     }
