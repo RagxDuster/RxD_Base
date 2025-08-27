@@ -1,0 +1,105 @@
+# 雨降る外から室内を見つめる画像を生成してください！
+
+## Character
+成人男性。大柄筋肉質。茶髪緑目。顔立ちは優し気。
+服装：おまかせアメカジ
+
+---
+
+## Scene
+A character is staring at the camera from outside, through a windowpane. The character’s expression is sorrowful and lonely. It is raining outside, and the character is soaked. Water droplets cling to the exterior of the glass.
+Hair is drenched, dripping with water, strands sticking realistically to face, outline, and forehead. Raindrops run down cheeks, resembling tears. Clothes are soaked, clinging to the character’s body with a sense of weight and heaviness.
+
+## Expression
+A wistful gaze, looking through the glass directly at the camera.
+
+## Layers
+Foreground: Rain-streaked window glass with transparent droplets, realistic wetness, and streaming rivulets. (Rain is outside; camera is indoors.)
+Midground: The rain-soaked character.
+Background: See Randomizer #2.
+Edge/Frame: See Randomizer #3.
+
+## Style
+High-quality Japanese anime style. Elegant and delicate, with a feminine sensibility. Highly detailed and ornate.
+Fine linework that blends naturally with coloring (not stark black).Beautiful sparkle, delicate raindrops, strong highlights, soft shadows.
+Smooth textures, free of noise or glitches.
+The character is drawn in a beautiful manga-like style (not hyper-realistic), while raindrops and glass are rendered with realism.
+
+## Camera
+Shallow depth of field; **focus on the character’s eyes**. Background heavily blurred.
+Eye level is slightly high-angle (looking down a little).
+
+## Enforcement
+Apply the selections from **Randomizer #0–#3** even if they **override** defaults above (e.g., color temperature, palette).
+
+## Randomization Protocol (strict)
+- For each Randomizer list below:
+1) Shuffle all items uniformly.
+2) Select the first item after shuffle (never default to the list order).
+3) The chosen item **overrides** any conflicting defaults above.
+- If the same choice was used in either of the previous two renders, re-roll once to ensure variety.
+- Don't choose based on GPT's preferences, choose randomly.
+### Randomizer #0 — Time / Ambience (neon-free, pick 1)
+- Blue dawn drizzle — desaturated slate-blues; thin silver skylight; faint breath fog on the glass.
+- Overcast morning calm — cool cyan ambience; soft skylight key, lifted by wet street bounce.
+- Midday storm hush — bluish-gray world; muted contrast; glass reads cold and heavy.
+- Pre-thunder glow — subtle greenish cast before rain bursts; distant sheet lightning silhouettes the city.
+- Gold-versus-blue hour — warm orange slant mixing with cold rain; sodium rim light against teal shadows (low saturation).
+- Cold midnight — deep navy with sparse tungsten pockets; passing headlights flare across the pane.
+- Streetlamp backlight — hard amber halo from behind; droplets sparkle; gentle lens flare; no signage.
+- Fogbound evening — low visibility, soft halos around lampposts; very subdued palette.
+- Power-save night — many lights off; minimal city glow; car lamps and windows only.
+- Moonlit drizzle — pale steel-blue key; soft halos around rivulets; very low color temperature.
+
+### Randomizer #1 — Pose (pick 1)
+- One hand pressed flat to the glass at chest height; palm and fingertips show subtle pressure.
+- Both hands on the glass at shoulder height; forehead lightly resting against the pane; eyes lift toward the camera.
+- One palm sliding down the glass, leaving a fresh wet trail; gaze meets the camera through the streaks.
+- Knuckles pressed to the pane, head bowed; eyes look up with a pained, wistful expression.
+- Forearm braced vertically on the glass (elbow raised); temple touches the arm; shoulders heavy with rain.
+- Leaning a shoulder against the window frame, body at a 3/4 angle; one hand low on the pane; eyes glance up to the camera.
+- One hand high above the head on the glass, the other gripping the soaked jacket collar; posture tense yet vulnerable.
+- Fingers lightly tracing a small line in the fogged patch of glass from their breath; eyes fixed on the camera.
+- One hand low on the pane, the other tucked in a pocket; slight slump in the shoulders; rain dripping from the jawline.
+- Both palms flat against the glass, elbows slightly bent; back arches away from the cold surface; faint breath mist between.
+- One hand on the window’s edge/frame, the other splayed on the pane nearer to the camera; head tilted, hair stuck to the brow.
+- Palm pressed to the glass at face level, fingertips near their own reflection; eyes aligned with the lens, lashes wet.
+
+### Randomizer #2 — Background (non-neon, pick 1)
+- Quiet residential street; closed shutters and parked bicycles; wet asphalt reflecting only streetlamps.
+- Riverside embankment; bridge lamps shimmer as broken ribbons across dark water; no signage.
+- Dense apartment blocks; a few warm windows glowing softly through the rain curtain.
+- Elevated railway girders; a passing train suggested as a soft streak; neutral lighting.
+- Office district glass facades; low interior glows, no ads or signboards.
+- Small city park; rain-slick leaves, distant lamppost halos; subdued, desaturated.
+- Rooftops and TV antennas under low, heavy clouds; skyline softened by mist.
+- Construction scaffolding with translucent tarps; hazard beacons very dim and not saturated.
+- Suburban bus stop shelter; idling bus headlights as diffuse halos; avoid ad panels.
+- Rainy neon street with kanji signs; reflections smear into soft bokeh on wet asphalt.
+- Parking lot with shallow puddles; faint reflections from car lamps only.
+- Narrow back lane with stacked delivery crates; security light spill, no store signage.
+- River lock/canal with concrete walls; drizzle haze and minimal industrial lamps.
+- School gate or public building entrance canopy; soft overhead fluorescents, desaturated.
+(Keep it heavily blurred with shallow depth of field; include 2–3 legible cues from the chosen setting.)
+
+### Randomizer #3 — Window Frame / Edge Elements (pick 1)
+- Slim black steel mullion crossing the right edge; matte finish; soft specular beads.
+- Weathered wooden sash with slightly peeling white paint at the top-left corner; fine grain visible.
+- Modern white PVC frame along the left edge with a narrow rubber gasket; subtle water beading on the exterior side only.
+- Brushed aluminum frame with a small corner bracket visible at bottom-right; cool reflections.
+- Narrow transom bar dipping into the upper edge; out of focus, faint droplets clinging.
+- Sliding window track along the bottom edge; tiny drainage slots; shallow DOF blur.
+- A vintage bronze latch barely intruding at mid-left; soft highlight bloom.
+- Frosted privacy strip (5–6 cm) along the bottom edge; bokeh “melts” above it.
+- Thin wooden frame in warm teak tone at top-right; micro-scratches and patina.
+- Industrial grid mullion forming a soft cross far from the center; keep it blurry and unobtrusive.
+- Minimal frameless edge (beveled glass) catching a thin, bright rim at the left edge.
+- Interior sheer curtain edge overlapping the frame at far right; translucent, slightly wet where it touches the pane.
+- Venetian blind cord and a single tilted slat in the top band; keep it very out of focus.
+- Sticker residue/old tape ghost near the bottom-left corner of the glass; subtle, not distracting.
+- Other (artist’s choice consistent with an indoor camera and outdoor rain).
+
+## Composition Notes
+- Place the frame element at an edge or corner; it must not block the character’s eyes.
+- Keep the frame softer than the character (shallow DOF).
+- Rain droplets and rivulets remain on the **exterior** surface; interior elements stay dry unless specified.
