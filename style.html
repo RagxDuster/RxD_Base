@@ -11,6 +11,9 @@
       --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB;
       --ink2:#555; --line:#DDD; --sun:#FFF59F;
       --target-accent: var(--mint);
+      /* ← サムネ一括調整（好きな値に） */
+      --thumb: 108px;
+      --radius: 14px;
     }
     html{ background:var(--bg); color:var(--ink);
       font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
@@ -44,11 +47,14 @@
     .card.is-target .cardtitle{ color:var(--target-accent); }
 
     .thumb{
-      width:96px; height:96px; border-radius:14px; object-fit:cover;
+      width:var(--thumb); height:var(--thumb);
+      border-radius:var(--radius); object-fit:cover;
       border:2px solid var(--sun); background:#f3f2f9; flex:0 0 auto;
+      cursor:zoom-in;
     }
     .thumb.ph{
       display:flex; align-items:center; justify-content:center; color:#999; font-size:.8rem; border-style:dashed;
+      cursor:default;
     }
 
     .cardbody{ flex:1 1 auto; min-width:0; }
@@ -93,7 +99,7 @@
 
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
-      .thumb{ width:78px; height:78px; border-radius:12px; }
+      .thumb{ width:calc(var(--thumb) - 20px); height:calc(var(--thumb) - 20px); }
       .card{ padding:12px; gap:10px; }
       .cardtitle{ font-size:1.06rem; margin-bottom:6px; }
       .copybtn{ padding:8px 10px; font-size:.92rem; }
@@ -106,6 +112,32 @@
       30% { box-shadow:0 0 18px #FF93C288; }
       100% { box-shadow:0 0 0 #FF93C200; }
     }
+
+    /* 画像プレビュー（ライトボックス） */
+    .lightbox[hidden]{ display:none; }
+    .lightbox{
+      position:fixed; inset:0; background:rgba(0,0,0,.65);
+      display:flex; align-items:center; justify-content:center;
+      z-index:1000;
+    }
+    .lightbox-inner{
+      position:relative; max-width:92vw; max-height:92vh;
+      display:flex; flex-direction:column; gap:8px; align-items:center;
+      animation: lbIn .14s ease-out;
+    }
+    @keyframes lbIn{ from{ transform:scale(.98); opacity:0; } to{ transform:scale(1); opacity:1; } }
+    .lightbox-img{
+      max-width:92vw; max-height:86vh; border-radius:16px; display:block;
+      box-shadow:0 8px 28px rgba(0,0,0,.35);
+      background:#111;
+    }
+    .lightbox-title{ color:#fff; font-weight:700; text-shadow:0 1px 2px rgba(0,0,0,.4); }
+    .lightbox-close{
+      position:absolute; top:-12px; right:-12px; width:36px; height:36px; border-radius:50%;
+      border:none; background:#fff; color:#333; cursor:pointer; font-size:1rem; font-weight:900;
+      box-shadow:0 4px 16px rgba(0,0,0,.3);
+    }
+    .lightbox-close:hover{ background:#FF93C2; color:#fff; }
   </style>
 </head>
 <body id="top">
@@ -122,6 +154,15 @@
 
     <a href="index.html" class="backlink">← indexに戻る</a>
     <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
+  </div>
+
+  <!-- 画像プレビュー（ライトボックス） -->
+  <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="画像プレビュー">
+    <div class="lightbox-inner" role="document">
+      <img class="lightbox-img" alt="">
+      <div class="lightbox-title"></div>
+      <button class="lightbox-close" aria-label="閉じる">×</button>
+    </div>
   </div>
 
   <script>
@@ -188,6 +229,33 @@
     }
     window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
 
+    // ---- lightbox ----
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('.lightbox-img');
+    const lbTitle = lb.querySelector('.lightbox-title');
+    const lbClose = lb.querySelector('.lightbox-close');
+    let lastFocus = null;
+
+    function openLightbox(src, alt, title){
+      if(!src) return;
+      lastFocus = document.activeElement;
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lbTitle.textContent = title || '';
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+      lbClose.focus();
+    }
+    function closeLightbox(){
+      lb.hidden = true;
+      lbImg.src = '';
+      document.body.style.overflow = '';
+      if(lastFocus && typeof lastFocus.focus === 'function'){ lastFocus.focus(); }
+    }
+    lb.addEventListener('click', (e)=>{ if(e.target === lb) closeLightbox(); });
+    lbClose.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e)=>{ if(!lb.hidden && e.key === 'Escape') closeLightbox(); });
+
     // ---- build ----
     async function buildCards(){
       const wrap = document.getElementById('cards');
@@ -223,7 +291,11 @@
           urlbtn.addEventListener('click',()=>copyUrl(id,urlbtn));
 
           const img = document.createElement('img');
-          img.className = 'thumb'; img.alt = `${title} sample`;
+          img.className = 'thumb';
+          img.alt = `${title} sample`;
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.tabIndex = 0; // キーボードでも開ける
 
           const body = document.createElement('div'); body.className = 'cardbody';
           const ttl = document.createElement('div'); ttl.className = 'cardtitle'; ttl.textContent = title;
@@ -247,16 +319,17 @@
           // 一行プロンプト読込（改行はスペースに）
           fetch(`style_prompt/${id}.txt`, {cache:'no-store'})
             .then(r=>r.ok?r.text():'')
-            .then(t=>{
-              const one = (t || '(読み込み失敗)').replace(/\r?\n+/g,' ').trim();
-              ta.value = one;
-            })
+            .then(t=>{ ta.value = (t || '(読み込み失敗)').replace(/\r?\n+/g,' ').trim(); })
             .catch(()=>{ ta.value='(読み込み失敗)'; });
 
-          // 画像解決
+          // 画像解決＋プレビュー配線
           const src = await resolveImageSrc(id);
-          if(src){ img.src = src; }
-          else{
+          if(src){
+            img.src = src;
+            const open = ()=> openLightbox(src, img.alt, title);
+            img.addEventListener('click', open);
+            img.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }});
+          }else{
             const ph = document.createElement('div'); ph.className='thumb ph'; ph.textContent='no img';
             img.replaceWith(ph);
           }
