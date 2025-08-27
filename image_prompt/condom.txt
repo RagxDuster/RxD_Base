@@ -1,0 +1,90 @@
+# スタイリッシュな画像生成してください！
+
+---
+
+## 【Character】
+
+おまかせイケメン （ここをあなたか相方の外見にかえる）
+
+## 【Item】
+
+- オシャレでシンプルなミニパッケージ（平べったいビニール製。小さく、4cm四方）
+
+---
+
+## Composition · Camera Position
+
+### Viewpoint: strong low-angle
+
+- The upper body of 【Character】 fills the frame significantly and is slightly cropped at the edges of the frame. thigh-up.
+
+- Shallow depth of field (equivalent to f/1.4).
+
+- Focus on the package held in the mouth; the background is heavily blurred. Exaggerate the sense of perspective.
+
+- A view looking up from the bottom.
+
+
+### Composition: Dutch angle (slight tilt)
+
+- Creates a thrilling sense of “in the middle of approach.”
+
+- Off-center placement (breaking the rule of thirds).
+
+
+### Exaggeration of spatial depth
+
+- Assume a lens around 35mm.
+
+- Lean toward a wide-angle perspective.
+
+- Convey a slight perspective distortion.
+
+- Add small realistic details to increase believability — e.g., lens haze, visible breath, faint flares.
+
+
+---
+
+## Style
+
+- ハイクオリティで繊細に書き込まれた、日本のアニメ風のタッチ。
+
+---
+
+## Pose
+
+- Kneeling , holding the 【item】 in the mouth; pose is advancing toward the camera.
+
+- Angle the camera slightly downward for added impact.
+
+- One hand reaches toward the camera or rests.
+
+
+## Expression · Gaze
+
+- Gaze is locked straight at the camera / this side. Send a strong look to the camera.
+
+- Slightly flushed cheeks; a single bead of sweat on the forehead or temple; sweat dripping at the nape of the neck.
+
+- Add a breathy nuance to the lips to guide the viewer’s gaze.
+
+- 【If male】A tense feeling of barely holding back between desire and reason — not a melted expression, but with a sense of masculinity.
+
+- 【If female】A somewhat provocative, languid smile, gazing at the camera in a dazed/rapt state.
+
+
+---
+
+## Background · Lighting · Atmosphere
+
+- Backlight with a strong rim light on the hair and outline. The overall room is dimly lit.
+
+- Heavily blur the background to concentrate attention on the subject, especially the face.
+
+- The strongly blurred ceiling of a room is faintly visible in the background — just enough to give a subtle sense that it might be indoors.
+
+---
+
+## Negative(Avoid)
+
+Extra arms, extra figures

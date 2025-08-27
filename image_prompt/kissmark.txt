@@ -1,0 +1,146 @@
+# 画像生成してください
+
+## Character
+
+成人女性。
+黒髪ストレートロングヘア。色白。
+瞳の色はヘーゼル。
+バスタオルを巻いていて風呂上がり。髪はまだ濡れてる。
+
+---
+
+## Scene Rules (must follow)
+
+* **Setting:** Washroom with a wall mirror. Show a hint of the sink/faucet and part of the mirror frame.
+* **Main subject:** Only the **mirror reflection** is in tack-sharp focus.
+* **Foreground:** The real person in front of the mirror is **cropped and very blurry** (only shoulder/back of head visible).
+* **Action:** The person is leaning toward the mirror, looking at their reflection.
+* **Sweet love bite(s):** One to four faint red hickeys scattered on the collarbone or along the neck/upper chest (visible in the mirror reflection).
+* **Facial expression:** Randomly choose one each render — happy, shy, troubled, angry, or surprised.
+* **Reaction:** Touching the hickey mark(s) in the reflection.
+* **Framing:** Portrait orientation, waist-up, over-the-shoulder composition.
+* **Safety:** The character’s appearance, demeanor, and styling must be distinctly adult, never ambiguous in age or reminiscent of adolescence.
+
+---
+
+## Style
+
+High-quality anime style. Delicate, feminine, detailed. Romantic and dramatic, translucent skin with realistic subsurface scattering, soft painterly shading and micro-highlights on cheekbones and collarbones, refined hair strand rendering, **Colored lineart matching surrounding colors, soft tinted outlines, no pure black lines**.
+
+---
+
+## Avoid (negative intents)
+
+* Extra people
+* Two sharp faces
+* Foreground face in focus
+* Wrong reflection side
+* Text or watermark
+* Inconsistent reflection
+* Distorted hands
+* Low quality
+* unit bath
+* photorealistic eyes
+* child
+
+
+---
+
+## Randomizer (pick randomly each render)
+
+
+**Time/Ambience (pick 1)**
+
+* Morning light with a bluish tint
+* Clear midday sunlight
+* Orange slanting light of evening
+* Warm incandescent night lighting
+* Light steam after a bath
+* Neon light spill from outside window
+* Flickering candlelight
+* Soft glow from vanity mirror bulbs
+* Other (artist’s choice)
+
+**Color Temperature (pick 1)**
+
+* 2700K (very warm)
+* 3000K (warm soft white)
+* 3500K
+* 4500K
+* 5600K (daylight)
+* 6500K (cool daylight)
+* 7000K
+* 8000K
+* 9000K (very cool/blue)
+
+**Camera Feel (pick 1)**
+
+* 50mm f/1.4, strong bokeh
+* 85mm f/1.8, ultra-shallow bokeh
+* Slight handheld tilt (subtle slant)
+* Over-the-shoulder but slightly off-center focus
+* Close crop with partial mirror cut-off
+
+**Mirror Shape & Frame (pick 1)**
+
+* Round
+* Oval
+* Rounded rectangle
+* Arch
+* Entire wall mirror
+* Frameless
+* Frame material options: brass / chrome / wood / matte black / other (artist’s choice)
+
+**Wall Finish (pick 1)**
+
+* Elegant wallpaper
+* Colorful mosaic tile
+* Small geometric tile
+* Muted painted wall
+* Light wood grain
+* Marble paneling
+* Concrete look
+* Distressed plaster texture
+* Iridescent glass tile
+* Other (artist’s choice)
+
+**Sink & Faucet Style (pick 1)**
+
+* Pedestal sink with classic chrome faucet
+* Rectangular integrated counter with matte black straight faucet
+* Round vessel sink with brass cross-handle faucet
+* Ceramic integrated sink with wall-mounted gooseneck faucet
+* Other (artist’s choice)
+
+**Props (pick 2–3)**
+
+* Toothbrush cup
+* Foaming soap
+* Small potted plant
+* Hand towel
+* Perfume bottle
+* Cosmetic bottles
+* Hair wax
+* Candle
+* Square aluminum pouch
+* Reed diffuser
+* Lipstick tube
+* Dryer
+* Comb
+* Vitamin tablets
+* Other (artist’s choice)
+
+**Color Grade (pick 1)**
+
+* Airy & bright
+* Film-warm
+* Pastel soft
+* Subtle teal-orange
+* Moody low-key contrast
+* Faded vintage tones
+* High-key fashion magazine style
+* Muted monochrome with a single accent color
+* Cool cinematic blue-gray
+* Warm golden glow
+* Vibrant pop-art saturation
+* Other (artist’s choice)
