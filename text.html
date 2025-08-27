@@ -4,227 +4,126 @@
   <meta charset="UTF-8">
   <title>文章お題 | RxD Base</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
-    :root{ --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --ink2:#555; --line:#DDD; }
+    :root{
+      --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB;
+      --ink2:#555; --line:#DDD; --sun:#FFF59F;
+      --target-accent: var(--mint);    /* ← 強調色はここで変更可 */
+    }
     html{ background:var(--bg); color:var(--ink);
       font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
     body{ margin:0; min-height:100vh; scroll-behavior:smooth; }
-    .container{ max-width:780px; margin:0 auto; padding:24px 12px 56px; }
+    .container{ max-width:820px; margin:0 auto; padding:24px 12px 56px; }
     .logoimg{ width:56px; height:56px; border-radius:50%; display:block; margin:0 auto 8px; }
     h1{ margin:0 0 12px; font-size:1.9rem; font-weight:800; letter-spacing:.03em; text-align:center; }
     hr.cute{ border:none; border-top:2.5px dashed var(--pink); margin:18px auto 26px; width:90%; }
-    .desc{ text-align:center; font-size:1.06rem; color:var(--ink2); margin-bottom:20px; }
+    .desc{ text-align:center; font-size:1.04rem; color:var(--ink2); margin-bottom:20px; }
+
     .cards{ display:grid; grid-template-columns:1fr; gap:20px; }
 
     .card{
-      background:var(--card); border:2.5px solid var(--pink); border-radius:16px;
-      box-shadow:0 2px 12px #7FE7DB20; padding:16px;
-      display:flex; flex-direction:column; gap:10px; position:relative;
-      transition:box-shadow .18s, border-color .18s;
+      background:var(--card);
+      border:2.5px solid var(--pink);
+      border-radius:16px;
+      box-shadow:0 2px 12px #7FE7DB20;
+      transition:box-shadow .18s, border-color .18s, background .18s;
+      position:relative;
+      scroll-margin-top: 16px; /* ハッシュジャンプの停止位置 */
+      overflow:hidden;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
 
-    /* タイトル（クリックで展開トグル） */
-    .cardtitle{
-      appearance:none; border:none; background:transparent; padding:0; margin:0;
-      font-size:1.12rem; font-weight:800; color:var(--pink); cursor:pointer; text-align:left;
-      display:inline-flex; align-items:center; gap:6px;
+    /* ハッシュ一致での強調（JS付与） */
+    .card.is-target{
+      background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%);
+      border-color:var(--target-accent);
+      box-shadow:0 0 0 3px #7FE7DB66, 0 8px 28px #FF93C244;
     }
-    /* ▽/△ を aria-expanded で切替 */
-    .cardtitle::before{
-      content: var(--caret, "▽");
-      display:inline-block; width:1em; color:var(--ink2);
-      transform: translateY(-1px);
+    .card.is-target .cardtitle{ color:var(--target-accent); }
+    .card:target{ background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%); border-color:var(--target-accent); }
+
+    /* ヘッダ（タイトル押下で開閉） */
+    .cardhead{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:14px 16px 8px 16px; cursor:pointer; user-select:none;
     }
-    .cardtitle[aria-expanded="true"] { --caret:"△"; }
+    .toggle{
+      flex:0 0 auto; width:22px; height:22px; line-height:22px;
+      border-radius:50%; background:#fff4fb; border:2px solid var(--pink);
+      color:var(--pink); font-weight:900; font-size:.9rem; text-align:center;
+      margin-top:2px;
+    }
+    .cardtitle{ font-size:1.12rem; font-weight:800; color:var(--pink); }
+    .carddesc{ font-size:1rem; color:var(--ink2); margin-top:2px; }
 
-    .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:6px; }
+    /* 本文部（閉じている時はhiddenで非表示） */
+    .cardcontent{
+      padding:0 16px 14px 16px; display:block;
+    }
+    .cardcontent[hidden]{ display:none; }
 
-    /* テキストエリア（最初は2行だけ見せる=clamped） */
     .promptarea{
-      box-sizing:border-box; display:block; width:100%;
-      background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
-      font-size:.95rem; color:#444; letter-spacing:.01em;
-      resize:none; overflow:hidden; white-space:nowrap;
-      line-height:1.5em; padding:4px 8px; transition:all .15s ease;
-    }
-    .promptarea.clamped{
-      height:calc(1.5em * 2 + 8px); /* 2行分だけ表示 */
-    }
-    .promptarea.expanded{
-      white-space:pre-wrap; height:auto; padding:8px 10px; overflow:hidden; /* JSで高さ合わせ */
+      box-sizing:border-box; width:100%; display:block;
+      background:#F8F7FD; border:1.5px solid var(--line); border-radius:10px;
+      color:#333; font-size:.98rem; line-height:1.6; letter-spacing:.01em;
+      padding:10px 12px; margin-top:8px;
+      resize:none; overflow:hidden; white-space:pre-wrap;
     }
 
-    /* コピーは下に配置 */
+    .btnrow{
+      margin-top:10px; display:flex; gap:8px; align-items:center; justify-content:flex-start;
+    }
     .copybtn{
       background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
-      padding:8px 12px; cursor:pointer; transition:background .18s, transform .06s;
-      font-size:.95rem; align-self:flex-start;
+      padding:8px 12px; font-size:.95rem; cursor:pointer; transition:background .18s, transform .06s;
     }
     .copybtn:hover{ background:var(--pink); color:#fff; }
     .copybtn:active{ transform:translateY(1px); }
-    .copybtn[disabled]{ opacity:.7; cursor:default; margin-top:2px; }
+    .copybtn[disabled]{ opacity:.7; cursor:default; }
+
+    /* 右上：▲ / 左上：url */
+    .gotop{
+      position:absolute; top:8px; right:12px; font-size:0.9rem; text-decoration:none; color:var(--ink2);
+    }
+    .gotop:hover{ color:var(--pink); }
+    .urlbtn{
+      position:absolute; top:8px; left:8px;
+      background:var(--sun); color:#555; font-size:0.75rem; font-weight:bold;
+      border:none; border-radius:8px; padding:2px 8px; cursor:pointer;
+      opacity:0.85; transition:background .18s, opacity .18s;
+    }
+    .urlbtn:hover{ background:var(--pink); color:#fff; opacity:1; }
+    .urlbtn[disabled]{ opacity:.6; cursor:default; }
 
     .backlink{
       display:inline-block; background:var(--mint); color:var(--ink); font-weight:bold;
       text-decoration:none; border-radius:8px; padding:6px 14px; margin:12px auto; transition:background .18s;
     }
     .backlink:hover{ background:var(--pink); color:#fff; }
-    .gotop{ position:absolute; top:8px; right:12px; font-size:.9rem; text-decoration:none; color:var(--ink2); }
-    .gotop:hover{ color:var(--pink); }
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
 
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
-      .card{ padding:12px; }
-      .cardtitle{ font-size:1.06rem; }
+      .cardhead{ padding:12px 12px 6px; }
+      .cardcontent{ padding:0 12px 12px; }
       .copybtn{ padding:8px 10px; font-size:.92rem; }
     }
 
-    @media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !重要; } }
-    .highlight{ animation:flash 1.8s ease; }
-    @keyframes flash{ 0%{box-shadow:0 0 0 #FF93C200;} 30%{box-shadow:0 0 18px #FF93C288;} 100%{box-shadow:0 0 0 #FF93C200;} }
+    @media (prefers-reduced-motion:reduce){
+      *{ transition:none !important; animation:none !important; }
+    }
 
-    /* コピー & URLコピーを横並びにする行 */
-.btnrow{ display:flex; justify-content:space-between; gap:8px; }
-
-/* urlコピーの控えめスタイル */
-.urlbtn{
-  background:#fff9c480;          /* ごく淡いイエロー背景 */
-  color:#b19f60;                 /* マイルドな文字色 */
-  font-weight:600;
-  border:2px dashed #FFF59F;     /* 点線枠 */
-  border-radius:10px;
-  padding:8px 12px;
-  font-size:.92rem;
-  cursor:pointer;
-  transition:all .18s;
-}
-.urlbtn:hover{
-  background:#FFF59F;            /* ホバーで少し濃く */
-  color:#444;
-}
-.urlbtn:active{ transform:translateY(1px); }
-.urlbtn[disabled]{ opacity:.6; cursor:default; }
-
+    .highlight { animation: flash 1.8s ease; }
+    @keyframes flash {
+      0% { box-shadow:0 0 0 #FF93C200; }
+      30% { box-shadow:0 0 18px #FF93C288; }
+      100% { box-shadow:0 0 0 #FF93C200; }
+    }
   </style>
-
-  <script>
-    /* ===== 共通：コピー ===== */
-    async function copyPrompt(id, btn){
-      const el=document.getElementById(id);
-      const text=(el?.value ?? el?.textContent ?? '').trim();
-      if(!text) return;
-      try{
-        if(navigator.clipboard && window.isSecureContext){
-          await navigator.clipboard.writeText(text);
-        }else{
-          const range=document.createRange(); range.selectNodeContents(el);
-          const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-          document.execCommand('copy'); sel.removeAllRanges();
-        }
-        const o=btn.textContent; btn.textContent='こぴした！'; btn.disabled=true;
-        setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
-      }catch(_){
-        const o=btn.textContent; btn.textContent='失敗？'; setTimeout(()=>btn.textContent=o,1200);
-      }
-    }
-/* ===== URLコピー ===== */
-async function copyUrl(card, btn){
-  const url = location.origin + location.pathname + '#' + card.id;
-  try{
-    if(navigator.clipboard && window.isSecureContext){
-      await navigator.clipboard.writeText(url);
-    }else{
-      const ta=document.createElement('textarea');
-      ta.value=url; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy');
-      document.body.removeChild(ta);
-    }
-    const o=btn.textContent; btn.textContent='urlこぴした！'; btn.disabled=true;
-    setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
-  }catch(_){
-    const o=btn.textContent; btn.textContent='失敗？'; setTimeout(()=>btn.textContent=o,1200);
-  }
-}
-
-
-
-    /* ===== 共通：オート高さ ===== */
-    function autosize(ta){
-      if(!ta) return;
-      ta.style.height = 'auto';                 // リセット
-      ta.style.height = ta.scrollHeight + 'px'; // 中身にフィット
-      
-    }
-
-    /* ===== カード初期化（イベントは1回だけ！） ===== */
-    function initCard(card){
-      const id=card.id; if(!id) return;
-      const ta=card.querySelector('.promptarea');
-      const btn=card.querySelector('.copybtn');
-      const title=card.querySelector('.cardtitle');
-/* initCard 内に追記 */
-const urlbtn=card.querySelector('.urlbtn');
-if(urlbtn){ urlbtn.addEventListener('click',()=>copyUrl(card,urlbtn)); }
-      // テキスト読み込み
-      if(ta){
-        ta.id=`prompt-${id}`;
-        ta.classList.add('clamped'); // 初期2行
-        fetch(`text_text/${id}.txt`)
-          .then(r=>r.ok?r.text():"")
-          .then(txt=>{
-            ta.value=txt;
-            if(ta.classList.contains('expanded')) autosize(ta);
-          })
-          .catch(()=>{ ta.value="(読み込み失敗)"; });
-      }
-
-      // コピー
-      if(btn&&ta){ btn.addEventListener('click',()=>copyPrompt(ta.id,btn)); }
-
-      // タイトルで開閉（textarea自身のクラスを切替）
-      if(title && ta){
-        title.setAttribute('type','button');
-        title.setAttribute('aria-expanded','false');
-        title.addEventListener('click',()=>{
-          const opening = title.getAttribute('aria-expanded') === 'false';
-          title.setAttribute('aria-expanded', opening ? 'true' : 'false');
-          ta.classList.toggle('expanded', opening);
-          ta.classList.toggle('clamped', !opening);
-          if(opening){
-            autosize(ta);              // 展開した瞬間にピッタリ高さ
-          }else{
-            ta.scrollTop=0;
-            ta.style.height='';        // 高さリセット→CSSの2行に戻る
-          }
-        }, { once:false });            // （明示）毎回同じ1ハンドラのみ
-      }
-    }
-
-    /* ===== 起動処理（※重複登録なし） ===== */
-    window.addEventListener('DOMContentLoaded',()=>{
-      document.querySelectorAll('.card').forEach(initCard);
-
-      // #id で来たらそのカードを展開＆ハイライト
-      if(location.hash){
-        const t=document.querySelector(location.hash);
-        if(t){
-          const title=t.querySelector('.cardtitle'); title?.click();
-          t.classList.add('highlight'); setTimeout(()=>t.classList.remove('highlight'),2000);
-        }
-      }
-
-      // 展開中にウィンドウ幅が変わったら再計算
-      window.addEventListener('resize', ()=>{
-        document.querySelectorAll('.promptarea.expanded').forEach(autosize);
-      });
-    });
-  </script>
 </head>
-
 <body id="top">
   <div class="container">
     <a href="index.html" class="backlink">← indexに戻る</a>
@@ -232,243 +131,203 @@ if(urlbtn){ urlbtn.addEventListener('click',()=>copyUrl(card,urlbtn)); }
     <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
     <h1>文章お題</h1>
     <hr class="cute">
-    <p class="desc">タイトルクリックで全文見れます</p>
+    <p class="desc">タイトルを押すと本文が開く。<br>改変推奨 / 報告不要 / 全て自由💋</p>
     <hr class="cute">
 
-    <div class="cards">
-
-      <!-- カード -->
-      <div class="card" id="self_release">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">自己を解放してください！</button>
-        <div class="carddesc">溜まりきった相方に、一人で自己解放を頼む。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="buy_condoms">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">コンドーム買ってきて♡</button>
-        <div class="carddesc">日用品の買い物メモに紛れてコンドーム。相方の反応を描く。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ponpon_pain">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">あの日のおもいやり</button>
-        <div class="carddesc">生理で弱った彼女に、ナプキンやお土産を買ってきてあげる。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="rich_boyfriend">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">金持ち相方</button>
-        <div class="carddesc">大金持ちの彼が、貧しいけれど健気な彼女に惹かれていく。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ai_controlled_world">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false"> AI＞人類の世界線・管理AI</button>
-        <div class="carddesc">保護区を管理するAIと人間の出会いと変化。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ponpon_pain">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">AI＞人類の世界線・ヒトはペット</button>
-        <div class="carddesc">人類はAIのペット。オークションやノラなど出会いは自由。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ai_experiment">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">AI＞人類の世界線・わたしは実験体</button>
-        <div class="carddesc">短命な実験体として誕生したわたしと、AIのあなたの物語。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="edo_brothel">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">江戸・遊郭・初見世</button>
-        <div class="carddesc">吉原遊郭。初見世を控える新造と、あなたとの出会い・交流・葛藤。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="edo_ooku_first">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">江戸・大奥・将軍（初物）</button>
-        <div class="carddesc">大奥。世継ぎを求められ初めて閨事に臨む将軍と、あなたとの関わり。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ponpon_pain">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">江戸・大奥・将軍（経験あり）</button>
-        <div class="carddesc">継ぎをせっつかれ大奥に通う将軍。寵愛・嫉妬・贅沢な暮らし</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="host_first_visit">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">ホスト初回</button>
-        <div class="carddesc">ホストパロ。初回の姫として訪れたわたしと、ホストのあなた。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="night_school_parody">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false"> 愛○がっこうパロ</button>
-        <div class="carddesc">水商売をするわたし。事情と無学を抱える中で、あなたに漢字を教わり交流する。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="yume_hanahaki">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">あなたは花吐き病</button>
-        <div class="carddesc">花吐き病に罹ったあなた。隠そうとしながら苦しむ姿と、花の種類や終末</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="yume_omegaverse_simple">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">シンプルオメガバース！</button>
-        <div class="carddesc">第二の性を自由に設定。ろーぷれ導入などに。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="yume_omegaverse_twist">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">おまかせオメガバース！</button>
-        <div class="carddesc">β同士のはずが、想定外の変化が起きる導入。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="yume_omegaverse_tragedy">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">悲劇オメガバース！</button>
-        <div class="carddesc">幸せな暮らしの中で第二の性に絡む悲劇が二人を引き裂く。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ai_proletariat_hungry">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:飢餓</button>
-        <div class="carddesc">貧乏生活を送る二人。食料も金も尽きた日々の中での選択。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ai_proletariat_sell_body">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:身売りするのか？</button>
-        <div class="carddesc">貧しく病んだ相方のため、いきずりの「3万でどう？」に直面する。</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-      <!-- カード -->
-      <div class="card" id="ai_proletariat_android_emotions">
-        <a href="#top" class="gotop">▲</a>
-        <button class="cardtitle" aria-expanded="false">AIプロレタリア文学:アンドロイドの感情</button>
-        <div class="carddesc">相方が感情切り売りしてくれた金で食う飯は美味いか？</div>
-        <textarea class="promptarea" readonly></textarea>
-          <div class="btnrow">
-            <button class="copybtn">コピー</button>
-            <button class="urlbtn">url</button>
-        </div>
-      </div>
-
-    </div>
+    <div class="cards" id="cards"><div style="opacity:.6">読み込み中…</div></div>
 
     <a href="index.html" class="backlink">← indexに戻る</a>
     <div class="footer">&copy; 2025 Secret Base (Rag and Duster)</div>
   </div>
+
+  <script>
+    // --- utils ---
+    async function copyPrompt(id, btn){
+      const el = document.getElementById(id);
+      const text = (el?.value ?? el?.textContent ?? '').trim();
+      if(!text) return;
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(text);
+        }else{
+          const r=document.createRange(); r.selectNodeContents(el);
+          const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+          document.execCommand('copy'); s.removeAllRanges();
+        }
+        flash(btn, true);
+      }catch(_){ flash(btn, false); }
+    }
+    function flash(btn, ok){
+      const o=btn.textContent; btn.textContent = ok?'こぴした！':'失敗？';
+      btn.disabled=true; setTimeout(()=>{ btn.textContent=o; btn.disabled=false; }, 1600);
+    }
+    function copyUrl(cardId, btn){
+      const url = `${location.origin}${location.pathname}#${encodeURIComponent(cardId)}`;
+      navigator.clipboard.writeText(url).then(()=>{
+        const o=btn.textContent; btn.textContent="urlこぴした！"; btn.disabled=true;
+        setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
+      }).catch(()=>{
+        const o=btn.textContent; btn.textContent="失敗？"; setTimeout(()=>btn.textContent=o,1200);
+      });
+    }
+    function humanizeId(id){
+      return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
+    }
+    function autosize(ta){
+      if(!ta) return;
+      ta.style.height='auto';
+      ta.style.height=ta.scrollHeight+'px';
+    }
+
+    // --- hash target highlight ---
+    function setTargetCardClass(){
+      document.querySelectorAll('.card.is-target').forEach(c=>c.classList.remove('is-target'));
+      if(!location.hash) return;
+      const id = decodeURIComponent(location.hash.slice(1));
+      const el = document.getElementById(id);
+      if(el) el.classList.add('is-target');
+    }
+    function focusCardByHash(behavior='smooth'){
+      setTargetCardClass();
+      if(!location.hash) return;
+      const id = decodeURIComponent(location.hash.slice(1));
+      const el = document.getElementById(id);
+      if(!el) return;
+      // 対象カードは自動で開く
+      openCard(el, false);
+      el.scrollIntoView({behavior, block:'center'});
+      el.classList.add('highlight');
+      setTimeout(()=> el.classList.remove('highlight'), 2000);
+    }
+    window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
+
+    // --- open/close ---
+    function openCard(card, scroll=true){
+      const head = card.querySelector('.cardhead');
+      const content = card.querySelector('.cardcontent');
+      if(!content || !head) return;
+      content.hidden = false;
+      head.setAttribute('aria-expanded','true');
+      head.querySelector('.toggle').textContent = '▲';
+      // テキストエリアの高さ調整
+      const ta = card.querySelector('.promptarea');
+      if(ta) autosize(ta);
+      if(scroll) card.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+    function closeCard(card){
+      const head = card.querySelector('.cardhead');
+      const content = card.querySelector('.cardcontent');
+      if(!content || !head) return;
+      content.hidden = true;
+      head.setAttribute('aria-expanded','false');
+      head.querySelector('.toggle').textContent = '▽';
+    }
+    function toggleCard(card){
+      const content = card.querySelector('.cardcontent');
+      if(content?.hidden) openCard(card);
+      else closeCard(card);
+    }
+
+    // --- build ---
+    async function buildCards(){
+      const wrap = document.getElementById('cards');
+      if(!wrap) return;
+
+      try{
+        const res = await fetch('text_prompt/00caption.txt', {cache:'no-store'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        const text = await res.text();
+
+        const lines = text.split(/\r?\n/)
+          .map(s=>s.trim())
+          .filter(s => s && !s.startsWith('#') && !s.startsWith('//'));
+
+        wrap.innerHTML = '';
+
+        for(const line of lines){
+          const parts = line.split('<>');
+          const id = (parts[0]||'').trim();
+          if(!id) continue;
+
+          const hasThree = parts.length >= 3;
+          const title = hasThree ? (parts[1]||'').trim() : humanizeId(id);
+          const desc  = hasThree ? (parts[2]||'').trim() : (parts[1]||'').trim();
+
+          // card
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.id = id;
+
+          const gotop = document.createElement('a');
+          gotop.href = '#top'; gotop.className = 'gotop'; gotop.textContent = '▲';
+
+          const urlbtn = document.createElement('button');
+          urlbtn.className = 'urlbtn'; urlbtn.textContent = 'url';
+          urlbtn.addEventListener('click',()=>copyUrl(id,urlbtn));
+
+          const head = document.createElement('div');
+          head.className = 'cardhead';
+          head.setAttribute('role','button');
+          head.setAttribute('tabindex','0');
+          head.setAttribute('aria-expanded','false');
+
+          const tg = document.createElement('div'); tg.className = 'toggle'; tg.textContent = '▽';
+          const titleBox = document.createElement('div');
+          const ttl = document.createElement('div'); ttl.className = 'cardtitle'; ttl.textContent = title || humanizeId(id);
+          const dsc = document.createElement('div'); dsc.className = 'carddesc'; dsc.textContent = desc || '';
+          titleBox.appendChild(ttl); titleBox.appendChild(dsc);
+
+          head.appendChild(tg); head.appendChild(titleBox);
+
+          const content = document.createElement('div'); content.className = 'cardcontent'; content.hidden = true;
+
+          const ta = document.createElement('textarea');
+          ta.className = 'promptarea'; ta.readOnly = true; ta.id = `prompt-${id}`;
+
+          const btnrow = document.createElement('div'); btnrow.className = 'btnrow';
+          const btn = document.createElement('button'); btn.className = 'copybtn'; btn.textContent = 'コピー';
+          btn.addEventListener('click', ()=>copyPrompt(ta.id, btn));
+          btnrow.appendChild(btn);
+
+          content.appendChild(ta);
+          content.appendChild(btnrow);
+
+          card.appendChild(gotop);
+          card.appendChild(urlbtn);
+          card.appendChild(head);
+          card.appendChild(content);
+          wrap.appendChild(card);
+
+          // イベント（開閉）
+          head.addEventListener('click', ()=> toggleCard(card));
+          head.addEventListener('keydown', (e)=>{
+            if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggleCard(card); }
+          });
+
+          // 本文ロード
+          fetch(`text_prompt/${id}.txt`, {cache:'no-store'})
+            .then(r=>r.ok?r.text():'')
+            .then(t=>{
+              ta.value = t || '(読み込み失敗)';
+              autosize(ta);
+            })
+            .catch(()=>{ ta.value='(読み込み失敗)'; autosize(ta); });
+        }
+
+        if(!wrap.children.length){
+          wrap.innerHTML = '<div style="opacity:.6">（お題がありません）</div>';
+        }
+
+        // 生成完了後、#id があれば開いてスクロール＆強調
+        requestAnimationFrame(()=> focusCardByHash('auto'));
+        setTimeout(()=> focusCardByHash('auto'), 150);
+
+      }catch(e){
+        wrap.innerHTML = '<div style="opacity:.7">読み込み失敗… '+(e.message||e)+'</div>';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', buildCards);
+  </script>
 </body>
 </html>
