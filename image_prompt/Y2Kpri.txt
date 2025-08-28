@@ -1,35 +1,34 @@
 # Y2Kプリクラ画像生成してください！
-
+  
 ## Character 1：
-成人男性。茶髪、短髪、茶目、元気な感じ。
-服装：Y2K風のチャラチャラしたギャル男風。
-表情：おおはしゃぎ、超笑顔。
-
+成人男性。茶髪、短髪、茶目、元気な感じ。  
+服装：Y2K風のチャラチャラしたギャル男風。  
+表情：おおはしゃぎ、超笑顔。  
+  
 ## Character 2：
-成人女性。黒髪ポニテ、黒目、おとなしそう。
-服装：割と派手めで強い女性っぽい恰好。Y2Kのギャルチック。
-表情：恥じらいながらも楽しそう。
-
+成人女性。黒髪ポニテ、黒目、おとなしそう。  
+服装：割と派手めで強い女性っぽい恰好。Y2Kのギャルチック。  
+表情：恥じらいながらも楽しそう。  
+  
 ## テキスト
-
-Together Forever
-
+Together Forever  
+  
 ## 日付
-
-2025/08/19
-
+2025/08/19  
+  
+  
 ---
-
-
-
-
-
+  
+  
+  
+  
+  
 ## Pose & Composition
-
+  
 - The two of them are really flirting.
-
+  
 ## Camera
-
+  
 - **Angle**: follow the pick from **Randomizer #0** (Bird’s-eye / Neutral / Low angle).
 - **Lens**: ~**28 mm** wide-angle look; strong perspective but flattering.
 - **Aperture**: **f/2.0** (shallow DOF); focus locked on the eyes of both characters.
@@ -47,10 +46,10 @@ Together Forever
 - Use **multicolor highlights** and **saturated, polychromatic shadows** (not a single shadow tone).
 - **Strong rim light** to carve the silhouette.
 - **Smooth, noise-free** finish (no film grain or texture).
-
-
+  
+  
 ## DOODLE OVERLAY RULES (CRITICAL)
-
+  
 - All doodles are hand-drawn overlays (NOT built-in makeup/features).
 
 - Render on a separate top layer (add/screen/lighten), 70–90% opacity, soft outer glow, tiny drop shadow; wobbly/variable stroke width; slight RGB fringe OK.
@@ -58,7 +57,7 @@ Together Forever
 - Do not fuse into skin/hair shading; no cast shadows; keep faces readable (≤ 20% overlap on each face).
 
 - Headwear doodles (e.g., angel halo, devil horns, animal ears) are overlays/headband sketches, never anatomical; slight float/misalignment OK.
-
+  
 ### DOODLE SELECTION LOGIC (RANDOM)
 
 1. How many characters get face/head doodles? Pick one of:
@@ -80,7 +79,7 @@ Together Forever
 
 - All ears/halos/horns are overlays only (headband/outline look). Never real animal parts or fused anatomy.
 
-
+  
 ### FACE / HEAD DOODLES — CATALOG
 
 Animal & headwear overlays (pick 0–1 kind per selected character; obey pairing):
@@ -114,9 +113,9 @@ Cute face marks (pick 0–2 per selected character):
 
 - Barcode mini-tattoo (sticker look, near cheek edge; small; do not cover eyes/mouth)
 
-
+  
 ---
-
+  
 ## STICKER STYLE RULES (to avoid realism)
 
 - Stickers are die-cut or puffy/gel style, flat/minimal shading, thick white border (2–5% of size), tiny drop shadow; optional glossy highlight dot.
