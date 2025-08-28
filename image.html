@@ -203,12 +203,23 @@
       catch{ flash(btn,'失敗？'); }
     }
 
-    // Xに必ず直飛び（1回だけ開く）
-    async function shareToX(id, title){
-      const text = `【お題】${title || humanizeId(id)}\n${cardUrl(id)}`;
-      const xUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-      window.open(xUrl, '_blank', 'noopener,width=640,height=520'); // ← fallback無しで二重起動を排除
-    }
+// スマホは同一タブ twitter.com、PCは別タブ x.com
+function shareToX(id, title){
+  const text = `【お題】${title || humanizeId(id)}\n${location.origin}${location.pathname}#${encodeURIComponent(id)}`;
+  const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent);
+
+  const webMobile = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  const webDesktop = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+
+  if (isMobile) {
+    // 同一タブへ遷移：タブが勝手に閉じる現象を回避
+    location.href = webMobile;
+  } else {
+    // PCは別タブで開く
+    window.open(webDesktop, '_blank', 'noopener,width=640,height=520');
+  }
+}
+
 
     // OS共有（無ければURLをコピー）
     async function shareSystem(id, title, btn){
