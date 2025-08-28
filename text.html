@@ -79,7 +79,11 @@
     .carddesc{ font-size:1rem; color:var(--ink2); margin-top:2px; }
 
     /* 本文部：最初は “2行プレビュー表示” */
-    .cardcontent{ padding:0 10px 10px 10px; display:block; }
+/* ここを “左も sharew 分” に変更 */
+.cardcontent{
+  padding:0 10px 10px calc(var(--sharew) + 10px);  /* ← 左余白を追加 */
+  display:block;
+}
     .card.is-collapsed .promptarea{
       white-space: pre-wrap; line-height: 1.6; overflow: hidden;
       height: calc(1.6em * 2 + 20px);           /* 2行 + 上下padding */
@@ -118,12 +122,12 @@
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
 
-    @media (max-width:600px){
-      .container{ padding:14px 8px 36px; }
-      .cardhead{ padding:12px 12px 6px calc(var(--sharew) + 12px); }
-      .cardcontent{ padding:0 12px 12px; }
-      .copybtn{ padding:8px 10px; font-size:.92rem; }
-    }
+@media (max-width:600px){
+  .container{ padding:14px 8px 36px; }
+  .cardhead{ padding:12px 12px 6px calc(var(--sharew) + 12px); }
+  .cardcontent{ padding:0 12px 12px calc(var(--sharew) + 12px); } /* ← ここを追加/修正 */
+  .copybtn{ padding:8px 10px; font-size:.92rem; }
+}
 
     @media (prefers-reduced-motion:reduce){
       *{ transition:none !important; animation:none !important; }
