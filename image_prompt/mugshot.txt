@@ -3,23 +3,23 @@
 ---
 ## キャラクター
 日本人。成人男性。黒髪緑目スカしたイケメン。
-
+  
 服装：囚人服（変えてください！）
-
+  
 ---
 ## 身長
-178cm（変えて！）
-
+178cm（変えて！）  
+  
 ---
-
-
-
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
 ## Prompt
 Before generating the image, print an assistant message showing the randomly selected items:
 - Pose:
