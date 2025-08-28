@@ -1,31 +1,31 @@
-# キュートなオーバーサイズ服 画像生成してください
-
+# キュートなオーバーサイズ服 画像生成してください  
+  
 ##キャラクター外見
-成人女性。 日本人。こげ茶ショートボブ、明るい茶色の瞳、色白。
-
-
+成人女性。 日本人。こげ茶ショートボブ、明るい茶色の瞳、色白。  
+  
+  
 ## <WEARABLE>
-白ワイシャツ
-
-
+白ワイシャツ  
+  
+  
 ## ポーズ
-暖かくて心地よいベッドにちょこんと座って、はにかむ表情でカメラを見つめている。
-頬に血色強め、瞳は愛らしくうるうる。
-
+暖かくて心地よいベッドにちょこんと座って、はにかむ表情でカメラを見つめている。  
+頬に血色強め、瞳は愛らしくうるうる。  
+  
 ---
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
 ## テーマ
-
+  
 A person wearing a 5XL oversized <WEARABLE> on a medium-sized body. The shoulders droop far down, the sleeves are extremely long, hiding the hands so only fingertips peek out. The <WEARABLE>’s hem covers the thighs loosely, giving a moe-sleeve, oversized look. Worn loosely and casually, with some buttons （3-4） left undone at the top. The <WEARABLE> open. 
-
+  
 ## シーン
 The air shimmers gently, with a sense of breath and humidity in the scene. cinematic lighting, dimly lit cozy room, warm indirect ambient light, gentle rim light outlining the figure, dreamy bokeh background, soft glowing haze in the air, romantic soft-focus atmosphere full of warmth and intimacy,  high-angle perspective as if viewed lovingly from above
-
+  
 ## 画風
-
+  
 manga style illustration, expressive pencil line art with varied line weight, individual hair strands, high-quality digital painting, vivid yet clear saturated colors, matte and foggy smooth skin, translucent gradient eyes, delicate highlights, hatching shadows, slender nose, emphasized eyelashes, large sparkling eyes, ambient occlusion, skin bloom, ultra-detailed texture, ultra high resolution, 4K, crisp, no yellow tint, low noise, sharp edges, strong specular, strong bloom, fine colorful linework, intricate details around eyes, simplified nostrils.
