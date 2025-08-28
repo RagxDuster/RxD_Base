@@ -9,8 +9,8 @@
   <style>
     :root{
       --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --sun:#FFF59F; --ink2:#555; --line:#DDD;
-      /* 追加：サムネサイズを一括調整（数値変えるだけで全体反映） */
-      --thumb: 96px;
+      /* サムネ大きさ（被り対策済みだから自由に変えてOK） */
+      --thumb: 112px;
       --thumb-radius: 12px;
       --target-accent: var(--mint);
     }
@@ -31,18 +31,35 @@
       border-radius:16px;
       box-shadow:0 2px 12px #7FE7DB20;
       padding:16px;
-      display:flex; align-items:center; gap:14px;
+      display:flex; align-items:flex-start; gap:14px;   /* ← 上揃えにしてボタンが被らない */
       transition:box-shadow .18s, border-color .18s, background .18s;
       flex-wrap:nowrap; position:relative;
-      scroll-margin-top:16px; /* ハッシュスクロール時の停止位置 */
+      scroll-margin-top:16px;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
+
+    /* 共有バー（画像の“左に”並ぶ・通常フローなので重ならない） */
+    .sharebar{
+      display:flex; gap:6px; flex:0 0 auto; align-self:flex-start;
+      margin-top:2px;
+    }
+    .sharebtn{
+      border:none; border-radius:8px; padding:2px 8px; font-size:0.75rem; font-weight:bold;
+      cursor:pointer; transition:background .18s, opacity .18s;
+    }
+    .urlbtn{ background:var(--sun); color:#555; }
+    .urlbtn:hover{ background:var(--pink); color:#fff; }
+    .xbtn{ background:#111; color:#fff; opacity:.9; }
+    .xbtn:hover{ background:#000; opacity:1; }
+    .sysbtn{ background:var(--mint); color:#222; }
+    .sysbtn:hover{ background:var(--pink); color:#fff; }
+    .sharebtn[disabled]{ opacity:.6; cursor:default; }
 
     .thumb{
       width:var(--thumb); height:var(--thumb);
       border-radius:var(--thumb-radius); object-fit:cover;
       border:2px solid var(--sun); background:var(--bg); flex:0 0 auto;
-      cursor:zoom-in; /* プレビュー示唆 */
+      cursor:zoom-in;
     }
     .thumb.ph{
       display:flex; align-items:center; justify-content:center;
@@ -54,7 +71,7 @@
     .cardtitle{ font-size:1.12rem; font-weight:800; color:var(--pink); margin-bottom:2px; }
     .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:8px; }
 
-    .promptbox{ display:flex; align-items:center; gap:8px; flex-wrap:nowrap; width:100%; }
+    .promptbox{ display:flex; align-items:center; gap:8px; width:100%; }
     .promptarea{
       background:#F8F7FD; border:1.5px solid var(--line); border-radius:8px;
       font-size:.95rem; color:#444; letter-spacing:.01em;
@@ -82,46 +99,22 @@
     .gotop{ position:absolute; top:8px; right:12px; font-size:0.9rem; text-decoration:none; color:var(--ink2); }
     .gotop:hover{ color:var(--pink); }
 
-    /* 左上ボタン（url＋X）を横並びに */
-    .leftbtns{
-      position:absolute; top:8px; left:8px; display:flex; gap:6px; z-index:1;
-    }
-    .leftbtns .urlbtn{ position:static; top:auto; left:auto; } /* 既存styleを打ち消し */
-
-    .urlbtn{
-      position:absolute; top:8px; left:8px;
-      background:var(--sun); color:#555; font-size:0.75rem; font-weight:bold;
-      border:none; border-radius:8px; padding:2px 8px; cursor:pointer;
-      opacity:0.85; transition:background .18s, opacity .18s;
-    }
-    .urlbtn:hover{ background:var(--pink); color:#fff; opacity:1; }
-    .urlbtn[disabled]{ opacity:.6; cursor:default; }
-
-    /* Xボタン */
-    .xbtn{
-      background:#111; color:#fff; font-size:0.75rem; font-weight:bold;
-      border:none; border-radius:8px; padding:2px 8px; cursor:pointer;
-      opacity:.9; transition:background .18s, opacity .18s;
-    }
-    .xbtn:hover{ background:#000; opacity:1; }
-    .xbtn[disabled]{ opacity:.6; cursor:default; }
-
-    /* URLの #ID と一致したカードの強調表示 */
+    /* #ID 一致カードの強調 */
     .card.is-target{
       background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%);
       border-color:var(--target-accent);
       box-shadow:0 0 0 3px #7FE7DB66, 0 8px 28px #FF93C244;
     }
     .card.is-target .cardtitle{ color:var(--target-accent); }
-    .card.is-target .urlbtn{ background:var(--pink); color:#fff; }
 
     /* JSオフ時の保険 */
     .card:target{ background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%); border-color:var(--target-accent); }
     .card:target .cardtitle{ color:var(--target-accent); }
-    .card:target .urlbtn{ background:var(--pink); color:#fff; }
 
     @media (max-width:600px){
       .container{ padding:14px 8px 36px; }
+      .card{ flex-wrap:wrap; }                   /* スマホは共有バーを上段へ */
+      .sharebar{ order:-1; width:100%; margin-bottom:6px; }
       .thumb{ width:calc(var(--thumb) - 18px); height:calc(var(--thumb) - 18px); border-radius:10px; }
       .card{ padding:12px; gap:10px; }
       .cardtitle{ font-size:1.06rem; }
@@ -139,7 +132,7 @@
       100% { box-shadow:0 0 0 #FF93C200; }
     }
 
-    /* 画像プレビュー（ライトボックス） */
+    /* ライトボックス */
     .lightbox[hidden]{ display:none; }
     .lightbox{
       position:fixed; inset:0; background:rgba(0,0,0,.65);
@@ -190,7 +183,7 @@
   </div>
 
   <script>
-    // --- ユーティリティ ---
+    // --- util ---
     async function copyPrompt(id, btn){
       const el = document.getElementById(id);
       const text = (el?.value ?? el?.textContent ?? '').trim();
@@ -199,39 +192,41 @@
         if(navigator.clipboard && window.isSecureContext){
           await navigator.clipboard.writeText(text);
         }else{
-          const range=document.createRange(); range.selectNodeContents(el);
-          const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-          document.execCommand('copy'); sel.removeAllRanges();
+          const r=document.createRange(); r.selectNodeContents(el);
+          const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+          document.execCommand('copy'); s.removeAllRanges();
         }
-        flashCopied(btn, true);
-      }catch(_){ flashCopied(btn, false); }
+        flash(btn,'こぴした！');
+      }catch{ flash(btn,'失敗？'); }
     }
-    function flashCopied(btn, ok){
-      const o=btn.textContent;
-      btn.textContent = ok ? 'こぴした！' : '失敗？';
-      btn.disabled = true;
-      setTimeout(()=>{ btn.textContent=o; btn.disabled=false; }, 1600);
+    function flash(btn, msg, t=1600){
+      const o=btn.textContent; btn.textContent=msg; btn.disabled=true;
+      setTimeout(()=>{ btn.textContent=o; btn.disabled=false; }, t);
     }
-    function copyUrl(cardId, btn){
-      const url = `${location.origin}${location.pathname}#${encodeURIComponent(cardId)}`;
-      navigator.clipboard.writeText(url).then(()=>{
-        const o=btn.textContent; btn.textContent="urlこぴした！"; btn.disabled=true;
-        setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
-      }).catch(()=>{
-        const o=btn.textContent; btn.textContent="失敗？"; setTimeout(()=>btn.textContent=o,1200);
-      });
+    function cardUrl(id){ return `${location.origin}${location.pathname}#${encodeURIComponent(id)}`; }
+    async function copyUrl(id, btn){
+      try{ await navigator.clipboard.writeText(cardUrl(id)); flash(btn,'urlこぴした！'); }
+      catch{ flash(btn,'失敗？'); }
     }
-    // X共有（超シンプル）：「【お題】タイトル\nURL」だけ
-    async function shareCard(id, title){
-      const url  = `${location.origin}${location.pathname}#${encodeURIComponent(id)}`;
-      const ttl  = (title && title.trim()) || (typeof humanizeId === 'function' ? humanizeId(id) : id);
-      const text = `【お題】${ttl}\n${url}`;
 
+    // Xに必ず直飛び（【お題】タイトル + 改行 + URL）
+    async function shareToX(id, title){
+      const text = `【お題】${title || humanizeId(id)}\n${cardUrl(id)}`;
+      const xUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+      const twUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      let w = window.open(xUrl, '_blank', 'noopener,width=640,height=520');
+      if(!w || w.closed){ w = window.open(twUrl, '_blank', 'noopener,width=640,height=520'); if(!w || w.closed) location.href = xUrl; }
+    }
+
+    // OS共有（なければURLをコピー）
+    async function shareSystem(id, title, btn){
+      const text = `【お題】${title || humanizeId(id)}\n${cardUrl(id)}`;
       if(navigator.share){
-        try{ await navigator.share({ text }); return; }catch(_){}
+        try{ await navigator.share({ text }); return; }
+        catch{ /* キャンセル等は無視してコピーfallback */ }
       }
-      const tw = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-      window.open(tw, '_blank', 'noopener,width=600,height=460');
+      try{ await navigator.clipboard.writeText(text); flash(btn, 'copy!'); }
+      catch{ window.open(cardUrl(id),'_blank'); }
     }
 
     async function resolveImageSrc(id){
@@ -248,7 +243,7 @@
       return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
     }
 
-    // --- ハッシュ強調＆スクロール ---
+    // --- hash focus ---
     function setTargetCardClass(){
       document.querySelectorAll('.card.is-target').forEach(c=>c.classList.remove('is-target'));
       if(!location.hash) return;
@@ -268,7 +263,7 @@
     }
     window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
 
-    // --- ライトボックス ---
+    // --- lightbox ---
     const lb = document.getElementById('lightbox');
     const lbImg = lb.querySelector('.lightbox-img');
     const lbTitle = lb.querySelector('.lightbox-title');
@@ -278,16 +273,12 @@
     function openLightbox(src, alt, title){
       if(!src) return;
       lastFocus = document.activeElement;
-      lbImg.src = src;
-      lbImg.alt = alt || '';
+      lbImg.src = src; lbImg.alt = alt || '';
       lbTitle.textContent = title || '';
-      lb.hidden = false;
-      document.body.style.overflow = 'hidden';
-      lbClose.focus();
+      lb.hidden = false; document.body.style.overflow = 'hidden'; lbClose.focus();
     }
     function closeLightbox(){
-      lb.hidden = true;
-      lbImg.src = '';
+      lb.hidden = true; lbImg.src = '';
       document.body.style.overflow = '';
       if(lastFocus && typeof lastFocus.focus === 'function'){ lastFocus.focus(); }
     }
@@ -295,7 +286,7 @@
     lbClose.addEventListener('click', closeLightbox);
     document.addEventListener('keydown', (e)=>{ if(!lb.hidden && e.key === 'Escape') closeLightbox(); });
 
-    // --- カード生成 ---
+    // --- build cards ---
     async function buildCards(){
       const wrap = document.getElementById('cards');
       if(!wrap) return;
@@ -328,26 +319,31 @@
           const gotop = document.createElement('a');
           gotop.href = '#top'; gotop.className = 'gotop'; gotop.textContent = '▲';
 
-          // 左上ボタン群（url + X）
-          const left = document.createElement('div');
-          left.className = 'leftbtns';
+          /* 共有バー */
+          const share = document.createElement('div');
+          share.className = 'sharebar';
 
-          const urlbtn = document.createElement('button');
-          urlbtn.className = 'urlbtn'; urlbtn.textContent = 'url';
-          urlbtn.addEventListener('click',()=>copyUrl(id,urlbtn));
-          left.appendChild(urlbtn);
+          const btnUrl = document.createElement('button');
+          btnUrl.className = 'sharebtn urlbtn'; btnUrl.textContent = 'url';
+          btnUrl.addEventListener('click', ()=> copyUrl(id, btnUrl));
+          share.appendChild(btnUrl);
 
-          const xbtn = document.createElement('button');
-          xbtn.className = 'xbtn'; xbtn.textContent = 'X'; xbtn.title = 'Xで共有';
-          xbtn.addEventListener('click', ()=> shareCard(id, title || humanizeId(id)));
-          left.appendChild(xbtn);
+          const btnX = document.createElement('button');
+          btnX.className = 'sharebtn xbtn'; btnX.textContent = 'X';
+          btnX.title = 'Xでポスト';
+          btnX.addEventListener('click', ()=> shareToX(id, title || humanizeId(id)));
+          share.appendChild(btnX);
+
+          const btnSys = document.createElement('button');
+          btnSys.className = 'sharebtn sysbtn'; btnSys.textContent = '🔗';
+          btnSys.title = '共有（OSの共有UI）';
+          btnSys.addEventListener('click', ()=> shareSystem(id, title || humanizeId(id), btnSys));
+          share.appendChild(btnSys);
 
           const img = document.createElement('img');
           img.className = 'thumb';
           img.alt = `${title} sample`;
-          img.loading = 'lazy';
-          img.decoding = 'async';
-          img.tabIndex = 0;
+          img.loading = 'lazy'; img.decoding = 'async'; img.tabIndex = 0;
 
           const body = document.createElement('div'); body.className = 'cardbody';
           const ttl = document.createElement('div'); ttl.className = 'cardtitle'; ttl.textContent = title || humanizeId(id);
@@ -356,15 +352,15 @@
           const pbox = document.createElement('div'); pbox.className = 'promptbox';
           const ta = document.createElement('textarea');
           ta.className = 'promptarea'; ta.rows = 1; ta.wrap = 'off'; ta.readOnly = true; ta.id = `prompt-${id}`;
-          const btn = document.createElement('button');
-          btn.className = 'copybtn'; btn.textContent = 'コピー';
-          btn.addEventListener('click', ()=>copyPrompt(ta.id, btn));
+          const btnCopy = document.createElement('button');
+          btnCopy.className = 'copybtn'; btnCopy.textContent = 'コピー';
+          btnCopy.addEventListener('click', ()=>copyPrompt(ta.id, btnCopy));
 
-          pbox.appendChild(ta); pbox.appendChild(btn);
+          pbox.appendChild(ta); pbox.appendChild(btnCopy);
           body.appendChild(ttl); body.appendChild(dsc); body.appendChild(pbox);
 
           card.appendChild(gotop);
-          card.appendChild(left);         /* ← 左上ボタン群 */
+          card.appendChild(share);  /* ← 画像の左に並ぶ */
           card.appendChild(img);
           card.appendChild(body);
           wrap.appendChild(card);
@@ -375,7 +371,7 @@
             .then(t=>{ ta.value = t || '(読み込み失敗)'; })
             .catch(()=>{ ta.value='(読み込み失敗)'; });
 
-          // 画像解決（無ければプレースホルダ）＋プレビュー配線
+          // 画像解決＋プレビュー
           const src = await resolveImageSrc(id);
           if(src){
             img.src = src;
@@ -393,7 +389,6 @@
           wrap.innerHTML = '<div style="opacity:.6">（お題がありません）</div>';
         }
 
-        // 生成が完了したタイミングでハッシュへ確実にジャンプ＆強調
         requestAnimationFrame(()=> focusCardByHash('auto'));
         setTimeout(()=> focusCardByHash('auto'), 150);
 
