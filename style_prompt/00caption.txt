@@ -4,4 +4,4 @@ watercolor<>淡い透明水彩
 girlwater<>鮮やか少女漫画水彩
 gothic<>厚塗り油彩風
 pencils<>やさしげ色鉛筆
-cream<>クリームドール
+cream<>おめめキラキラクリーム塗り
