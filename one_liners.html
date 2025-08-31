@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
-    :root{ --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --ink2:#555; --line:#DDD; }
+    :root{ --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB; --ink2:#555; --line:#DDD; --accent:var(--mint); }
     html{ background:var(--bg); color:var(--ink);
       font-family:'Noto Sans JP','Kosugi Maru','M PLUS Rounded 1c',system-ui,sans-serif; }
     body{ margin:0; min-height:100vh; scroll-behavior:smooth; }
@@ -18,27 +18,27 @@
     .desc{ text-align:center; font-size:1.03rem; color:var(--ink2); margin-bottom:18px; }
 
     /* カードグリッド（PCで2～3列、スマホ1列） */
-    .cards{
-      display:grid; gap:16px;
-      grid-template-columns:1fr;
-    }
-    @media (min-width:800px){
-      .cards{ grid-template-columns:1fr 1fr; }
-    }
-    @media (min-width:1180px){
-      .cards{ grid-template-columns:1fr 1fr 1fr; }
-    }
+    .cards{ display:grid; gap:16px; grid-template-columns:1fr; }
+    @media (min-width:800px){ .cards{ grid-template-columns:1fr 1fr; } }
+    @media (min-width:1180px){ .cards{ grid-template-columns:1fr 1fr 1fr; } }
 
     .card{
       background:var(--card);
       border:2.5px solid var(--pink);
       border-radius:16px;
       box-shadow:0 2px 12px #7FE7DB20;
-      padding:14px 14px 12px;
+      padding:12px 12px 12px;
       display:flex; flex-direction:column; gap:10px;
-      transition:box-shadow .18s, border-color .18s;
+      transition:box-shadow .18s, border-color .18s, background .18s;
+      scroll-margin-top: 16px;
     }
     .card:hover{ box-shadow:0 4px 24px #FF93C288; border-color:var(--mint); }
+    /* ハッシュ一致での強調（JSが .is-target を付与） */
+    .card.is-target{
+      background:linear-gradient(180deg,#fff 0%, #fff6fb 55%, #fff 100%);
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px #7FE7DB66, 0 8px 28px #FF93C244;
+    }
 
     .promptarea{
       box-sizing:border-box; width:100%; display:block;
@@ -48,8 +48,26 @@
       resize:none; overflow:hidden; white-space:pre-wrap;
     }
 
+    /* ボタン行：左に共有3つ、右端にコピー */
+    .btnrow{
+      display:flex; align-items:center; gap:10px;
+    }
+    .sharegrp{ display:flex; align-items:center; gap:8px; }
+    .sharebtn{
+      border:none; border-radius:8px; padding:4px 10px;
+      font-size:.78rem; font-weight:800; line-height:1.6;
+      cursor:pointer; transition:background .18s, opacity .18s;
+    }
+    .sharebtn[disabled]{ opacity:.6; cursor:default; }
+    .urlbtn{ background:#FFF59F; color:#555; }
+    .urlbtn:hover{ background:var(--pink); color:#fff; }
+    .xbtn{ background:#111; color:#fff; opacity:.92; }
+    .xbtn:hover{ background:#000; opacity:1; }
+    .sysbtn{ background:var(--mint); color:#222; }
+    .sysbtn:hover{ background:var(--pink); color:#fff; }
+
     .copybtn{
-      align-self:flex-start;
+      margin-left:auto;                 /* 右端へ寄せる */
       background:var(--mint); color:var(--ink); font-weight:800; border:none; border-radius:10px;
       padding:8px 12px; font-size:.95rem; cursor:pointer; transition:background .18s, transform .06s;
     }
@@ -64,17 +82,34 @@
     .backlink:hover{ background:var(--pink); color:#fff; }
 
     .footer{ text-align:center; margin-top:40px; color:#B3A9D6; font-size:.96rem; }
+
+    @media (max-width:600px){
+      .container{ padding:14px 8px 36px; }
+      .copybtn{ padding:8px 10px; font-size:.92rem; }
+      .sharebtn{ padding:4px 8px; font-size:.76rem; }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *{ transition:none !important; animation:none !important; }
+    }
+
+    .highlight { animation: flash 1.8s ease; }
+    @keyframes flash {
+      0% { box-shadow:0 0 0 #FF93C200; }
+      30% { box-shadow:0 0 18px #FF93C288; }
+      100% { box-shadow:0 0 0 #FF93C200; }
+    }
   </style>
 </head>
 
-<body>
+<body id="top">
   <div class="container">
     <a href="index.html" class="backlink">← indexに戻る</a>
 
     <img src="rxd-logo.png" class="logoimg" alt="RxDロゴ">
     <h1>一言お題 | RxD Base</h1>
     <hr class="cute">
-    <p class="desc">気になったら下のボタンで即コピーして使ってね。</p>
+    <p class="desc">気になったらボタンで即コピー。共有もどうぞ💋</p>
     <hr class="cute">
 
     <!-- JSがここに自動でカードを生成する -->
@@ -85,7 +120,15 @@
   </div>
 
   <script>
-    // クリップボードコピー
+    /* ===== utils ===== */
+    function unescapeNewlines(s){ return s.replace(/\\n/g, '\n'); }
+    function autosize(ta){ if(!ta) return; ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; }
+    function cardUrl(id){ return `${location.origin}${location.pathname}#${encodeURIComponent(id)}`; }
+    function snippet(str, n=18){
+      const s = (str||'').replace(/\s+/g,' ').trim();
+      return s.length > n ? s.slice(0,n) + '…' : s || '一言お題';
+    }
+
     async function copyPrompt(id, btn){
       const el = document.getElementById(id);
       const text = (el?.value ?? el?.textContent ?? '').trim();
@@ -94,30 +137,63 @@
         if(navigator.clipboard && window.isSecureContext){
           await navigator.clipboard.writeText(text);
         }else{
-          const r = document.createRange(); r.selectNodeContents(el);
-          const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+          const r=document.createRange(); r.selectNodeContents(el);
+          const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
           document.execCommand('copy'); s.removeAllRanges();
         }
-        const o = btn.textContent; btn.textContent = 'こぴした！'; btn.disabled = true;
-        setTimeout(()=>{ btn.textContent = o; btn.disabled = false; }, 1400);
-      }catch(_){
-        const o = btn.textContent; btn.textContent = '失敗？'; setTimeout(()=>btn.textContent=o, 1200);
+        flash(btn,'こぴした！');
+      }catch(_){ flash(btn,'失敗？'); }
+    }
+    async function copyUrl(id, btn){
+      try{ await navigator.clipboard.writeText(cardUrl(id)); flash(btn,'urlこぴした！'); }
+      catch{ flash(btn,'失敗？'); }
+    }
+    function flash(btn, msg, t=1600){
+      const o=btn.textContent; btn.textContent=msg; btn.disabled=true;
+      setTimeout(()=>{ btn.textContent=o; btn.disabled=false; }, t);
+    }
+
+    // X共有：スマホは同タブ twitter.com、PCは別タブ x.com
+    function shareToX(id, title){
+      const text = `【お題】${title}\n${cardUrl(id)}`;
+      const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent);
+      const webMobile  = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      const webDesktop = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+      if (isMobile) location.href = webMobile;
+      else window.open(webDesktop, '_blank', 'noopener,width=640,height=520');
+    }
+
+    // OS共有：無ければ同文をコピー
+    async function shareSystem(id, title, btn){
+      const text = `【お題】${title}\n${cardUrl(id)}`;
+      if(navigator.share){
+        try{ await navigator.share({ text }); return; }catch{}
       }
+      try{ await navigator.clipboard.writeText(text); flash(btn,'copy!'); }
+      catch{ window.open(cardUrl(id),'_blank'); }
     }
 
-    // 高さオートフィット
-    function autosize(ta){
-      if(!ta) return;
-      ta.style.height = 'auto';
-      ta.style.height = ta.scrollHeight + 'px';
+    /* ===== hash target highlight & jump ===== */
+    function setTargetCardClass(){
+      document.querySelectorAll('.card.is-target').forEach(c=>c.classList.remove('is-target'));
+      if(!location.hash) return;
+      const id = decodeURIComponent(location.hash.slice(1));
+      const el = document.getElementById(id);
+      if(el) el.classList.add('is-target');
     }
-
-    // \n のエスケープを実際の改行へ
-    function unescapeNewlines(s){
-      return s.replace(/\\n/g, '\n');
+    function focusCardByHash(behavior='smooth'){
+      setTargetCardClass();
+      if(!location.hash) return;
+      const id = decodeURIComponent(location.hash.slice(1));
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.scrollIntoView({behavior, block:'center'});
+      el.classList.add('highlight');
+      setTimeout(()=> el.classList.remove('highlight'), 2000);
     }
+    window.addEventListener('hashchange', ()=> focusCardByHash('smooth'));
 
-    // 1行=1カードで生成
+    /* ===== builder ===== */
     async function buildCardsFromTxt(url){
       const wrap = document.getElementById('cards');
       if(!wrap) return;
@@ -127,54 +203,84 @@
         if(!res.ok) throw new Error('HTTP ' + res.status);
         const text = await res.text();
 
-        // 空行/コメント(# または //)を除外
         const lines = text.split(/\r?\n/)
           .map(s => s.trim())
           .filter(s => s && !s.startsWith('#') && !s.startsWith('//'));
 
         wrap.innerHTML = '';
 
-        for(const line of lines){
+        lines.forEach((line, i)=>{
+          const id = 'p-' + String(i+1).padStart(3,'0');   // ← 安定ID
+          const full = unescapeNewlines(line);
+          const title = snippet(full, 18);
+
           const card = document.createElement('div');
           card.className = 'card';
+          card.id = id;
 
           const ta = document.createElement('textarea');
           ta.className = 'promptarea';
           ta.readOnly = true;
-          ta.value = unescapeNewlines(line);
+          ta.id = 'prompt-' + id;
+          ta.value = full;
 
-          const btn = document.createElement('button');
-          btn.className = 'copybtn';
-          btn.textContent = 'コピー';
+          /* ボタン行：左に共有3つ、右端にコピー */
+          const row = document.createElement('div');
+          row.className = 'btnrow';
 
-          // 配線
-          ta.id = 'prompt-' + Math.random().toString(36).slice(2,8);
-          btn.addEventListener('click', ()=>copyPrompt(ta.id, btn));
+          const share = document.createElement('div');
+          share.className = 'sharegrp';
+
+          const bUrl = document.createElement('button');
+          bUrl.type='button'; bUrl.className='sharebtn urlbtn'; bUrl.textContent='url';
+          bUrl.addEventListener('click', ()=> copyUrl(id, bUrl));
+
+          const bX = document.createElement('button');
+          bX.type='button'; bX.className='sharebtn xbtn'; bX.textContent='X';
+          bX.title='Xでポスト';
+          bX.addEventListener('click', ()=> shareToX(id, title));
+
+          const bSys = document.createElement('button');
+          bSys.type='button'; bSys.className='sharebtn sysbtn'; bSys.textContent='🔗';
+          bSys.title='共有（OSの共有UI）';
+          bSys.addEventListener('click', ()=> shareSystem(id, title, bSys));
+
+          share.appendChild(bUrl);
+          share.appendChild(bX);
+          share.appendChild(bSys);
+
+          const bCopy = document.createElement('button');
+          bCopy.type='button'; bCopy.className='copybtn'; bCopy.textContent='コピー';
+          bCopy.addEventListener('click', ()=> copyPrompt(ta.id, bCopy));
+
+          row.appendChild(share);
+          row.appendChild(bCopy);
 
           card.appendChild(ta);
-          card.appendChild(btn);
+          card.appendChild(row);
           wrap.appendChild(card);
 
           autosize(ta);
-        }
+        });
 
         if(!wrap.children.length){
           wrap.innerHTML = '<div style="opacity:.6">（お題がありません）</div>';
         }
 
         // リサイズ時もフィット更新
-        window.addEventListener('resize', ()=>{
-          document.querySelectorAll('.promptarea').forEach(autosize);
-        });
+        window.addEventListener('resize', ()=>{ document.querySelectorAll('.promptarea').forEach(autosize); });
+
+        // 生成完了後、ハッシュへ強調スクロール（あれば）
+        requestAnimationFrame(()=> focusCardByHash('auto'));
+        setTimeout(()=> focusCardByHash('auto'), 150);
 
       }catch(e){
         wrap.innerHTML = '<div style="opacity:.7">読み込み失敗… ' + String(e.message || e) + '</div>';
       }
     }
 
-    // 同一オリジンのテキストを読む（GH Pages対応）
     window.addEventListener('DOMContentLoaded', ()=>{
-      // ここを必要に応じて差し替え：同一リポ内に置くこと
+      // リポ内のテキストを読む（GH Pages対応）
       buildCardsFromTxt('one_text/prompts.txt');
     });
   </script>
