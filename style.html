@@ -11,8 +11,7 @@
       --bg:#F5EBFA; --ink:#222; --card:#fff; --pink:#FF93C2; --mint:#7FE7DB;
       --ink2:#555; --line:#DDD; --sun:#FFF59F;
       --target-accent: var(--mint);
-      /* ← サムネ一括調整（好きな値に） */
-      --thumb: 108px;
+      --thumb: 108px;      /* サムネ一括調整 */
       --radius: 14px;
     }
     html{ background:var(--bg); color:var(--ink);
@@ -52,9 +51,19 @@
       border:2px solid var(--sun); background:#f3f2f9; flex:0 0 auto;
       cursor:zoom-in;
     }
+    /* 骨組み（ロード中のキラッ） */
+    .thumb.skel{ position:relative; overflow:hidden; border-style:dashed; }
+    .thumb.skel::after{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(90deg, transparent, #ffffff55, transparent);
+      animation:shimmer 1.1s infinite;
+    }
+    @keyframes shimmer{ from{ transform:translateX(-100%);} to{ transform:translateX(100%);} }
+
     .thumb.ph{
       display:flex; align-items:center; justify-content:center; color:#999; font-size:.8rem; border-style:dashed;
       cursor:default;
+      width:var(--thumb); height:var(--thumb); border-radius:var(--radius);
     }
 
     .cardbody{ flex:1 1 auto; min-width:0; }
@@ -113,7 +122,7 @@
       100% { box-shadow:0 0 0 #FF93C200; }
     }
 
-    /* 画像プレビュー（ライトボックス） */
+    /* ライトボックス */
     .lightbox[hidden]{ display:none; }
     .lightbox{
       position:fixed; inset:0; background:rgba(0,0,0,.65);
@@ -179,34 +188,33 @@
           const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
           document.execCommand('copy'); s.removeAllRanges();
         }
-        flash(btn,true);
-      }catch(_){ flash(btn,false); }
+        flash(btn,'こぴした！');
+      }catch(_){ flash(btn,'失敗？'); }
     }
-    function flash(btn, ok){
-      const o=btn.textContent; btn.textContent = ok?'こぴした！':'失敗？';
-      btn.disabled=true; setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
+    function flash(btn, msg, t=1600){
+      const o=btn.textContent; btn.textContent=msg; btn.disabled=true;
+      setTimeout(()=>{ btn.textContent=o; btn.disabled=false; }, t);
     }
     function copyUrl(cardId, btn){
       const url = `${location.origin}${location.pathname}#${encodeURIComponent(cardId)}`;
       navigator.clipboard.writeText(url).then(()=>{
-        const o=btn.textContent; btn.textContent="urlこぴした！"; btn.disabled=true;
-        setTimeout(()=>{ btn.textContent=o; btn.disabled=false; },1600);
-      }).catch(()=>{
-        const o=btn.textContent; btn.textContent="失敗？"; setTimeout(()=>btn.textContent=o,1200);
-      });
+        flash(btn,'urlこぴした！');
+      }).catch(()=>{ flash(btn,'失敗？',1200); });
     }
     function humanizeId(id){
       return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
     }
+
+    // 拡張子レースで最速ヒット（並列）
     async function resolveImageSrc(id){
-      const exts = ['.png','.jpg','.jpeg','.webp'];
-      for(const ext of exts){
-        try{
-          const r = await fetch(`style_prompt/${id}${ext}`, {method:'HEAD', cache:'no-store'});
-          if(r.ok) return `style_prompt/${id}${ext}`;
-        }catch{}
-      }
-      return null;
+      const exts = ['.webp','.jpg','.jpeg','.png']; // 速い順
+      const trials = exts.map(ext=>{
+        const url = `style_prompt/${id}${ext}`;
+        return fetch(url, {method:'HEAD', cache:'no-store'})
+          .then(r=> r.ok ? url : Promise.reject());
+      });
+      try{ return await Promise.any(trials); }
+      catch{ return null; }
     }
 
     // ---- hash focus ----
@@ -239,16 +247,12 @@
     function openLightbox(src, alt, title){
       if(!src) return;
       lastFocus = document.activeElement;
-      lbImg.src = src;
-      lbImg.alt = alt || '';
+      lbImg.src = src; lbImg.alt = alt || '';
       lbTitle.textContent = title || '';
-      lb.hidden = false;
-      document.body.style.overflow = 'hidden';
-      lbClose.focus();
+      lb.hidden = false; document.body.style.overflow = 'hidden'; lbClose.focus();
     }
     function closeLightbox(){
-      lb.hidden = true;
-      lbImg.src = '';
+      lb.hidden = true; lbImg.src = '';
       document.body.style.overflow = '';
       if(lastFocus && typeof lastFocus.focus === 'function'){ lastFocus.focus(); }
     }
@@ -256,7 +260,7 @@
     lbClose.addEventListener('click', closeLightbox);
     document.addEventListener('keydown', (e)=>{ if(!lb.hidden && e.key === 'Escape') closeLightbox(); });
 
-    // ---- build ----
+    // ---- build（カード先出し／画像は並列） ----
     async function buildCards(){
       const wrap = document.getElementById('cards');
       if(!wrap) return;
@@ -291,11 +295,11 @@
           urlbtn.addEventListener('click',()=>copyUrl(id,urlbtn));
 
           const img = document.createElement('img');
-          img.className = 'thumb';
+          img.className = 'thumb skel';       // 骨組みで先に表示
           img.alt = `${title} sample`;
           img.loading = 'lazy';
           img.decoding = 'async';
-          img.tabIndex = 0; // キーボードでも開ける
+          img.tabIndex = 0;
 
           const body = document.createElement('div'); body.className = 'cardbody';
           const ttl = document.createElement('div'); ttl.className = 'cardtitle'; ttl.textContent = title;
@@ -316,30 +320,32 @@
           card.appendChild(body);
           wrap.appendChild(card);
 
-          // 一行プロンプト読込（改行はスペースに）
+          // 一行プロンプト読込（非待機）
           fetch(`style_prompt/${id}.txt`, {cache:'no-store'})
             .then(r=>r.ok?r.text():'')
             .then(t=>{ ta.value = (t || '(読み込み失敗)').replace(/\r?\n+/g,' ').trim(); })
             .catch(()=>{ ta.value='(読み込み失敗)'; });
 
-          // 画像解決＋プレビュー配線
-          const src = await resolveImageSrc(id);
-          if(src){
-            img.src = src;
-            const open = ()=> openLightbox(src, img.alt, title);
-            img.addEventListener('click', open);
-            img.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }});
-          }else{
-            const ph = document.createElement('div'); ph.className='thumb ph'; ph.textContent='no img';
-            img.replaceWith(ph);
-          }
+          // 画像解決（並列）→結果で差し替え＆プレビュー配線
+          resolveImageSrc(id).then(src=>{
+            img.classList.remove('skel');
+            if(src){
+              img.src = src;
+              const open = ()=> openLightbox(src, img.alt, title);
+              img.addEventListener('click', open);
+              img.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }});
+            }else{
+              const ph = document.createElement('div'); ph.className='thumb ph'; ph.textContent='no img';
+              card.replaceChild(ph, img);
+            }
+          });
         }
 
         if(!wrap.children.length){
           wrap.innerHTML = '<div style="opacity:.6">（お題がありません）</div>';
         }
 
-        // 生成完了後、#id フォーカス
+        // 生成完了後に一度だけハッシュへ
         requestAnimationFrame(()=> focusCardByHash('auto'));
         setTimeout(()=> focusCardByHash('auto'), 150);
 

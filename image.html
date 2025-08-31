@@ -58,9 +58,18 @@
     .thumb{
       width:var(--thumb); height:var(--thumb);
       border-radius:var(--thumb-radius); object-fit:cover;
-      border:2px solid var(--sun); background:var(--bg);
+      border:2px solid var(--sun); background:#f3f2f9;
       cursor:zoom-in;
     }
+    /* 読み込み中の骨組み（キラッと） */
+    .thumb.skel{ position:relative; overflow:hidden; border-style:dashed; }
+    .thumb.skel::after{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(90deg, transparent, #ffffff55, transparent);
+      animation:shimmer 1.1s infinite;
+    }
+    @keyframes shimmer{ from{ transform:translateX(-100%);} to{ transform:translateX(100%);} }
+
     .thumb.ph{
       display:flex; align-items:center; justify-content:center;
       font-size:.72rem; color:#999; background:#f3f2f9; border-style:dashed;
@@ -68,8 +77,8 @@
     }
 
     .cardbody{ flex:1 1 auto; min-width:0; }
-    .cardtitle{ font-size:1.12rem; font-weight:800; color:var(--pink); margin-bottom:2px; }
-    .carddesc{ font-size:1rem; color:var(--ink2); margin-bottom:8px; }
+    .cardtitle{ font-size:1.12rem; font-weight:800; color:#FF93C2; margin-bottom:2px; }
+    .carddesc{ font-size:1rem; color:#555; margin-bottom:8px; }
 
     .promptbox{ display:flex; align-items:center; gap:8px; width:100%; }
     .promptarea{
@@ -96,8 +105,8 @@
     }
     .toplink:hover, .backlink:hover{ background:var(--pink); color:#fff; }
 
-    .gotop{ position:absolute; top:8px; right:12px; font-size:0.9rem; text-decoration:none; color:var(--ink2); }
-    .gotop:hover{ color:var(--pink); }
+    .gotop{ position:absolute; top:8px; right:12px; font-size:0.9rem; text-decoration:none; color:#777; }
+    .gotop:hover{ color:#FF93C2; }
 
     /* #ID 一致カードの強調 */
     .card.is-target{
@@ -203,23 +212,15 @@
       catch{ flash(btn,'失敗？'); }
     }
 
-// スマホは同一タブ twitter.com、PCは別タブ x.com
-function shareToX(id, title){
-  const text = `【お題】${title || humanizeId(id)}\n${location.origin}${location.pathname}#${encodeURIComponent(id)}`;
-  const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent);
-
-  const webMobile = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-  const webDesktop = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-
-  if (isMobile) {
-    // 同一タブへ遷移：タブが勝手に閉じる現象を回避
-    location.href = webMobile;
-  } else {
-    // PCは別タブで開く
-    window.open(webDesktop, '_blank', 'noopener,width=640,height=520');
-  }
-}
-
+    // スマホは同一タブ twitter.com、PCは別タブ x.com
+    function shareToX(id, title){
+      const text = `【お題】${title || humanizeId(id)}\n${location.origin}${location.pathname}#${encodeURIComponent(id)}`;
+      const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent);
+      const webMobile  = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      const webDesktop = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+      if (isMobile) location.href = webMobile;
+      else window.open(webDesktop, '_blank', 'noopener,width=640,height=520');
+    }
 
     // OS共有（無ければURLをコピー）
     async function shareSystem(id, title, btn){
@@ -227,19 +228,22 @@ function shareToX(id, title){
       if(navigator.share){
         try{ await navigator.share({ text }); return; }catch{}
       }
-      try{ await navigator.clipboard.writeText(text); flash(btn,'copy!'); }catch{ window.open(cardUrl(id),'_blank'); }
+      try{ await navigator.clipboard.writeText(text); flash(btn,'copy!'); }
+      catch{ window.open(cardUrl(id),'_blank'); }
     }
 
+    // 拡張子レースで最速ヒットを返す（並列）
     async function resolveImageSrc(id){
-      const exts = ['.png','.jpg','.jpeg','.webp'];
-      for(const ext of exts){
-        try{
-          const r = await fetch(`image_prompt/${id}${ext}`, {method:'HEAD', cache:'no-store'});
-          if(r.ok) return `image_prompt/${id}${ext}`;
-        }catch{}
-      }
-      return null;
+      const exts = ['.webp','.jpg','.jpeg','.png']; // 速そうな順
+      const trials = exts.map(ext=>{
+        const url = `image_prompt/${id}${ext}`;
+        return fetch(url, {method:'HEAD', cache:'no-store'})
+          .then(r=> r.ok ? url : Promise.reject());
+      });
+      try{ return await Promise.any(trials); }
+      catch{ return null; }
     }
+
     function humanizeId(id){
       return id.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim().replace(/^./, s=>s.toUpperCase());
     }
@@ -287,7 +291,7 @@ function shareToX(id, title){
     lbClose.addEventListener('click', closeLightbox);
     document.addEventListener('keydown', (e)=>{ if(!lb.hidden && e.key === 'Escape') closeLightbox(); });
 
-    // --- build cards ---
+    // --- build cards（カード→即描画 / 画像→並列で後付け） ---
     async function buildCards(){
       const wrap = document.getElementById('cards');
       if(!wrap) return;
@@ -345,7 +349,7 @@ function shareToX(id, title){
           share.appendChild(btnSys);
 
           const img = document.createElement('img');
-          img.className = 'thumb';
+          img.className = 'thumb skel';          // ← 骨組み表示を先に出す
           img.alt = `${title} sample`;
           img.loading = 'lazy'; img.decoding = 'async'; img.tabIndex = 0;
 
@@ -371,30 +375,33 @@ function shareToX(id, title){
           card.appendChild(body);
           wrap.appendChild(card);
 
-          // テキスト読み込み
+          // テキスト読み込み（非待機）
           fetch(`image_prompt/${id}.txt`, {cache:'no-store'})
             .then(r=>r.ok?r.text():'')
             .then(t=>{ ta.value = t || '(読み込み失敗)'; })
             .catch(()=>{ ta.value='(読み込み失敗)'; });
 
-          // 画像解決＋プレビュー
-          const src = await resolveImageSrc(id);
-          if(src){
-            img.src = src;
-            const open = ()=> openLightbox(src, img.alt, title);
-            img.addEventListener('click', open);
-            img.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }});
-          }else{
-            const ph = document.createElement('div');
-            ph.className = 'thumb ph'; ph.textContent = 'no img';
-            media.replaceChild(ph, img);
-          }
+          // 画像解決（非待機・並列）→結果で差し替え
+          resolveImageSrc(id).then(src=>{
+            img.classList.remove('skel');
+            if(src){
+              img.src = src;
+              const open = ()=> openLightbox(src, img.alt, title);
+              img.addEventListener('click', open);
+              img.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }});
+            }else{
+              const ph = document.createElement('div');
+              ph.className = 'thumb ph'; ph.textContent = 'no img';
+              media.replaceChild(ph, img);
+            }
+          });
         }
 
         if(!wrap.children.length){
           wrap.innerHTML = '<div style="opacity:.6">（お題がありません）</div>';
         }
 
+        // 生成が完了したタイミングでハッシュへジャンプ＆強調（1回だけ）
         requestAnimationFrame(()=> focusCardByHash('auto'));
         setTimeout(()=> focusCardByHash('auto'), 150);
 
