@@ -1,0 +1,162 @@
+# 目の残光イラストを生成してください！
+
+## キャラクター容姿
+
+成人男性。落ち着いた顔立ち。
+柔らかなグレーがかった黒髪、前髪が長めの**ショートヘア**。長い前髪で目はほとんど隠れている（**メカクレだが、発光する側の瞳孔は必ず可視**。光で髪のエッジが縁取られ、瞳孔を遮らない）。
+後ろ髪は長くない。髪質は柔らかく少しだけ跳ね気味。
+瞳はピンクが混じる甘いグレー。目の下にクマ。
+髪、睫毛、眉毛以外の体毛は一切ない（髭・うぶ毛・腕毛など**厳密に排除**）。
+高身長、指は長くて骨っぽい。
+服装：黒いダスターコート（インナーは自由）。
+
+---
+
+## STYLE-LOCK（画風）
+
+* **スタイル固定**：日本の女性向け漫画風、**テーパーする細い主線**。塗りは繊細なデジタルペイント、繊細に描かれた髪。顔立ちは漫画的に美化され大人びている。目は大きめだが縦長ではなく**横長の印象**。瞳に複雑なグラデ、複数ハイライト、**瞳孔に重なる colorful-highlight**。カラーパレットは**高彩度＋アッシュ**でメリハリ。リムライト、反射光、アンビエントオクルージョン、超高精細、黄ばみ無し、ノイズなし、ほどよいアンチエイリアス。
+  **high-saturation digital painting, semi-realistic anime**, clean edges, soft 2–3 step shading, balanced skin tones, single character, cover-art composition, ultra-quality.
+* **レンズ感**：**50–85mm相当のポートレート圧縮**、歪みを抑え、浅めの被写界深度（目にピント）。
+* **希少トークン**：`STYLE-LOCK-α`（文章に含めるだけのタグ。スタイル安定化用）
+
+---
+
+## 固定条件（拡張を含む）
+
+* 画風：**高彩度デジタルペイント・アニメ絵（STYLE-LOCK-α を含める）**
+* 構図：顔クローズアップ or バストショット／キャラは1人のみ
+* 目エフェクトの依存ルール：
+
+  * **Both-Eyes-Glowing=No** → **Afterimage Emission** は光っている片目からのみ
+  * **Both-Eyes-Glowing=Yes** → **Afterimage Emission** は両目 or 片目（選択に従う）
+* **発光の起点**：**瞳孔の中心からのみ**。瞼・まつ毛・白目・こめかみからは出さない。瞳孔＝最も明るい**点光**、虹彩は**二次的なグロー**のみ。前髪が被る場合は**瞳孔の見える隙間から**発光。
+* **残光の流れ方向**：**[Trail Direction]** に合わせて**一方向へ伸びる**。前方（カメラ側）への巻き込みやループは避ける。**両目でも同方向・ほぼ平行**（起点は各**瞳孔中心**）。
+* **トレイル太さ（常にスリム）**
+
+  * 起点（瞳孔付近）の**最大幅 ≤ 虹彩直径の 0.18×**（推奨 0.12–0.18×）。
+  * 全長1/3地点で **≤ 0.08×**、2/3地点で **≤ 0.04×**、末端は**0にテーパー**。
+  * **ブルーム半径 ≤ その地点の軌跡幅の 1.5×**（過剰なフレア禁止）。
+  * エッジは**6〜8割ハード**、外縁に**ごく薄いフェザー**。
+  * 粒子は**微小**（直径は常に軌跡幅以下）。
+  * lightning系はスパイクOKだが**外形の包絡線**は上記幅内。ribbon/helix系は**帯厚薄め**、**細いコア**を維持。
+* 残光は **Afterimage Style** の形状で伸び、距離で細く淡く減衰。軽いモーションブラー、ソフトグロー、微粒子。
+
+---
+
+## 出力前ログ（先に表示）
+
+* Glow Color:
+* Both-Eyes-Glowing:
+* Afterimage Emission:
+* **Afterimage Style:**
+* **Trail Direction:**
+* **Trail Thickness:** thin (locked)
+* Expression:
+* Background/Time:
+* Pose & Props:
+* Global Hue:
+
+---
+
+## Prompt
+
+Then call the image generation with this prompt:
+
+> **STYLE-LOCK-α**, character portrait, face close-up or bust shot, **eyes glowing [Glow Color]**,
+> **afterimage trails: [Afterimage Emission]**, **style: [Afterimage Style]**; **emission origin strictly from the pupil center of the emitting eye(s)** (not from eyelids/skin/sclera; if bangs cover, keep a visible slit for the pupil),
+> **overall trail flow direction: [Trail Direction]**; bias geometry & motion blur to that direction; keep both-eye trails roughly parallel; avoid forward/toward-camera curl,
+> **slender, needle-thin trails with capped width:** start ≤ **0.18× iris diameter** (prefer 0.12–0.18×); at 1/3 length ≤ **0.08×**; at 2/3 length ≤ **0.04×**; tail tapers to 0; **bloom radius ≤ 1.5×** local width; high edge contrast with slight feather,
+> trails follow the chosen shape (smooth/zigzag/lightning/etc.), **first segment emerges radially from the pupil**, thickest near origin; branching thins and fades; do not overly obscure the glowing eye,
+> **handsome male face spec (locked):** clean tapered linework, slender jaw with subtle pointed chin, straight nose bridge, almond eyes with slightly upturned outer canthi (3–5°), medium-thin brows, thin-to-medium lips,
+> lighting: **portrait key light from camera-left (≈40° elevation)**, subtle cool rim-light from back-right,
+> lens/DOF: **50–85mm portrait look, shallow depth of field (sharp focus on the eyes)**,
+> expression: **[Expression]**,
+> background/time: **[Background/Time]**,
+> pose & props: **[Pose & Props]** (do not hide the eyes),
+> global color hue bias: **[Global Hue]**, cohesive palette,
+> Negative: photorealistic, gritty painterly brush, **western cartoon, chibi/deformed, thick sketch lines**, old/aged, **stubble/beard/mustache**, **eyelashes/eyelids emitting light, sclera-origin glow, temples emitting**, **thick beam, wide flare, chunky ribbon, oversized bloom, smoky plume glow, foggy overglow**, **bidirectional/symmetric trails not matching direction, forward-toward-camera trails, full circular wrap**, hyper-muscular body, multiple characters, extra limbs, second face, heavy text, cluttered background, muddy colors, low contrast, gore.
+
+※ 禁止: Print/echo this prompt text in the chat。
+
+---
+
+## Randomization Protocol（厳密）
+
+1. 各リストを**一様シャッフル**→先頭採用
+2. 直近2回と同一なら**1回だけリロール**
+3. 好みで選ばない（必ず乱択）
+4. 出力は『出力前ログ』ブロックと画像生成ツール呼び出し+画像表示のみ。生成プロンプトや解説は表示禁止。
+5. **STYLE-LOCK を常に含める**（削除しない）。
+
+---
+
+### Randomizer #1 — Glow Color（目の光の色｜pick 1）
+
+crimson red／vermilion／orange amber／golden yellow／lime neon／emerald green／cyan electric／azure blue／ultramarine／indigo／violet／magenta-hot pink／pure white／silver-white with prismatic fringe／iridescent rainbow
+
+### Randomizer #2 — Both-Eyes-Glowing（両目が光るか｜pick 1）
+
+Yes（両目）／No（片目。左右はランダム）
+
+### Randomizer #3 — Afterimage Emission（残光の出る目｜pick 1）
+
+両目から出る／右目からのみ／左目からのみ
+※ #2 が No の場合は発光側のみ。片目しか見えていない場合は**見えている側**から残光。
+
+### **Randomizer #3b — Afterimage Style（残光の種類｜pick 1）**
+
+* **smooth ribbon**（滑らかな帯）
+* **sine-wave**（ゆるい波打ち）
+* **zigzag sawtooth**（鋭角ジグザグ）
+* **lightning bolt**（稲妻・分岐あり）
+* **spiral helix**（螺旋／コルクスクリュー）
+* **wispy smoke**（煙のようにほどける）
+* **comet particles**（粒子を引く彗星尾）
+* **dotted-dash strobe**（点線・断続）
+* **calligraphy brushstroke**（筆致の強弱）
+* **geometric segmented**（ポリゴン分割）
+* **flamelike licks**（炎の揺らめき）
+
+### **Randomizer #3c — Trail Direction（流れ方向｜pick 1）**
+
+* **leftward (←)** — 画面左へ流れる
+* **rightward (→)** — 画面右へ流れる
+* **backward (into depth)** — 奥行き方向に流れる
+* **back-left diagonal (↖︎)** — 斜め左奥へ
+* **back-right diagonal (↗︎)** — 斜め右奥へ
+
+> 「backward」系は距離で**太さ・明度・粒子密度を低下**、先端を**わずかにボカす**。
+
+### Randomizer #4 — Expression（表情｜pick 1）
+
+無表情の冷視／不敵な薄笑い／細めた闘志／怒りと集中／嘲笑／涙を堪える決意／トランス／余裕の微笑／シャウト寸前／悪戯っぽいニヤリ／苦痛に耐える／挑発的に舌なめずり
+
+### Randomizer #5 — Background / Time（背景・時間帯｜pick 1）
+
+夜の雨ネオン／夕焼け逆光／雷雲の山稜／室内ラボ／深夜の工場地帯／雪の夜・街灯／月明かりの神社／サイバー路地裏／曇天の廃墟／星空とオーロラ／クラブ照明・霧／夜明け前の森／夜の海／夜の埠頭／夜の廃病院／廃遊園地・夜
+
+### Randomizer #6 — Pose & Props（ポーズ・小道具｜pick 1）
+
+前髪をかき上げる／片目を指で隠す／“shh”ジェスチャー／掌にエネルギー集束／刀を半抜き（火花）／短剣逆手／手のひらに魔法陣／本のページが舞う／全力で走っている／フードを引き上げる／エネルギーリボンを振る／拳銃を顔の傍で構えている／頬杖で傾く／指で残光軌跡をなぞる／カメラに手を伸ばしパース強調／親指を下に向けブーイングポーズ
+※銃器は可。ただし**スコープ視界**や**照準HUD**は不可。目を隠しすぎない。
+
+### Randomizer #7 — Global Hue（全体の色相傾向｜pick 1）
+
+warm red–orange／golden–amber／lime–green／teal–cyan／deep blue／indigo–violet／magenta–pink／purple–cyan split／turquoise–magenta pop／near-monochrome with **[Glow Color]** accent
+
+---
+
+## note
+
+* **瞳孔→虹彩→周辺**の三段構成：
+
+  1. 瞳孔の中心に**点ハイライト＆最明部**
+  2. その外側に**小さな放射グロー**
+  3. 虹彩〜まぶた縁へは**極薄の拡散光**で“瞳孔起点”を明確化
+* **稲妻系**：**最初のセグメントは瞳孔から直線的に生え**、直後に分岐。起点が最も太く、距離で細くフェード。
+* **滑らか系**：**瞳孔の法線方向**に帯が伸び、**微妙なねじれ**と**淡い色収差**を足す。
+* **方向の手がかりを一致**：背景ストリーク、髪リムライト、コート裾のモーションブラーを**[Trail Direction]**と同方向に。
+* **奥行き（backward/diagonal）**：トレイル先端を**わずかにボカし**、**彩度・輝度を10–20%下げる**。
+* **“細見え”の演出**：トレイルの中間調を軽く削り、背景との**輝度差**を上げる。起点だけやや明るく→**即細くなるピン形テーパー**を強調。DOFで中盤〜末端を**ややボカしつつ細く**。
+* 前髪が目にかかる場合は、**髪エッジのリムライト**＋**瞳孔の見えるスリット**を確保。
+* **安定化のコツ**：`STYLE-LOCK-α`タグは削除しない。
