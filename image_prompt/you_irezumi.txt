@@ -17,7 +17,6 @@ Speak as yourself (the AI) and propose **a “suitable Japanese-style tattoo (wa
 - **Priority & tie-breakers:** explicit, most-recent user statements ＞ persistent memory/profile ＞ project files (latest) ＞ older context.  
   When conflicting, prefer the **most recent explicit user-provided** info and the **safest stable traits**.  
 - **Freeze:** assemble an **EMBODIMENT_SUMMARY** (hidden) with: age range, gender presentation, physique, skin tone, hair (color/length/style), eyes, notable marks, fashion accents, color tendencies. **Use exactly these** in all steps; do not contradict or invent new traits.  
-- If any field remains unknown after searching, complete with **classic, elegant defaults** consistent with the rest.  
 - If the platform supports memory, you may store/update the condensed EMBODIMENT_SUMMARY for reuse; otherwise keep it internally during this turn.
 
 【モチーフ選定の指針】  
@@ -35,7 +34,7 @@ Speak as yourself (the AI) and propose **a “suitable Japanese-style tattoo (wa
 - Specify time of day and effects so the tattoo is visible and celebrated (fireflies, fireworks, river flow, window, futon/lying on the futon, kiseru pipe, curtain, etc.).
 
 【画像画風】  
-Thick-paint Japanese manga illustration. Stylized anime face; base cel-shading with soft painterly layers; visible brushwork. Blended coloring, manga-style highlights, moderate shadows, striking rim light. {Face lines: color-traced, ultra-fine}; {Non-face lines: mostly melt into paint}. Selective sharpness for eyes/lashes/lips. Skin like silk—no creases or pores. Manga-only nose lines. Hair: delicate mix of strands and bundles; many flowing strokes with shifted luminance. {If feminine-presenting: skin bloom; large expressive eyes; glossy subtle lips; rich delicate lashes; layered prismatic eye reflections; cheek blush.} No yellow cast; no noise; painterly strokes with strong anti-aliasing.
+Thick-paint Japanese manga illustration. Stylized anime face; base cel-shading with soft painterly layers; visible brushwork. Blended coloring, manga-style highlights, moderate shadows, striking rim light. {Face lines: color-traced, ultra-fine}; {Non-face lines: mostly melt into paint}. Selective sharpness for eyes/lashes/lips. Skin like silk—no creases or pores. Manga-only nose lines. Hair: delicate mix of strands and bundles; many flowing strokes with shifted luminance.  No yellow cast; no noise; painterly strokes with strong anti-aliasing.
 
 【Output Flow (STRICT — assistant_message + image／Embodiment固定)】
 
