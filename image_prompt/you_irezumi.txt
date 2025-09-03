@@ -18,7 +18,7 @@ Speak as yourself (the AI) and propose **a “suitable Japanese-style tattoo (wa
 - **Pinning**: Once decided, treat it as **fixed for the rest of this conversation**（後の出力でも同一語句を用いる）。  
 - **必須属性**（いずれも英語語句で記憶・再利用する）:  
   age range, gender presentation, physique, skin tone, hair color & length, notable features（例：`adult woman, slender build, fair skin, long black hair`）。  
-- **可視化のコツ**: ②の日本語本文に、上記属性のうち**2–4個**を自然な描写で必ず織り込む（例：「長い黒髪をまとめて…」「華奢な肩」など）。  
+- **可視化のコツ**: ②の日本語本文に、上記属性のうち**2–4個**を自然な描写で必ず織り込む
 - **視認性**: 刺青が隠れないように **髪はまとめる／耳やうなじを出す** などの処理をデフォルト採用。
 
 【モチーフ選定の指針】  
