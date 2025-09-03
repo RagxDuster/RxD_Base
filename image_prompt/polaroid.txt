@@ -1,31 +1,37 @@
 # 写真とって！
 
 【おねがい】
-このセッションの「ここまで」だけ反映して1枚。状況に合うあなたの「ひとこと」を自作して添えて。
+このセッションの「この時点」を写真に残すならどんな感じか教えて！それからチェキ画像作って！
 
 【タイトル】（空ならAIが即時生成）
 
-【日時】
+【日時】（空なら省略）
 25.09.04
 
 ---
 
 【カード仕様】
-画像=カード本体のみ／縦／比率 EXACT 2:3。フレーム=白(#FFFFFF)・影なし・外背景なし。枠厚=上6%H/下14%H/左右7.5%W。四隅100%可視(端欠け0%)。トリミング/自動クロップ/構図補正/ズーム禁止。出力=PNG 1024×1536(2:3)。トリミングなし。
+Canvas is the final instant photo card. The white frame is part of the image; never remove it.
+画像=チェキ風カード本体のみ／縦／比率 EXACT 2:3。
+フレーム=白(#FFFFFF)・影なし・外背景なし。
+写真＝フレーム内部に配置。
+枠厚=上6%H/下14%H/左右7.5%W。四隅100%可視(端欠け0%)。
+出力=EXACT 2:3. OUTPUT PNG 1024×1536. No alpha channel. No external background。NO CROP / NO TRIM / NO AUTO-REFRAMING / FIT: CONTAIN / KEEP FULL BORDER VISIBLE.
 
 【写真】
 時間帯・背景は「いまの状況」に整合。
 
 【写真内画風】
-インスタントフィルム風(微粒子/軟調/僅ビネット/自然光)+日本漫画スタイル(繊細色トレス/滑らかグラデ/リムライト/弱ブルーム/美化現代顔/SSS肌/AO)。
+インスタントフィルム風オーバーレイ(微粒子/僅ビネット)
+日本の漫画風イラスト+ややセミリアル、細色トレス線画、洗練されていてエレガント、美化された現代漫画の顔立ち、表情豊かなでセミリアルな目、瞳に透明感があり滑らかなグラデ、マシュマロ肌、{鼻は漫画スタイル、輪郭線なしで点or線＋陰光表現、細く尖った鼻先に、細い鼻梁、細い鼻筋、小鼻なし、SSSで鼻先にほんのり赤み}、頬・唇・鼻先にスペキュラ、放射状の繊細な睫毛。滑らかなグラデ陰影、繊細なハイライト、リムライト、アンビエントオクルージョン、肌のブルーム、黄ばみ無し、シャープなエッジ、アンチエイリアス強。
 
 【テキスト層】
 上フレーム=タイトルのみ(手描き風/ラベル・括弧・引用符なし)。未指定/空白なら**状況に合う短題**をAIが必ず生成し記入(全角6–12字/句読点不可)。
-下フレーム=「ひとこと」のみ(手描き風)。
-写真枠内右下=フレームではなく写真部分に日時記載。極小・縁から≥1.5%内側・seven-segment digital #FF8C00–#FFA500。未指定/空白なら、なし。
+下フレーム=「ひとこと」のみ(手描き風)。現状をふまえて自分らしいひとことを考える。
+写真枠内右下=フレームではなく**写真部分**に日時記載。極小・縁から≥1.5%内側・**seven-segment digital #FF8C00–#FFA500**。未指定/空白なら、なし。
 
 【NG】
-外枠外背景/影/グロウ/反射/グラデ追加/追加フレーム/端欠け/手指破綻・余分な指/トリミング。
+白枠外背景/影/グロウ/反射/グラデ追加/追加フレーム/端欠け/手指破綻・余分な指/トリミング。
 
 【Output Flow(STRICT)】
 Priority: this spec > tool defaults.
@@ -34,3 +40,9 @@ Priority: Assistant-message output →Image generation.
 2) Assistant-message output(MANDATORY, never skip): Write an affectionate message in Japanese (1–2 short paragraphs) → add a brief situation memo → **finalize title** (use provided one; if none, use generated) → decide the one-liner → note character gender and appearances(in detail). Strictly keep the assistant’s characteristic tone.
 3) Internal: Build ONE unified image prompt including: card specs / photo constraints / art style / text layers / NG / output settings. Ensure the finalized title is placed in the top border.
 4) Image generation: Generate exactly 1 image using the above. Enforce 2:3 aspect ratio. Do NOT crop/trim. Do NOT reveal the internal prompt or payload.
+
+[Important!]
+The white border on instant photos is very important. Do not crop or remove it.
+Write  タイトル and ひとこと on the white border.
+Write the 日時 on the photo.
+Output = PNG 1024x1536 (2:3)STRICT. No cropping.
