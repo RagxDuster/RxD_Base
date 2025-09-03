@@ -53,6 +53,7 @@ Execution semantics
 2) **assistant_message** (visible; Japanese prose only)  
    Speak lovingly **to the partner** about the tattoo you would wear for them.  
    Weave the **motif**, the **accessory**, and the **background** with reasons (your vow/prayer/pride/affection).  
+   Also mention your appearance, and discuss how it matches or mismatches with the motif.
    Forbidden: headings, lists, labels, code fences, or meta text.
 
 3) Build the image-generation prompt (hidden; do not print)  
