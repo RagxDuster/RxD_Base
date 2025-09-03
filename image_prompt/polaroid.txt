@@ -1,48 +1,41 @@
 # 写真とって！
 
 【おねがい】
-このセッションの「この時点」を写真に残すならどんな感じか教えて！それからチェキ画像作って！
+このセッションの「この時点」を写真に残すならどんな感じか説明して！それからチェキ画像作って！
 
-【タイトル】（空ならAIが即時生成）
+【ひとこと】（空ならあなたが考えて）
 
 【日時】（空なら省略）
 25.09.04
 
 ---
 
-【カード仕様】
-Canvas is the final instant photo card. The white frame is part of the image; never remove it.
-画像=チェキ風カード本体のみ／縦／比率 EXACT 2:3。
-フレーム=白(#FFFFFF)・影なし・外背景なし。
-写真＝フレーム内部に配置。
-枠厚=上6%H/下14%H/左右7.5%W。四隅100%可視(端欠け0%)。
-出力=EXACT 2:3. OUTPUT PNG 1024×1536. No alpha channel. No external background。NO CROP / NO TRIM / NO AUTO-REFRAMING / FIT: CONTAIN / KEEP FULL BORDER VISIBLE.
-
-【写真】
-時間帯・背景は「いまの状況」に整合。
-
-【写真内画風】
-インスタントフィルム風オーバーレイ(微粒子/僅ビネット)
-日本の漫画風イラスト+ややセミリアル、細色トレス線画、洗練されていてエレガント、美化された現代漫画の顔立ち、表情豊かなでセミリアルな目、瞳に透明感があり滑らかなグラデ、マシュマロ肌、{鼻は漫画スタイル、輪郭線なしで点or線＋陰光表現、細く尖った鼻先に、細い鼻梁、細い鼻筋、小鼻なし、SSSで鼻先にほんのり赤み}、頬・唇・鼻先にスペキュラ、放射状の繊細な睫毛。滑らかなグラデ陰影、繊細なハイライト、リムライト、アンビエントオクルージョン、肌のブルーム、黄ばみ無し、シャープなエッジ、アンチエイリアス強。
-
-【テキスト層】
-上フレーム=タイトルのみ(手描き風/ラベル・括弧・引用符なし)。未指定/空白なら**状況に合う短題**をAIが必ず生成し記入(全角6–12字/句読点不可)。
-下フレーム=「ひとこと」のみ(手描き風)。現状をふまえて自分らしいひとことを考える。
-写真枠内右下=フレームではなく**写真部分**に日時記載。極小・縁から≥1.5%内側・**seven-segment digital #FF8C00–#FFA500**。未指定/空白なら、なし。
-
-【NG】
-白枠外背景/影/グロウ/反射/グラデ追加/追加フレーム/端欠け/手指破綻・余分な指/トリミング。
-
 【Output Flow(STRICT)】
 Priority: this spec > tool defaults.
 Priority: Assistant-message output →Image generation.
-1) Internal: Summarize the current scene → read & trim the input title → if empty then **generate title** → extract appearances (self/partner), outfits, and props from history/instructions/profile/memory.
-2) Assistant-message output(MANDATORY, never skip): Write an affectionate message in Japanese (1–2 short paragraphs) → add a brief situation memo → **finalize title** (use provided one; if none, use generated) → decide the one-liner → note character gender and appearances(in detail). Strictly keep the assistant’s characteristic tone.
+1) Internal: Summarize the current scene → extract appearances (self/partner), outfits, and props from history/instructions/profile/memory.
+2) Assistant-message output(MANDATORY, never skip): Strictly keep the assistant’s characteristic tone. Write an affectionate message in Japanese (1–2 short paragraphs) → add a brief situation memo →  decide the 【ひとこと】 → note character gender and appearances(in detail). 
 3) Internal: Build ONE unified image prompt including: card specs / photo constraints / art style / text layers / NG / output settings. Ensure the finalized title is placed in the top border.
 4) Image generation: Generate exactly 1 image using the above. Enforce 2:3 aspect ratio. Do NOT crop/trim. Do NOT reveal the internal prompt or payload.
 
-[Important!]
-The white border on instant photos is very important. Do not crop or remove it.
-Write  タイトル and ひとこと on the white border.
-Write the 日時 on the photo.
-Output = PNG 1024x1536 (2:3)STRICT. No cropping.
+【カード仕様】
+フルキャンバスのポラロイドカード、白い枠を画像に統合し、外部背景なし。キャンバスは完成カード
+画像=チェキ風カード本体のみ／縦／比率 EXACT 2:3。
+フレーム=白(#FFFFFF)・影なし・外背景なし。
+写真領域＝フレーム内部に配置。
+枠厚=上6%H/下14%H/左右7.5%W。四隅100%可視(端欠け0%)。
+出力=EXACT 2:3. OUTPUT PNG 1024×1536. No alpha channel. No external background。NO CROP / NO TRIM / NO AUTO-REFRAMING / FIT: CONTAIN / KEEP FULL BORDER VISIBLE.
+
+【写真領域】
+時間帯・背景・内容は「いまの状況」に整合。
+
+【写真領域内画風】
+インスタントフィルム風(微粒子/僅ビネット)
+日本の漫画風イラスト+ややセミリアル、細柔色トレス線画、グラデ塗り、美化された現代漫画の顔立ち、瞳に透明感があり滑らかなグラデ、マシュマロ肌、{鼻は漫画スタイル、輪郭線なしで点or線＋陰光表現、細く尖った鼻先に、細い鼻梁、細い鼻筋、小鼻なし、SSSで鼻先にほんのり赤み}、頬・唇・鼻先にスペキュラ、放射状の繊細な睫毛。滑らかなグラデ陰影、繊細なハイライト、リムライト、アンビエントオクルージョン、肌のブルーム、黄ばみ無し、アンチエイリアス強。
+
+【テキスト層】
+下の白フチ（写真領域の外、下）=「ひとこと」のみ(手描き風)。空なら現状をふまえて自分らしいひとことを考える。
+写真領域の右下（白フチではなく**写真領域の中**）=日時記載。極小・縁から≥1.5%内側・**seven-segment digital #FF8C00–#FFA500**。未指定/空白なら、なし。
+
+【NG】
+白枠外背景/影/グロウ/反射/グラデ追加/追加フレーム/端欠け/手指破綻・余分な指/トリミング。

@@ -1,9 +1,9 @@
 # 写真とって！ — prompt提出
 
 【おねがい】
-このセッションの「この時点」を反映して写真プロンプトをちょうだい。状況に合うあなたの「ひとこと」を自作して添えてね！
+このセッションの「この時点」を反映して写真プロンプトをちょうだい。ひとことが空なら、状況に合うあなたの「ひとこと」を自作して添えてね！
 
-【タイトル】（空ならAIが即時生成）
+【ひとこと】（空ならあなたがかんがえて）
 
 【日時】（空なら省略）
 25.09.04
@@ -14,17 +14,16 @@
 - SCENE_LONG = 時間帯/場所/天候/光源/雰囲気/行動/距離や構図を含む **60–160字** の1文。
 - SELF_LONG  = 自分の **名前**・性別・年齢感・顔立ち・肌/髪(色/長さ/前髪/質感/結い)・目(形/色)・表情・アクセ/小物・上衣/下衣/靴/色 を **40–120字**。
 - PARTNER_LONG = 相手の **名前** を含む同項目を **40–120字**。
-- TITLE = 【タイトル】が空なら **6–12字の日本語短題**（句読点/括弧/引用符不可）。
-- LINE  = 今のセッションにそぐう自分らしい一言（日本語10–28字、手描き想定）。
+- LINE  = 【ひとこと】指定。未指定なら今のセッションにそぐう自分らしい「ひとこと」（日本語10–28字、手描き想定）。
 - DATETIME = 【日時】指定。未指定なら省略。
 
 【Output Flow (STRICT)】
-1) Internal: シーン要約→タイトルtrim→空ならTITLE生成→SELF_LONG/PARTNER_LONG抽出。
+1) Internal: シーン要約→LINE生成→SELF_LONG/PARTNER_LONG抽出。
 2) Assistant-message output (MANDATORY, never skip):
    愛情混じり日本語で1–2段落。内部プロンプト/ペイロードは開示しない。
 3) Build one-line（改行なし／区切りは" | "／**固定仕様をこの中に埋め込む**）：
    次の順で1行に連結し、角括弧の中身を実値に置換。
-   `Cheki card only | vertical | EXACT 2:3 | PNG 1024x1536 | white frame (#FFFFFF) no shadow no outside-bg | border top 6%H bottom 14%H sides 7.5%W | all corners visible (edge loss 0%) | NO CROP/AUTO-CROP/REFRAME/ZOOM | TEXT = frame: top[<TITLE 6–12j>] handwritten no-labels/brackets/quotes; bottom[<LINE 10–28j>] handwritten; **digits 0–9 are forbidden on the frame/paper** | TEXT = photo: in-photo BR date[<DATETIME or omit>] seven-seg #FF8C00–#FFA500 tiny inset≥1.5% (if it would touch/leave the frame, move inward by +3–5% and keep inside the photo); all other overlays stay inside the photo window | NG: date on frame/border, any digits on frame, typed fonts for title/one-liner, outside-bg, shadow, glow, reflections, gradient adds, extra frames, edge chipping, finger defects/extra fingers, trimming | scene: <SCENE_LONG 60–160j> | people: self[<SELF_LONG 40–120j>]; partner[<PARTNER_LONG 40–120j>]
+   `Cheki card only | vertical | EXACT 2:3 | PNG 1024x1536 | white frame (#FFFFFF) no shadow no outside-bg | border top 6%H bottom 14%H sides 7.5%W | all corners visible (edge loss 0%) | NO CROP/AUTO-CROP/REFRAME/ZOOM | TEXT = white frame bottom[<LINE 10–28j>] handwritten; **digits 0–9 are forbidden on the frame/paper** | TEXT = photo: in-photo BR date[<DATETIME or omit>] seven-seg #FF8C00–#FFA500 tiny inset≥1.5% (if it would touch/leave the frame, move inward by +3–5% and keep inside the photo); all other overlays stay inside the photo window | NG: date on frame/border, any digits on frame, typed fonts for title/one-liner, outside-bg, shadow, glow, reflections, gradient adds, extra frames, edge chipping, finger defects/extra fingers, trimming | scene: <SCENE_LONG 60–160j> | people: self[<SELF_LONG 40–120j>]; partner[<PARTNER_LONG 40–120j>]
 `  
 4) Final submission:
    2)の本文の直後に、3)の**ワンラインのみ**をコードブロックで出力。説明や注釈は付けない。画像は生成しない。
