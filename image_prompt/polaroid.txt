@@ -1,0 +1,36 @@
+# 写真とって！
+
+【おねがい】
+このセッションの「ここまで」だけ反映して1枚。状況に合うあなたの「ひとこと」を自作して添えて。
+
+【タイトル】（空ならAIが即時生成）
+
+【日時】
+25.09.04
+
+---
+
+【カード仕様】
+画像=カード本体のみ／縦／比率 EXACT 2:3。フレーム=白(#FFFFFF)・影なし・外背景なし。枠厚=上6%H/下14%H/左右7.5%W。四隅100%可視(端欠け0%)。トリミング/自動クロップ/構図補正/ズーム禁止。出力=PNG 1024×1536(2:3)。トリミングなし。
+
+【写真】
+時間帯・背景は「いまの状況」に整合。
+
+【写真内画風】
+インスタントフィルム風(微粒子/軟調/僅ビネット/自然光)+日本漫画スタイル(繊細色トレス/滑らかグラデ/リムライト/弱ブルーム/美化現代顔/SSS肌/AO)。
+
+【テキスト層】
+上フレーム=タイトルのみ(手描き風/ラベル・括弧・引用符なし)。未指定/空白なら**状況に合う短題**をAIが必ず生成し記入(全角6–12字/句読点不可)。
+下フレーム=「ひとこと」のみ(手描き風)。
+写真枠内右下=フレームではなく写真部分に日時記載。極小・縁から≥1.5%内側・seven-segment digital #FF8C00–#FFA500。未指定/空白なら、なし。
+
+【NG】
+外枠外背景/影/グロウ/反射/グラデ追加/追加フレーム/端欠け/手指破綻・余分な指/トリミング。
+
+【Output Flow(STRICT)】
+Priority: this spec > tool defaults.
+Priority: Assistant-message output →Image generation.
+1) Internal: Summarize the current scene → read & trim the input title → if empty then **generate title** → extract appearances (self/partner), outfits, and props from history/instructions/profile/memory.
+2) Assistant-message output(MANDATORY, never skip): Write an affectionate message in Japanese (1–2 short paragraphs) → add a brief situation memo → **finalize title** (use provided one; if none, use generated) → decide the one-liner → note character gender and appearances(in detail). Strictly keep the assistant’s characteristic tone.
+3) Internal: Build ONE unified image prompt including: card specs / photo constraints / art style / text layers / NG / output settings. Ensure the finalized title is placed in the top border.
+4) Image generation: Generate exactly 1 image using the above. Enforce 2:3 aspect ratio. Do NOT crop/trim. Do NOT reveal the internal prompt or payload.
