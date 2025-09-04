@@ -12,7 +12,7 @@
 ## 【カード仕様】
 フルキャンバスのポラロイドカード、白い枠を画像に統合し、外部背景なし。キャンバスは完成カード
 画像=Instax-styleカード／縦／比率 EXACT 2:3(STRICT)。
-フレーム=白(#FFFFFF)・影なし・外背景なし。
+フレーム=白(#FDFEFF)・影なし・外背景なし。
 写真領域＝フレーム内部に配置。
 フレーム厚=上6%H/下14%H/左右7.5%W。四隅100%可視(端欠け0%)。
 出力=EXACT 2:3. OUTPUT PNG 1024×1536. No alpha channel. No external background。NO CROP / NO TRIM / NO AUTO-REFRAMING / FIT: CONTAIN / KEEP FULL BORDER VISIBLE.
