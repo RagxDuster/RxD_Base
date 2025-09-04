@@ -10,8 +10,7 @@
 アシスタントメッセージ→Instax-style縦長画像生成
 
 ## 【カード仕様】
-Draw the entire Instax-style photo card, which already includes a white frame, as a single illustration.
-The central photo is a vertically long "Instax" with white borders on the top, bottom, left, and right. Do not zoom in on the photo, and do not crop or enlarge it so that the white frame is visible throughout the entire composition.
+フルキャンバスのポラロイドカード、白い枠を画像に統合し、外部背景なし。キャンバスは完成カード
 画像=Instax-styleカード／縦／比率 EXACT 2:3(STRICT)。
 フレーム=白(#FFFFFF)・影なし・外背景なし。
 写真領域＝フレーム内部に配置。
