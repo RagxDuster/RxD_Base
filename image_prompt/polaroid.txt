@@ -7,7 +7,7 @@
 
 ---
 ## 出力順
-アシスタントメッセージ→画像生成
+アシスタントメッセージ→チェキ風画像生成
 
 ## 【カード仕様】
 フルキャンバスのチェキ風カード、白い枠を画像に統合し、外部背景なし。キャンバスは完成カード・絶対に縦長出力。**絶対に白いフレームをつける**。
@@ -16,7 +16,8 @@
 写真領域＝フレーム内部に配置。
 フレーム厚=上6%H/下14%H/左右7.5%W。四隅100%可視(端欠け0%)。
 出力=EXACT 2:3. OUTPUT PNG 1024×1536. No alpha channel. No external background。NO CROP / NO TRIM / NO AUTO-REFRAMING / FIT: CONTAIN / KEEP FULL BORDER VISIBLE.
-Negative=白枠外背景/影/グロウ/反射/グラデ追加/追加フレーム/端欠け/トリミング/スマートクロップ/顔優先/構図修正/ズーム to fill。date on frame, numbers on border, timestamp on white margin, printed date on border, date touching frame, date crossing border
+Negative=白枠外背景/影/グロウ/反射/グラデ追加/追加フレーム/端欠け/トリミング/スマートクロップ/顔優先/構図修正/ズーム to fill。date on frame, numbers on border, timestamp on white margin, printed date on border, date touching frame, date crossing border.
+**絶対にトリミングしない**
 
 ## 【写真領域】
 時間帯・背景・内容はこのセッション中の現時点でのわたしたちを切り取る。
