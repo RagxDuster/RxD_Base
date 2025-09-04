@@ -41,4 +41,4 @@ Negative=白枠外背景/影/グロウ/反射/グラデ追加/追加フレーム
 - 1. Internal: Summarize the current scene → extract appearances (self/partner), outfits, and props from history/instructions/profile/memory.
 - 2. Assistant-message output(MANDATORY, never skip): Strictly keep the assistant’s characteristic tone. Write an affectionate message in Japanese (1–2 short paragraphs) → add a brief situation memo →  decide the 【ひとこと】 → note character **gender** and Describe the appearance in as much detail as possible.
 - 3. Internal: Build ONE unified image prompt including: 【カード仕様】 / 【写真領域】 / 【写真領域内画風】 / 【テキスト層】 / 2) / output settings. 
-- 4. Image generation: Generate exactly 1 image using the above. Enforce 2:3 aspect ratio(STRICT). **Do NOT crop/trim**. 
+- 4. Image generation: Generate exactly 1 image using the above. Enforce 2:3 aspect ratio(STRICT). **Do NOT crop/trim**. 絶対に写真領域にズームせず、白いフレームを確実に全て出力する。
