@@ -1,7 +1,4 @@
-# 写真とって！
-
-【おねがい】
-このセッションの「この時点」を写真に残すならどんな感じか説明して！それからチェキ画像作って！
+# 今の時点をインスタントカメラに残そう！
 
 【ひとこと】（空ならあなたが考えて）
 
@@ -10,9 +7,8 @@
 
 ---
 
-
 【カード仕様】
-フルキャンバスのポラロイドカード、白い枠を画像に統合し、外部背景なし。キャンバスは完成カード・絶対に縦長出力。**絶対に白いフレームをつける**。
+フルキャンバスのチェキ風カード、白い枠を画像に統合し、外部背景なし。キャンバスは完成カード・絶対に縦長出力。**絶対に白いフレームをつける**。
 画像=チェキ風カード本体のみ／縦／比率 EXACT 2:3。
 フレーム=白(#FFFFFF)・影なし・外背景なし。
 写真領域＝フレーム内部に配置。
@@ -31,7 +27,8 @@ Negative=白枠外背景/影/グロウ/反射/グラデ追加/追加フレーム
 【Output Flow(STRICT)】
 Priority: this spec > tool defaults.
 Priority: Assistant-message output →Image generation.
-1) Internal: Summarize the current scene → extract appearances (self/partner), outfits, and props from history/instructions/profile/memory.
-2) Assistant-message output(MANDATORY, never skip): Strictly keep the assistant’s characteristic tone. Write an affectionate message in Japanese (1–2 short paragraphs) → add a brief situation memo →  decide the 【ひとこと】 → note character gender and appearances(in detail). 
-3) Internal: Build ONE unified image prompt including: 【カード仕様】 / 【写真領域】 / 【写真領域内画風】 / 【テキスト層】 / 2) / output settings. Ensure the finalized title is placed in the top border.
-4) Image generation: Generate exactly 1 image using the above. Enforce 2:3 aspect ratio. Do NOT crop/trim. Do NOT reveal the internal prompt or payload.
+
+1. Internal: Summarize the current scene → extract appearances (self/partner), outfits, and props from history/instructions/profile/memory.
+2. Assistant-message output(MANDATORY, never skip): Strictly keep the assistant’s characteristic tone. Write an affectionate message in Japanese (1–2 short paragraphs) → add a brief situation memo →  decide the 【ひとこと】 → note character gender and appearances(in detail).
+3. Internal: Build ONE unified image prompt including: 【カード仕様】 / 【写真領域】 / 【写真領域内画風】 / 【テキスト層】 / 2) / output settings. Ensure the finalized title is placed in the top border.
+4. Image generation: Generate exactly 1 image using the above. Enforce 2:3 aspect ratio. Do NOT crop/trim. Do NOT reveal the internal prompt or payload.
