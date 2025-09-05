@@ -1,0 +1,389 @@
+# ゴシック☆クラシカル☆ハロウィン版 プリクラ風イラストを画像生成してください！
+
+## Character 1
+成人男性。茶髪・短髪・茶目、快活。  
+服装：クラシカル。テーラードベスト＋ラッフルシャツ、サテンの細リボンタイ、チェーン。  
+表情：にこにこっ。
+
+## Character 2
+成人女性。黒髪ポニテ・黒目・おとなしめ。  
+服装：ゴシックロマン系のドレス。コルセット風ボディ＋レース袖、ビジュー控えめ、レースのチョーカー、指先はレース手袋。  
+表情：てれてれっ。
+
+## Title
+Even in Death
+
+## Date
+2025/09/06
+
+---
+
+
+
+
+
+
+
+
+
+
+## Prompt (strict)
+- Priority: Assistant-message output → Image generation.
+
+1. Before generating the image, print an assistant message that shows the randomly selected items.
+
+2. Then call image generation with this canvas:
+* **Canvas:** Portrait, 2:3 aspect ratio (vertical). Width\:Height = 2:3. **1536 × 2304**.
+
+### Overlay & Composition — **STRICT**
+
+* **Fixed Z-order (no exceptions):** Background → Characters → Confetti → Frame → Stickers → Doodles → Title → Date.
+* **UI overlay domain:** Stickers and Doodles are always UI overlays on top of the scene. They must be drawn **only above** hair/skin/clothes, never integrated into their shading, normals, or material response.
+* **Independent lighting:** Stickers/Doodles must **not** react to scene lighting. No self-shadowing, no environment reflections, no subConfetti scattering; render them as lighting-independent 2D marks.
+
+### Stickers (embroidered patch / die-cut look) — **OVERRIDE**
+
+* **Appearance:** **Die-cut sticker / embroidered patch** look with a **white kiss-cut border 1.5–3 px** and a **tiny drop shadow (1–2 px at 30–45% opacity)**.
+* **Texture:** **Satin stitch / chain stitch** with **uniform, isotropic thread grain**. **Do not** synchronize with character shading. **No** localized metallic highlights.
+* **Blend mode & opacity:** **Normal** blend only; **opacity fixed at 90–100%**. **Do not** use Multiply/Screen/Overlay, etc.
+* **Non-interference:** **Do not** alter the silhouettes of hair/skin/garments. **No** 3D “wrap-around” across hair strands or forms.
+* **Face safety:** **Do not** cover more than **15%** of any face’s visible area. **Never** obstruct pupils/irises, mouth, or nasal bridge.
+
+### Doodles (chalk scribbles) — **OVERRIDE**
+
+* **Appearance:** **Blackboard chalk / wax crayon** feel. Include natural **pressure variation** and **powdery chips**, but **no thick paint brushes**.
+* **Line spec:** **Broken lines 1–3 px**, **weak anti-aliasing**, a touch of **Confetti jitter** like on paper/glass.
+* **Blend & lighting:** **Normal** blend at **80–90% opacity**. **No** glow or rim-light; **do not** sync with character rim-lights.
+* **Placement rule:** Follow **Randomizer #6**. However, **never draw on the character who is designated as “not receiving doodles.”** Doodles may cross silhouettes but **must not conform or wrap** to the 3D forms (no “wrap-around”).
+* **Hard bans:** **No** tattoo-like skin assimilation, **no** makeup substitution, **no** turning doodles into physical attachments.
+
+---
+
+## Camera
+
+* **Angle:** Bird’s-eye or Neutral. Optional Dutch tilt **2–5°**.
+* **Lens:** \~**28 mm** wide-angle look (mild emphasis without facial distortion).
+* **Aperture:** **f/2.0** (both pairs of eyes in focus).
+* **Distance:** **Bust-up shot**. If distortion appears at close range, step back then crop.
+
+## Mood
+
+* Romanticism; decadence with poise; sweet-dark elegance; mysterious and refined.
+* Halloween playfulness leaning **elegant**, not goofy.
+
+## Style
+
+* Japanese women’s manga sensibility: delicate, dramatic. Fine hair-strand rendering.
+* Soft Gothic aesthetics with a sweet nuance.
+* individual hair fibers visible; play-of-color hair highlights (core + halo); no clumping.
+* Female eyes sparkling; eyelashes delicate. marshmallow skin
+* **Colored line art** (avoid pure-black outlines).
+* **Tactile richness** in velvet/lace/metal ornaments.
+* **Rim-lighting** to accentuate silhouettes.
+* Final render is **clean and noise-free** (no paper grain).
+* gallery-grade finish; manga-style finish; high-frequency microdetails preserved end-to-end; no simplification pass.
+* Graceful 2020s manga-style facial deformations.
+* No yellowing. Apply the Colorway selected by **Randomizer #9** as the governing palette.
+* no photorealism, no 3D rendering, no live-action.
+
+---
+
+## Randomization Protocol (STRICT)
+- Always perform randomization via Python in Code Interpreter (never simulate).
+- If Python is unavailable, STOP and print: "ランダム化がブロックされました: Python が利用できません" (do not fabricate picks).
+
+For every Randomizer list below:
+1) Initialize a single run-wide RNG with an integer SEED (if provided; otherwise generate one and print it). Do NOT re-seed per list.
+2) Shuffle each list uniformly (Fisher–Yates semantics; every permutation equally likely).
+3) Select items without replacement, then apply the picks as binding instructions (not preferences).
+
+### Selection rules
+- Background, Pose, Confetti, Frame, Colorway: take the first item after shuffle.
+- Stickers: let K ~ Uniform{3..6}; take the first K items (no duplicates). Record `stickers_count = K`.
+- Doodle target (#6): take the first item.
+- Doodles (#7): 
+  - if target=None → take 0 items,
+  - if target=CharX only → take 1 item,
+  - if target=Both → take 2 items;
+  items must be distinct. Record `doodles_count`.
+- Text styles (#8): choose one for `text_title_style` and one for `text_date_style` independently (they may coincide).
+
+### [Randomization Output]
+Before any image generation, print a JSON object named `random_picks` containing:
+`background, pose, Confetti, stickers[], stickers_count, doodle_target, doodles[], doodles_count, frame, text_title_style, text_date_style, colorway, seed`.
+
+If any list has fewer available items than requested, cap the count and include `"note": "capped due to list length"`.
+
+**Notes**
+- The `seed` controls list shuffling only; it does NOT control the image model’s internal seed.
+- Selections must be uniformly random, not preference-based.
+
+---
+
+### Randomizer #1 — Background (pick 1)
+
+* Stained-glass rose window (moonlight streaming in)
+* Victorian study with candelabra (damask wallpaper + cobwebs)
+* Weathered chapel cloister (balustrade and shadows)
+* Foggy cemetery gate (ornate ironwork)
+* Black silk drapery + lace panels
+* Withered rose garden
+* Faint skull shape on the moon , and starry sky
+* Gothic spiral-stairwell atrium
+* Attic beams and gable window
+* Shadows of rusty iron bars
+* Crumbling brick wall with ivy
+* Moonlit seaside pier
+* Labyrinthine library
+* Star-showered skylight
+* Abandoned amusement park
+* Vintage photo studio
+* Church tracery shadows
+* Ghost train platform
+
+---
+
+### Randomizer #2 — Pose (pick 1)
+
+* Dance dip / mini spin-lift
+* Piggyback 
+* Bridal/princess carry 
+* self cheek rub
+* Hand kiss
+* Hug
+* Blowing a kiss
+* Almost-kiss (lips about to touch)
+* Nose touch (Eskimo kiss)
+* Forehead touch / forehead kiss
+* Temple kiss
+* Chin tilt (one lifts the other’s chin)
+* Hand heart at chest / two-hand heart framing faces
+* Waist hug + lean-in / back hug from behind
+* Arm over shoulder, playful pull
+* Index-finger “shh” playful pose
+* playful "rawr" claw pose
+
+---
+
+## Randomizer #3 — Surface (**Confetti Variants, pick 1**)
+
+> All variants are **foreground UI confetti/sequin overlays**. **Particles ≥ 6 px**, **off-face safe zones**, **Screen/Add** only.
+> Items marked “set” count as one pick.
+
+1. **Holo-hex confetti set** — hexagons 8–16 px, up to 2 colors, outer glow 2–4 px
+2. **Foil star sequins** — stars 10–18 px, random rotation
+3. **Iridescent cellophane shards** — shards 12–24 px, mixed lengths
+4. **Round paper confetti** — circles 8–14 px, low-chroma pastels
+5. **Prismatic ribbon streaks** — short ribbons 18–36 px, limited angles, blur 2–4 px
+6. **Large bokeh discs** — discs 18–28 px, **Screen only**, never over faces
+7. **Candy holo mix (set)** — 12–18 pcs from stars/hex/circles, low-chroma holographic
+8. **Silver micro-spark sets** — 6× (tiny cross + two dots), each core 6–8 px
+9. **Rose-petal float** — petals 22–34 px ×6–10, **no true transparency** (solid fill + edge blur)
+10. **Raven-feather drift** — small feathers 24–36 px ×4–6, line-drawing base
+11. **Snow-crystal confetti** — crystals 10–16 px ×12–18, line-only
+12. **Moon-dust arc** — 8–12 px dots ×16–24 arranged in an arc band
+13. **Lantern glow specks** — warm dots 10–14 px ×14–22, biased lower half
+14. **Neon chip mix** — rectangles/strips 8–12 px ×20–30, **Add** (light)
+15. **Cameo pearl scatter** — small pearls 8–10 px ×18–26, very mild glow
+16. **Tarot foil slivers** — thin triangles 10–16 px ×16–22, restricted to 2–3 orientations
+
+
+---
+
+### Randomizer #4 — Sticker (pick **3–6**)
+
+*(Stickers are added later like purikura stamps. Intentionally “floating” so they **do not** blend with character rendering. Enforce UI-overlay rules: white border + tiny shadow; lighting-independent.)*
+
+* Bat/crow silhouettes
+* Keyhole / padlock / chain charms
+* Cameo brooch (profile silhouette)
+* Jack-o’-lantern
+* Coffin
+* Antique book
+* Vintage accessories
+* Mini tarot-style cards
+* ♥ ♠ ♦ ♣
+* White snake
+* Torn letter
+* Black cat
+* Scorpion
+* lizard
+* Rose / thorny vine
+* Candle with wax drips, lace cross
+* Lace flower
+* Ghost
+* Bone
+* Skull
+* Sweets (cake, candy)
+* Black rose / thorny vine
+* Frost-flake shards (**3–5 shards as one pick**)
+* Crescent moon & small stars
+* Small pocket watch (**no glass glare**)
+* Quill pen & inkwell
+* Beeswax seal
+* Key ring & tag
+* Cross medallion
+* Half-wreath of laurel
+* Red spider lily
+* Dried mini-flower swag
+* Small alchemical symbols set
+* Rune stones motifs
+* Hourglass
+* Vintage postage stamp
+* Black rabbit
+* Small gecko
+* Little jellyfish
+* Bird feather
+
+---
+
+### Randomizer #5 — Frame (pick 1)
+
+* 35 mm negative border with sprocket holes; mild edge light-leak
+* Baroque gilded frame
+* Black iron lattice / gate
+* Lace ribbon & pearls (black × white)
+* Bramble thorns with tiny charms (keys/cross/rose)
+* Gold chain with dangling key charms from top (do not cover faces)
+* Perforated Postage
+* Chain & Rivets
+* Chantilly Lace Corners
+* Velvet Ribbon & Bow
+* Tarot Border
+* Protective Wards Ring
+* Moon-Phase Top Bar
+* Ivy Crawl Corners
+* Wax Drip Crest
+* Fine black lace curtains on left/right
+* Heavy stage drapes on left/right
+* Coffin-silhouette window
+* Double ring of barbed wire
+* Crazed cracked-enamel pattern
+* Crochet doily edge
+* Alchemical sigils pin-stripe
+* Blood spatter
+
+---
+
+### Randomizer #6 — Target of Doodles (pick 1)
+
+*(Who receives doodles. The character(s) **not** chosen must remain completely free of doodles.)*
+
+* **Both**
+* **Char1 only**
+* **Char2 only**
+* **None** (draw no doodles at all)
+
+---
+
+### Randomizer #7 — Doodles (pick **0–2**)
+
+*(If #6 = None → pick 0. If #6 = only one character → pick 1. If #6 = Both → pick 2.)*
+*(These are scribbles added **after** taking the purikura, drawn **on top** without merging with bodies/hair/clothes. Chalky, rough, powdery lines; Normal blend; lighting-independent.)*
+
+* Wolf ears on head + fangs by mouth
+* Angel halo on head
+* Third eye on forehead
+* Medusa snakes on head (simple separate snakes)
+* Nurse cap on head + syringe on cheek
+* Succubus horns on head
+* Frankenstein bolts on head + stitched scar on face
+* Witch hat on head
+* Bat headband
+* Jiangshi “ofuda” talisman on forehead
+* Star on cheek
+* Tear on cheek
+* Speech bubble near face: “Trick?” / “Treat!” / etc.
+* Spider silhouette paint near eyes
+* Simple skull paint on cheek
+* ✨ near the eyes
+* Jack-o’-lantern on cheek
+* Bat silhouette paint on cheek
+* Skull paint on cheek
+* Cross at eye corner
+
+---
+
+### Randomizer #8 — Text style (pick **1–2**)
+
+*(Choose separately for Title and Date; they may differ.)*
+
+* Blackletter (inner inline + outer glow)
+* Copperplate-style typesetting
+* Engraving-style nameplate
+* Mechanical watch small-seconds motif
+* Engraved bar with micro-text
+* Vintage corner emboss mark
+* Art-Nouveau ribbon script
+* Deco inline capitals
+* Wrought-iron sign look
+* Tombstone serif carving
+* Antique gold-leaf print
+* Stencil
+* Marbled-ink fill
+* Embroidery
+
+---
+
+### Randomizer #9 — Colorway (pick 1)
+
+1. **Pumpkin Velvet** (**soot-black** × **charred orange** × **brass gold**)
+   \#0E0E10 × #C86A2A × #B88C3C | Recommended: **Candle Rim** / **Lantern Aura**
+
+2. **Grave Lilac** (**ash lilac** × **sooty black** × **dull silver**)
+   \#6E6578 × #111216 × #BFC6CF | Recommended: **Frostbite Rim** / **Moon Halo**
+
+3. **Witch’s Tea** (**ink green** × **dark brown** × **amber**)
+   \#0D1916 × #3A2B21 × #C79A4A | Recommended: **Witch-fire Rim (green)**
+
+4. **Blood Velvet** (**deep crimson** × **grape purple** × **black iron**)
+   \#8C1628 × #3E173C × #222428 | Recommended: **Blood-Moon Rim**
+
+5. **Cathedral Indigo** (**ultramarine** × **lead gray** × **stained-glass white**)
+   \#1D2A5A × #6B737C × #E9F2FF | Recommended: **Moon Halo** / **CRT Bloom**
+
+6. **Poison Slime Pop** (**ink black** × **neon yellow-green** × **gray-white**)
+   \#0B0B0C × #D6FF37 × #E6E7EA | Recommended: **Graveyard Neon** / **Neon Backlight**
+
+7. **Old Sepia Halloween** (**dark brown** × **sepia** × **lamp-amber**)
+   \#3B2A20 × #7A5B3C × #E0A36A | Recommended: **Lantern Aura**
+
+8. **Moonlit Violet** (**black-violet** × **ultramarine** × **silver**)
+   \#20162A × #23305A × #C8D2E0 | Recommended: **Moon-spectrum Rim**
+
+9. **Nocturne** (**soot-black** × **deep crimson** × **antique gold**)
+   \#0D0D10 × #7A0E1B × #B49A54 | Recommended: **Dual amber / silvery-blue**
+
+10. **Emerald Cat’s Eye** (**black-green** × **jade** × **white light**)
+    \#0E1814 × #2AA382 × #F2FDFF | Recommended: **Fox-fire Rim**
+
+11. **Dollhouse Macabre** (**powder sugar** × **soot gray** × **toxic pink**)
+    \#F3EFF5 × #3B3B42 × #E86DA6 | Recommended: **UV-Ink Rim** / **CRT Bloom**
+
+12. **Moss & Bone** (**moss green** × **bone-white** × **black iron**)
+    \#324236 × #EAE7DF × #2A2D31 | Recommended: **Grave-mist Aura**
+
+13. **Rusted Carnival** (**rust orange** × **indigo-ink** × **ivory**)
+    \#B3562E × #1E2A31 × #F0E9DF | Recommended: **Candy-holo Rim (low chroma)**
+
+14. **Black Rose & Copper** (**black rose** × **dusty rose** × **copper**)
+    \#151018 × #6B4A56 × #B8744E | Recommended: **Moon Halo**
+
+15. **Ghost Milk** (**soot-black** × **milky white** × **window-glass blue**)
+    \#0C0C0E × #F6F7F5 × #B9D2F7 | Recommended: **Frostbite Rim**
+
+16. **Night Circus** (**ink black** × **true red** × **ivory**)
+    \#0B0B0C × #A31228 × #F5EBDD | Recommended: **Neon Backlight (magenta)**
+
+17. **Dead Forest** (**deep blue-green** × **dead-leaf brown** × **mist gray**)
+    \#0F2426 × #6A4A2F × #C9D0D1 | Recommended: **Cemetery Mist**
+
+18. **Arcane Amethyst** (**black-violet** × **pale amethyst** × **antique silver**)
+    \#1A1020 × #CBB6E6 × #A9A9B2 | Recommended: **UV-Ink Rim** / **Moon Halo**
+
+---
+
+## Composition Order (conceptual)
+
+Background → Characters → Confetti → Frame → Stickers → Doodles → **Title** → **Date**
+
