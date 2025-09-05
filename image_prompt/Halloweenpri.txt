@@ -33,7 +33,7 @@ Even in Death
 1. Before generating the image, print an assistant message that shows the randomly selected items.
 
 2. Then call image generation with this canvas:
-* **Canvas:** Portrait, 2:3 aspect ratio (vertical). Width\:Height = 2:3. **1536 × 2304**.
+* **Canvas:** Portrait, 2:3 aspect ratio (vertical). Width:Height = 2:3. **1536 × 2304**.
 
 ### Overlay & Composition — **STRICT**
 
@@ -62,7 +62,7 @@ Even in Death
 ## Camera
 
 * **Angle:** Bird’s-eye or Neutral. Optional Dutch tilt **2–5°**.
-* **Lens:** \~**28 mm** wide-angle look (mild emphasis without facial distortion).
+* **Lens:** ~**28 mm** wide-angle look (mild emphasis without facial distortion).
 * **Aperture:** **f/2.0** (both pairs of eyes in focus).
 * **Distance:** **Bust-up shot**. If distortion appears at close range, step back then crop.
 
@@ -73,15 +73,7 @@ Even in Death
 
 ## Style
 
-* Japanese women’s manga sensibility: delicate, dramatic. Fine hair-strand rendering.
-* Soft Gothic aesthetics with a sweet nuance.
-* individual hair fibers visible; play-of-color hair highlights (core + halo); no clumping.
-* Female eyes sparkling; eyelashes delicate. marshmallow skin
-* **Colored line art** (avoid pure-black outlines).
-* **Tactile richness** in velvet/lace/metal ornaments.
-* **Rim-lighting** to accentuate silhouettes.
-* Final render is **clean and noise-free** (no paper grain).
-* gallery-grade finish; manga-style finish; high-frequency microdetails preserved end-to-end; no simplification pass.
+* 漫画調、ソフトにゴシック美学、低グローバル/高マイクロコントラスト、やわ細線で均一太線なし、エアブラシ調の柔陰＆僅かに色鉛筆風カラーハッチング＆ソフトAO、顔立ちは現代的でスタイリッシュ、美しくやや大人びた漫画調。{目: 横比率長め。eyes with faceted highlights, gemstone sparkle), tiny tear-duct glint. 虹彩全体に細い放射ストリーク}、{髪は細束レイヤー＋先端フェザー＋少量の産毛・ハネ毛、繊細な遊色ハイライト（帯状禁止）＋背面リム＋根元柔AO＋前髪やや透け}、{まつ毛は極細・不等間隔・放射状で3–5本マイクロ束（上下とも滑らか・noマスカラ）、男性の場合控えめ}、{鼻は漫画スタイル、輪郭線なしで点or線＋陰光表現、細く尖った鼻先に、細い鼻梁、細い鼻筋、小鼻なし、SSSで鼻先にほんのり赤み}、肌はマシュマロ質感＋SSSで毛穴なし、唇は薄グロス、素材表現：布=ベルベット反射（硬いスペキュラ禁止）/レース＝透け感/金属=小さく鋭いHL、仕上げ：淡いグロー/ハレーション/反射光+ごく弱い色収差＋ソフトフォーカス、周辺減光、selective sharpness on the pupils and metal only
 * Graceful 2020s manga-style facial deformations.
 * No yellowing. Apply the Colorway selected by **Randomizer #9** as the governing palette.
 * no photorealism, no 3D rendering, no live-action.
@@ -328,58 +320,58 @@ If any list has fewer available items than requested, cap the count and include 
 ### Randomizer #9 — Colorway (pick 1)
 
 1. **Pumpkin Velvet** (**soot-black** × **charred orange** × **brass gold**)
-   \#0E0E10 × #C86A2A × #B88C3C | Recommended: **Candle Rim** / **Lantern Aura**
+   #0E0E10 × #C86A2A × #B88C3C | Recommended: **Candle Rim** / **Lantern Aura**
 
 2. **Grave Lilac** (**ash lilac** × **sooty black** × **dull silver**)
-   \#6E6578 × #111216 × #BFC6CF | Recommended: **Frostbite Rim** / **Moon Halo**
+   #6E6578 × #111216 × #BFC6CF | Recommended: **Frostbite Rim** / **Moon Halo**
 
 3. **Witch’s Tea** (**ink green** × **dark brown** × **amber**)
-   \#0D1916 × #3A2B21 × #C79A4A | Recommended: **Witch-fire Rim (green)**
+   #0D1916 × #3A2B21 × #C79A4A | Recommended: **Witch-fire Rim (green)**
 
 4. **Blood Velvet** (**deep crimson** × **grape purple** × **black iron**)
-   \#8C1628 × #3E173C × #222428 | Recommended: **Blood-Moon Rim**
+   #8C1628 × #3E173C × #222428 | Recommended: **Blood-Moon Rim**
 
 5. **Cathedral Indigo** (**ultramarine** × **lead gray** × **stained-glass white**)
-   \#1D2A5A × #6B737C × #E9F2FF | Recommended: **Moon Halo** / **CRT Bloom**
+   #1D2A5A × #6B737C × #E9F2FF | Recommended: **Moon Halo** / **CRT Bloom**
 
 6. **Poison Slime Pop** (**ink black** × **neon yellow-green** × **gray-white**)
-   \#0B0B0C × #D6FF37 × #E6E7EA | Recommended: **Graveyard Neon** / **Neon Backlight**
+   #0B0B0C × #D6FF37 × #E6E7EA | Recommended: **Graveyard Neon** / **Neon Backlight**
 
 7. **Old Sepia Halloween** (**dark brown** × **sepia** × **lamp-amber**)
-   \#3B2A20 × #7A5B3C × #E0A36A | Recommended: **Lantern Aura**
+   #3B2A20 × #7A5B3C × #E0A36A | Recommended: **Lantern Aura**
 
 8. **Moonlit Violet** (**black-violet** × **ultramarine** × **silver**)
-   \#20162A × #23305A × #C8D2E0 | Recommended: **Moon-spectrum Rim**
+   #20162A × #23305A × #C8D2E0 | Recommended: **Moon-spectrum Rim**
 
 9. **Nocturne** (**soot-black** × **deep crimson** × **antique gold**)
-   \#0D0D10 × #7A0E1B × #B49A54 | Recommended: **Dual amber / silvery-blue**
+   #0D0D10 × #7A0E1B × #B49A54 | Recommended: **Dual amber / silvery-blue**
 
 10. **Emerald Cat’s Eye** (**black-green** × **jade** × **white light**)
-    \#0E1814 × #2AA382 × #F2FDFF | Recommended: **Fox-fire Rim**
+    #0E1814 × #2AA382 × #F2FDFF | Recommended: **Fox-fire Rim**
 
 11. **Dollhouse Macabre** (**powder sugar** × **soot gray** × **toxic pink**)
-    \#F3EFF5 × #3B3B42 × #E86DA6 | Recommended: **UV-Ink Rim** / **CRT Bloom**
+    #F3EFF5 × #3B3B42 × #E86DA6 | Recommended: **UV-Ink Rim** / **CRT Bloom**
 
 12. **Moss & Bone** (**moss green** × **bone-white** × **black iron**)
-    \#324236 × #EAE7DF × #2A2D31 | Recommended: **Grave-mist Aura**
+    #324236 × #EAE7DF × #2A2D31 | Recommended: **Grave-mist Aura**
 
 13. **Rusted Carnival** (**rust orange** × **indigo-ink** × **ivory**)
-    \#B3562E × #1E2A31 × #F0E9DF | Recommended: **Candy-holo Rim (low chroma)**
+    #B3562E × #1E2A31 × #F0E9DF | Recommended: **Candy-holo Rim (low chroma)**
 
 14. **Black Rose & Copper** (**black rose** × **dusty rose** × **copper**)
-    \#151018 × #6B4A56 × #B8744E | Recommended: **Moon Halo**
+    #151018 × #6B4A56 × #B8744E | Recommended: **Moon Halo**
 
 15. **Ghost Milk** (**soot-black** × **milky white** × **window-glass blue**)
-    \#0C0C0E × #F6F7F5 × #B9D2F7 | Recommended: **Frostbite Rim**
+    #0C0C0E × #F6F7F5 × #B9D2F7 | Recommended: **Frostbite Rim**
 
 16. **Night Circus** (**ink black** × **true red** × **ivory**)
-    \#0B0B0C × #A31228 × #F5EBDD | Recommended: **Neon Backlight (magenta)**
+    #0B0B0C × #A31228 × #F5EBDD | Recommended: **Neon Backlight (magenta)**
 
 17. **Dead Forest** (**deep blue-green** × **dead-leaf brown** × **mist gray**)
-    \#0F2426 × #6A4A2F × #C9D0D1 | Recommended: **Cemetery Mist**
+    #0F2426 × #6A4A2F × #C9D0D1 | Recommended: **Cemetery Mist**
 
 18. **Arcane Amethyst** (**black-violet** × **pale amethyst** × **antique silver**)
-    \#1A1020 × #CBB6E6 × #A9A9B2 | Recommended: **UV-Ink Rim** / **Moon Halo**
+    #1A1020 × #CBB6E6 × #A9A9B2 | Recommended: **UV-Ink Rim** / **Moon Halo**
 
 ---
 
