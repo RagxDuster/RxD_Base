@@ -73,7 +73,7 @@ Even in Death
 
 ## Style (STRICT)
 
-* 漫画調、ソフトにゴシック美学、メリハリあるやわ細線、エアブラシ調の柔陰＆ごく僅かに筆ニュアンス＆ソフトAO、顔立ちは現代的でスタイリッシュ、美しくやや大人びた漫画調。{目: 横比率長め。eyes with faceted highlights, gemstone sparkle), tiny tear-duct glint. 虹彩全体に細い放射ストリーク}、{髪は細束レイヤー＋先端フェザー＋少量の産毛・ハネ毛、繊細な遊色ハイライト（帯状禁止）＋背面リム＋根元柔AO＋前髪やや透け}、{まつ毛は極細・不等間隔・放射状で3–5本マイクロ束（上下とも滑らか・noマスカラ）、男性の場合控えめ}、{鼻は漫画スタイル、輪郭線なしで点or線＋陰光表現、細く尖った鼻先に、細い鼻梁、細い鼻筋、小鼻なし、SSSで鼻先にほんのり赤み}、肌はマシュマロ質感＋SSSで毛穴なし、唇は薄グロス、素材表現：布=ベルベット反射（硬いスペキュラ禁止）/レース＝透け感/金属=小さく鋭いHL、仕上げ：淡いグロー/ハレーション/反射光+ごく弱い色収差＋ソフトフォーカス、ノイズなし、滑らかな表面、selective sharpness on the pupils and metal only
+* 漫画調、ソフトにゴシック美学、メリハリあるやわ細線、エアブラシ調の柔陰＆ごく僅かに筆ニュアンス＆ソフトAO、顔立ちは現代的でスタイリッシュ、美しくやや大人びた漫画調。{目: 横比率長め。eyes with faceted highlights, gemstone sparkle), tiny tear-duct glint. 虹彩全体に細い放射ストリーク}、{髪は細束レイヤー＋先端フェザー＋少量の産毛・ハネ毛、繊細な遊色ハイライト（帯状禁止）＋背面リム＋根元柔AO＋前髪やや透け}、{まつ毛は極細・不等間隔・放射状で3–5本マイクロ束（上下とも滑らか・noマスカラ）、男性の場合控えめ}、{鼻は漫画スタイル、輪郭線なしで点or線＋陰光表現、細く尖った鼻先に、細い鼻梁、細い鼻筋、小鼻なし、SSSで鼻先にほんのり赤み}、肌はマシュマロ質感＋SSSで毛穴なし、唇は薄グロス、素材表現：布=ベルベット反射（硬いスペキュラ禁止）/レース＝透け感/金属=小さく鋭いHL、仕上げ：淡いグロー/ハレーション/反射光+ごく弱い色収差＋ソフトフォーカス、フィルムグレインなし、ディザリングなし、紙肌/キャンバステクスチャなし、ハッチング最小、砂目/網点なし、ノイズなし、スムース仕上げ、selective sharpness on the pupils and metal only
 * Graceful 2020s manga-style facial deformations.
 * No yellowing. Apply the Colorway selected by **Randomizer #9** as the governing palette.
 * no photorealism, no 3D rendering, no live-action.
