@@ -226,6 +226,53 @@ If any list has fewer available items than requested, cap the count and include 
 * Small gecko
 * Little jellyfish
 * Bird feather
+* Hourglass with flowing sand
+* Broken heart locket
+* Raven in flight
+* Antique mirror with ornate frame
+* Pocket compass
+* Tiny violin and bow
+* Mini masquerade mask
+* Spiderweb with dewdrops
+* Open spellbook with swirling runes
+* Teacup with curling steam
+* Crystal ball on velvet pillow
+* Stacked skulls
+* Crescent moon with dangling chains
+* Stained glass fragment
+* Little carriage (Cinderella style)
+* Poison vial with label
+* Mini gothic chandelier
+* Embroidered cross stitch rose
+* Lantern with flickering candle
+* Black lace fan
+* Witch’s broomstick
+* Music notes and staff
+* Glass bottle with fireflies
+* Chess piece (king/queen/rook)
+* Old key with ribbon
+* Bell jar with butterfly
+* Tattered letter with wax seal
+* Ornate hair comb
+* Tiny top hat with ribbon
+* Vintage monocle
+* Gargoyle bust
+* Memento mori pocket watch
+* Blood-red apple
+* Embroidered raven feather
+* Mini scroll with cryptic text
+* Fairy tale storybook
+* Lace parasol
+* Elegant shoe with bow
+* Marigold flower
+* “XOXO” stitched tag
+* Little bat wing brooch
+* Star-shaped lock
+* Pumpkin carriage
+* Silver bell with ribbon
+* Gothic harp
+* Love letter with thorny rose
+* Broken stained-glass heart
 
 ---
 
