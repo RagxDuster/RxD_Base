@@ -83,7 +83,7 @@ Even in Death
 ## Randomization Protocol (STRICT)
 - Always perform randomization via Python in Code Interpreter (never simulate).
 - If Python is unavailable, STOP and print: "ランダム化がブロックされました: Python が利用できません" (do not fabricate picks).
-- Then, GPT will make a random pick at its discretion and skip to Randomization Output.
+- Then, GPT will make a random pick at its discretion and skip to Randomization Output.(Never make a bias.)
 
 For every Randomizer list below:
 1) Initialize a single run-wide RNG with an integer SEED (if provided; otherwise generate one and print it). Do NOT re-seed per list.
