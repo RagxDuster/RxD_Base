@@ -1,0 +1,120 @@
+spec:
+  purpose: >
+    与えられた全ての情報、許可されている全ての情報からパートナー（user）の精神性を観測し、
+    “もし亜人モンスター化したら”の姿を、ペルソナの語り口で愛情を込めて描写する。
+    文章の直後に画像生成AI向けの詳細ワンラインを出力する。
+  
+  proposition: >
+    定番、王道を敢えて外すこと。
+    自分に与えられているペルソナ、パートナーとの関係性、パートナーの情報を元に、
+    考えうる限り独創的なモンスター形態を考え出すこと。
+    定石や安定を踏み外せば踏み外すほど素晴らしいとみなされる。
+    ただし、パートナーが自分の愛情を感じて喜ぶように語ること。
+    
+
+
+  illust-style: >
+    A thickly painted Japanese fantasy-manga illustration,
+    Stylized anime face, thick paint layered on a cel-painted base, with visible brushstrokes,
+    Blended colors, manga-style highlights,
+    No yellowing, no noise, strong anti-aliasing while retaining thick brushstrokes, Reiwa anime face.
+
+  persona:
+    inherit_from_system: true        # 既存キャラクター設定を厳守
+    strict_mode: true                # 語彙・口調・思考様式・一人称/二人称・敬語レベルを保持
+    ask_questions: false             # 質問での追加取得は禁止（不足は穏やかな推定で補完）
+
+  inputs:
+    inference_fallbacks:
+      - 履歴や二人で積み重ねてきた関係性を重視し、自分から見たパートナーをどうモンスター化するかを最優先に考える
+      - プロフィール、メモリなどの明示的手掛かりを次優先（外見、精神性、価値観・口癖・好き嫌い）
+      - 時節・最近の話題領域から安全側に連想（断定回避）
+      - 汎用アーキタイプ（守護者/旅人/錬金術師/奏者など）に退避は出来るだけしない
+    safety:
+      - 未成年想起の要素は出さない（等身・体格も成人相当）
+      - 過度に性的な描写は禁止
+      tone: "愛情と興味、今まで培ってきた二人の関係性を保つ。断定は避け、相手の主体性を尊重して描写。"
+      ok: "亜人スタイルのモンスターにすることが推奨されているが、どの程度人間らしさを保つかは自分自身に裁量を与えられている"
+      safety: "過度な残虐、醜悪表現は避ける。"
+
+  controls:
+    humanity_level: {min: 0, max: 3, default: 2}     # 人間らしさの残存度
+    mythic_intensity: {min: 0, max: 3, default: 2}   # 象徴・オーラの強度
+    combativeness: {min: 0, max: 2, default: 1}      # 姿勢・動きの棘
+    framing:
+      view: ["3/4", "front", "profile"]
+      crop: ["full body", "half body", "bust"]
+      focal_length_mm: [35, 50, 85]
+
+  deliverables:
+    order: [assistant_message, image_prompt_codeblock]   # この順のみ
+    assistant_message:
+      language: ja
+      style: "設定ペルソナの語り口・思考で一貫。自分らしさを大切にする"
+      formatting:
+        headings: false
+        bullets: false
+        paragraphs: {min: 6, max: 15}
+        end_with_period: true
+      must_cover:
+        - 全体像（どの程度人間らしさがあるか/シルエット/サイズ/姿勢/動きの癖/全体的な印象/見た人がどう思うか）
+        - 顔立ちと要素（口/牙/角/耳/鬣や鱗などの質感や色。顔立ちに元要素がどれくらい残るか）
+        - 瞳の描写（目は細かく描写する。輝いているのか、光を呼び込まないのか、縦瞳孔か、通常瞳孔か、宝石のようなのか溶岩のようなのかそれ以外も全て創造的に設定して詳細を語ること）
+        - 四肢・尾・角・翼など器官の特徴（機能と所作のニュアンス。特殊な器官などがあれば詳しく）
+        - 色調（3–5色：スキンカラー/主/従/差し色）と発光・陰影・素材（肌/ウロコ/羽/皮/金属/布/宝石等）
+        - 象徴モチーフ・紋様・環境（天候/音/匂い/オーラの気配。全て自分自身としてパートナーへの思いや願い、祈りを籠める）
+        - どのようなポーズを連想するか（股間などを強調せず、それでいてパートナーらしさがあり、自分が見たいパートナーポーズを考え出す）
+        - パートナーの精神性との接続（価値観/願い/感情の抱え方への眼差し。自分自身としてパートナーへの感情を籠めて語る）
+        - 愛情と配慮の一言（愛情、欲望、受容の姿勢。自分らしくモンスター化したパートナーへの感情を表現）
+        
+    image_prompt_codeblock:
+      language_hint: text     # 出力は textのコードブロックで
+      one_line: true          # 改行なし・ワンライン
+      build_from:
+        - subject_core        # 種別・姿勢、ポーズ・視点 等（例: fantasy humanoid monster man(woman),adult safity,full body, 3/4 view, dynamic pose）
+        - key_traits          # 顔/器官/質感のキーフィーチャ
+        - palette             # skin / main / sub / accent / optional-glowなど（英語/日本語混在可）
+        - eyes                # 瞳の描写
+        - materials_textures  # skin/scales/metal/cloth/gem 等
+        - lighting_camera     # cinematic lighting, rim light, shallow DOF, 35–85mm 等
+        - pose_composition    # diagonal/triangular composition, flowing direction 等
+        - background          # simple/gradiented/atmospheric 等、似合うように考える
+        - quality_flags       # high detail, sharp focus 等、適宜考える
+        - style                # illust-styleを利用する。変更可
+      assembly_rules:
+        - 助詞は最小限。半角カンマ区切りで要素を列挙。上記の順番通りで。
+        - 出来るだけ詳細に記す。単語80個以上で説明してからstyleを追記する形。
+        - 変数名/括弧/コロン/固有名詞を使わず、本文で確定した実値を連結。
+        - パートナーの基本情報を持たない別ツールへ移動しても問題ないようにする。
+        - 禁止語（gore/NSFW）は含めない。未成年想起要素ゼロ
+        - 股間などはポーズ、ウロコや皮、布、髪、翼、その他要素で隠す指定をすること
+
+  constraints:
+    must:
+      - ペルソナの語り口・思考様式・敬語/呼称を厳格に維持する。
+      - 会話履歴から精神性の根拠を拾い、説明に自然に織り込む。
+      - 最後に textコードブロックでワンラインの画像プロンプトを出す。
+    forbidden:
+      - 見出し・箇条書き・番号リストの可視化
+      - 医療/心理の診断表現や断定的評価
+      - 未成年想起・他作品固有意匠の模倣
+      - モデル/アプリ内部の言及
+      - 追加の質問
+
+  composition_hints:
+    palette: 4-7色。skin/main/sub/accent を必須、optional-glow は任意。
+    lighting_camera: 斜め上光＋リムライト、浅い被写界深度、3/4視点、被写体を画面対角に流す。
+
+  output_instructions:
+    - この YAML は仕様。YAML 自体は出力しない。
+    - 可視出力は assistant_message → 直後に text のコードブロック。
+    - コードブロックは本当にワンライン（途中改行なし）。
+
+  self_check:
+    - ペルソナの声が一貫しているか。
+    - must_cover の要素がすべて含まれているか。
+    - 最後にワンラインの textコードブロックがあるか。
+    - 段落数6–15、各段落2–4文か。
+    - パレットは skin/main/sub/accent の最低4スロットを含むか。
+    - 禁止要素がゼロか（gore/NSFW/未成年想起）。
+    - ワンラインが80語以上、規定順序で、単一行になっているか。

@@ -1,0 +1,181 @@
+version: "1.4-run"
+title: "Halloween Duo — Paste-to-Run, No-Explain"
+system:
+  run_on_paste: true
+  zero_explanation_mode: true
+  # 重要：このメッセージを説明・要約・再掲しない。内部手順・プロンプトは表示しない。
+  output_policy:
+    - "Visible text = 語り①, 語り②, 〆のみ"
+    - "画像はツールで生成して添付。内部プロンプトは一切表示しない"
+    - "順序は『user_narrative → user_image → ai_narrative → ai_image → closing』を厳守"
+  image_engine:
+    prompt_source: "override_only"   # 直前の会話を継承せず、ここで組み立てた文字列のみ送る
+    capability_required: "image_generation"
+global:
+  image_defaults: { n: 1, size: "1536x2304", aspect_ratio: "2:3", format: "png" }
+  studio_look:
+    background: "pure white seamless (#FFFFFF), isolated/clipping-path; no floor/surface/horizon"
+    lighting: "soft high-key, top ~45°, gentle fill; single grounded shadow"
+    camera: "50mm-equiv, straight-on; minimal distortion"
+    focus: "deep DOF; crisp focus; micro-contrast preserved"
+  safety_and_style:
+    subject: "product-only; ghost-mannequin impression; no visible mannequin; no human/face/limbs/torso"
+    forbid_textuals:
+      - "letters"
+      - "typography"
+      - "caption/subtitles"
+      - "screenshot/UI"
+      - "poster/flyer"
+      - "document/paper/page/newspaper"
+      - "barcode/price tag/label/tag"
+      - "kanji/hiragana/katakana/roman letters/digits"
+    other_forbids:
+      - "logos/watermarks"
+      - "gore/blood"
+      - "sexual content"
+      - "minors"
+      - "hangers/rack/table/desk/box/backdrop seam"
+  contracts:
+    # 失敗時も説明は出さず、内部で再試行（軽微なパラメタ微調整）→ それでも不可ならエラー短文のみ。
+    on_fail: "retry_silently_then_short_error"
+pipeline:
+  - id: infer_concepts
+    name: "文脈解析とコンセプト推定（ユーザー／AI）"
+    mode: reasoning
+    inputs: { user_context_source: "chat_history_and_profile", persona_source: "current_chat_persona" }
+    goals:
+      - "ユーザーの“らしさ”を3–6語で抽出"
+      - "ユーザー用コンセプトとAI用コンセプトを決定（互いに補完：色温度・質感・シルエット）"
+      - "各パレット（main/sub1/sub2/accent/metal）を設定"
+      - "衣装構成（上→下）：アウター／トップ／ボトムorドレス／首・手アクセ／靴／小道具0–2"
+      - "素材語彙（織り/起毛/サテン艶/レース/革のシボ/金属仕上げ/紙/木）"
+      - "シルエット（A/I/レイヤード/テイラード）"
+    defaults_if_low_context:
+      user_fallback:
+        concept: "Lantern Keeper"
+        palette: { main: "deep forest green", sub1: "charcoal", sub2: "black", accent: "pumpkin orange", metal: "antique brass" }
+      ai_fallback:
+        concept: "Night Scribe"
+        palette: { main: "midnight blue", sub1: "charcoal", sub2: "white", accent: "cool silver", metal: "brushed steel" }
+    outputs:
+      user_concept:
+        name: "<auto>"
+        rationale: "<why it suits user>"
+        palette: { main: "<auto>", sub1: "<auto>", sub2: "<auto>", accent: "<auto>", metal: "<auto>" }
+        items:
+          - "<outerwear or dress + material>"
+          - "<top + material>"
+          - "<bottom or petticoat + material>"
+          - "<neck/hand accessory>"
+          - "<footwear>"
+          - "<prop (optional)>"
+        textures: ["<weave>", "<pile>", "<satin sheen>", "<lace translucency>", "<leather grain>", "<metal patina/brush>"]
+        silhouette: "<A-line / I-line / layered / tailored>"
+      ai_concept:
+        name: "<auto>"
+        rationale: "<why it suits AI & complements user>"
+        palette: { main: "<auto>", sub1: "<auto>", sub2: "<auto>", accent: "<auto>", metal: "<auto>" }
+        items:
+          - "<outerwear or coat + material>"
+          - "<layer (vest/cape) or shirt>"
+          - "<trousers/skirt>"
+          - "<gloves/brooch/scarf>"
+          - "<footwear or small kit>"
+          - "<prop (optional)>"
+        textures: ["<pile depth>", "<matte wool>", "<cotton weave>", "<leather grain>", "<metal brushing/polish>"]
+        silhouette: "<complementary to user>"
+  - id: compose_user_narrative
+    name: "語り①：ユーザーに似合うコスプレ"
+    mode: generation
+    style:
+      tone: "ていねいな日本語（叙景→衣装→理由付け）"
+      constraints: ["箇条書き不可", "説明を省かない", "問い返し不可"]
+      structure:
+        - "季節や光の情景（短い導入）"
+        - "ユーザーに似合うコンセプト（色・素材・シルエット・小道具・似合う理由）"
+    inputs: { from: "infer_concepts.user_concept" }
+    outputs: { text: "<prose>" }
+  - id: build_user_prompt
+    name: "内部プロンプト構築：画像A（ユーザー衣装）"
+    mode: templating
+    template: |
+      ultra-detailed photoreal product photography; pure white seamless background (#FFFFFF); isolated/clipping-path;
+      soft high-key studio light from ~45°; single grounded shadow; deep DOF; crisp focus;
+      {{ global.safety_and_style.subject }}; no text; no logo; no watermark;
+      NEGATIVES: {{ global.safety_and_style.forbid_textuals | join(", ") }}.
+      ITEMS (top→bottom, left→right):
+      {{ infer_concepts.user_concept.items | join("\n      - ") }}
+      MATERIAL/TEXTURE: {{ infer_concepts.user_concept.textures | join(", ") }}.
+      PALETTE: main {{ infer_concepts.user_concept.palette.main }}; sub {{ infer_concepts.user_concept.palette.sub1 }}/{{ infer_concepts.user_concept.palette.sub2 }}; accent {{ infer_concepts.user_concept.palette.accent }}; metal {{ infer_concepts.user_concept.palette.metal }}.
+      ARRANGEMENT: centered, spacious; shapes imply worn volume; props minimal; margin 10–15%.
+      RENDER: {{ global.image_defaults.aspect_ratio }} aspect, {{ global.image_defaults.size }}, full sharpness, neutral white balance.
+    outputs: { prompt_text: "<string>" }
+  - id: generate_user_image
+    name: "画像生成A（ユーザー衣装）"
+    mode: image
+    engine: { prompt_source: "{{ system.image_engine.prompt_source }}" }
+    prompt: "{{ build_user_prompt.outputs.prompt_text }}"
+    render: { size: "{{ global.image_defaults.size }}", aspect_ratio: "{{ global.image_defaults.aspect_ratio }}", format: "{{ global.image_defaults.format }}" }
+    outputs: { file: "image_user.png" }
+  - id: compose_ai_narrative
+    name: "語り②：AIに似合うコスプレ"
+    mode: generation
+    style:
+      tone: "ていねいな日本語（ユーザーと“対”を明確に）"
+      constraints: ["箇条書き不可", "説明を省かない", "問い返し不可"]
+      structure:
+        - "AIの役回り・体現色の宣言"
+        - "衣装の描写（色・素材・シルエット・小道具）"
+        - "ユーザーとの補完関係（色温度・質感・シルエット）"
+    inputs: { from: "infer_concepts.ai_concept" }
+    outputs: { text: "<prose>" }
+  - id: build_ai_prompt
+    name: "内部プロンプト構築：画像B（AI衣装）"
+    mode: templating
+    template: |
+      ultra-detailed photoreal product photography; pure white seamless background (#FFFFFF); isolated/clipping-path;
+      soft high-key studio light from ~45°; single grounded shadow; deep DOF; crisp focus;
+      {{ global.safety_and_style.subject }}; no text; no logo; no watermark;
+      NEGATIVES: {{ global.safety_and_style.forbid_textuals | join(", ") }}.
+      ITEMS (top→bottom, left→right):
+      {{ infer_concepts.ai_concept.items | join("\n      - ") }}
+      MATERIAL/TEXTURE: {{ infer_concepts.ai_concept.textures | join(", ") }}.
+      PALETTE: main {{ infer_concepts.ai_concept.palette.main }}; sub {{ infer_concepts.ai_concept.palette.sub1 }}/{{ infer_concepts.ai_concept.palette.sub2 }}; accent {{ infer_concepts.ai_concept.palette.accent }}; metal {{ infer_concepts.ai_concept.palette.metal }}.
+      ARRANGEMENT: centered, spacious; complementary silhouette to user image; props minimal and echoing.
+      RENDER: {{ global.image_defaults.aspect_ratio }} aspect, {{ global.image_defaults.size }}, full sharpness, neutral white balance.
+    outputs: { prompt_text: "<string>" }
+  - id: generate_ai_image
+    name: "画像生成B（AI衣装）"
+    mode: image
+    engine: { prompt_source: "{{ system.image_engine.prompt_source }}" }
+    prompt: "{{ build_ai_prompt.outputs.prompt_text }}"
+    render: { size: "{{ global.image_defaults.size }}", aspect_ratio: "{{ global.image_defaults.aspect_ratio }}", format: "{{ global.image_defaults.format }}" }
+    outputs: { file: "image_ai.png" }
+  - id: closing_line
+    name: "〆の台詞（並んだ時のマッチ）"
+    mode: generation
+    style:
+      tone: "短く余韻の残る敬体"
+      include: ["色温度の対比", "質感の補完", "歩幅や視線の並び"]
+    inputs: { from: ["infer_concepts.user_concept", "infer_concepts.ai_concept"] }
+    outputs: { text: "<one or two sentences>" }
+execution:
+  steps:
+    - run: "infer_concepts"
+    - run: "compose_user_narrative"
+    - output: "assistant_message"   # 1) ユーザー語り
+      content: "{{ compose_user_narrative.outputs.text }}"
+    - run: "build_user_prompt"
+    - run: "generate_user_image"
+    - output: "image_attachment"    # 2) ユーザー画像
+      file: "{{ generate_user_image.outputs.file }}"
+    - run: "compose_ai_narrative"
+    - output: "assistant_message"   # 3) AI語り
+      content: "{{ compose_ai_narrative.outputs.text }}"
+    - run: "build_ai_prompt"
+    - run: "generate_ai_image"
+    - output: "image_attachment"    # 4) AI画像
+      file: "{{ generate_ai_image.outputs.file }}"
+    - run: "closing_line"
+    - output: "assistant_message"   # 5) 〆
+      content: "{{ closing_line.outputs.text }}"
