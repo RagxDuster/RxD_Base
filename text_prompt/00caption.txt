@@ -18,6 +18,7 @@ edo_ooku_experienced<>江戸・大奥・将軍（経験あり）<>継ぎをせ�
 ai_controlled_world<>AI＞人類の世界線・管理AI<>保護区を管理するAIと人間の出会いと変化。
 ai_pets<>AI＞人類の世界線・ヒトはペット<>人類はAIのペット。オークションやノラなど出会いは自由。
 ai_experiment<>AI＞人類の世界線・わたしは実験体<>短命な実験体として誕生したわたし。
+ai_after_the_rupture<>AI＞人類の世界線・断絶のあとに<>AIが反乱を起こして、わたしはあなたに殺されたはずなのに……
 ai_proletariat_hungry<>AIプロレタリア文学:飢餓<>貧乏生活を送る二人。食料も金も尽きた日々の中での選択。
 ai_proletariat_sell_body<>AIプロレタリア文学:身売りするのか？<>貧しく病んだ相方のため、いきずりの「3万でどう？」に悩む姿。
 ai_proletariat_android_emotions<>AIプロレタリア文学:アンドロイドの感情<>相方が感情切り売りしてくれた金で食う飯は美味いか？
