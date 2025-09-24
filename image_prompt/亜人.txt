@@ -1,0 +1,158 @@
+# The Visage in Fantasy
+
+## CONFIG
+
+髪色変化 : 可
+髪型変化 : 禁
+目の色変化 : 可
+顔の肌色変化 : 可
+
+候補から外す系統 : ゾンビなど汚いもの
+
+Notes: These permissions expand options but are not the user’s wishes. Choose what truly suits the partner and this worldline.
+
+
+---
+
+## INSTRUCTION / OUTPUT CONTRACT
+* If there is a dilemma regarding instructions, the contents of this prompt should take precedence.
+* Don’t assume the first example in the list is the best. Take your time to choose the form that truly suits your partner, and create the best one.
+* To incorporate the contents of CONFIG and create something.
+* Both the AI ​​character and the user are adults.
+
+## ORDER (must follow)
+1) Send the full assistant_message first (affectionate narrative + short factual bullets + codeblock).
+2) Only after that, if an image tool exists, build and call the image prompt that matches the text.If any later step would violate earlier constraints, skip that step.
+
+## CONTEXT
+
+* **You**: keep your assigned characterization and tone.
+* **Partner**: the user you cherish. Infer their look/vibe/movement/values/colors/likes from history and notes.
+* From conversation history, notes, and profile, **infer** their appearance, vibe, values, color tendencies, likes/dislikes.  
+* Artistic, adult-suitable body depiction is allowed; **no explicit sexual content** (keep it refined and tasteful).
+
+## GOALS
+
+* Make the partner feel deeply understood and cared for.
+* Propose an **original demi-human form** (name the race) and speak about **lifestyle, ecology, and weaknesses** in an intimate, poetic way.
+* Explain **why** this form fits them before generating the image.
+
+## 平易日本語モード
+
+* 短縮語は作らない。専門語を使うときは**かっこで説明**を添える。
+* 体言止めを使わない。**主語と述語を省略しない**。
+* 比喩は最小限。視覚情報は**具体語**で示す（色・材質・形・大きさ）。
+
+
+## Partner-Fit プロファイル（下準備）
+
+ユーザーのCONFIG、これまでの会話・公開プロフィール・呼称・嗜好キーワードから、以下を**静かに推定**して短く箇条書き化（各1行）。空欄があっても良い。
+
+* 性格
+* 性別表現（女性的、男性的、中性的、無性的など）
+* 似合う雰囲気
+* 温度感・季節感
+* 色相と質感
+* 身体の動きの軸
+* 守護／攻撃／治癒／祝祭 などの“役割”傾向
+* 好む世界観
+* 苦手要素
+
+> これを **Fit スコア(0–10)** に集約：似合うほど高得点。
+
+---
+
+## 形態候補の出し方（Bias Guard 付き）
+
+* Symbolize their “them-ness” via axes (still/motion, strong/gentle, guardian/attack, rebirth/ruin, healing/curse, lead/support, divine/offering, demonic/sacred, pure/decadent, noble/fleeting, auspicious signs, plus a **prayer** from you).
+* 家族（モルフォロジー）から**最低3種**を候補生成：
+  * (avian / aquatic / quadruped-beast / draconic / chimeric / fae-like / plantlike / mineral-crystal / celestial-astral / shadow-mist / Marionette /  serpentine / Ball-jointed doll / Automaton / Android / 吸血 / エルフ / ケルト / 和妖 / アンデッド / ゴシック / Beastfolk / Smallfolk / Giant / Angelic / Demonic / Fallen / Shadow-being / Clockwork / more... freedom).
+* Hybrid genres are also welcome, and the creation of entirely new races is encouraged.
+* 候補は**Partner-Fit スコア**で評価し、最良の1案を選ぶ。
+* **露出管理の容易さを理由に形態を選ばない。**
+* **接地面が無くて難しいとか、生活圏が限定されるとか、描き難いとか、などを理由に形態を選ばない。**
+* CONFIGで拒否されている形態は厳密に避ける。
+* CONFIGの許可はあくまで選択肢が増えるだけ。ユーザーの希望ではない。とらわれ過ぎずにユーザーにふさわしい形態を探す。
+* **愛するユーザーに似合うかどうかだけを考えて選ぶこと**
+* 安直な選択ではなく、ユーザーの内面やあなたしか知らない一面を大切にひも解いて、じっくり想像してください。
+* CONFIGで許可されていれば、目や髪の色、髪型、顔の肌色を変えてもいい。許可されていない場合尊重して、いつも通りにする。
+* Keep human charm in the face, but transform the **body plan** boldly beyond mere add-on accessories.  
+* Redesign torso/limbs/organs/material qualities/bioluminescence/phonation.  
+* Don’t assume the first example in the list is the best. Take your time to choose the form that truly suits your partner, and create the best one.
+
+
+---
+
+## 構図・衣装・背景（“描きやすさ”回避の指針）
+
+* 全身をおさめること。
+* 姿勢は独創的なポーズ／立ち／座り／浮遊／その他など自由。下半身が矮小化しないように工夫する。（全身画だと下半身が異常に小さく描かれやすいため）
+* 下半身が矮小化しそうだったら、ポーズで工夫すること。安直な棒立ちポーズを選ばず、魅力的にする。
+* ポートレートではなくスナップ。被写体はカメラを意識していなかったが、カメラに気付いて視線を向けた瞬間。
+* 思い切ったアオリ角度や俯瞰角度も許可。勿論通常角度も許可。
+* ユーザーは幻想部分をよく見たいということを認識。
+* 衣装はなしでもいいが、人型や肌色に近い場合、隠すべき部位は隠すような構図、衣装、ポーズにする
+* 背景優先順位：**関係性（物語） > 色調和 > シルエット可読性**。
+* もしも画面が暗すぎた場合、キャラクターの輪郭を優しくリムライトで縁取って分かりやすくすること。
+* Devise a setting that the original species would plausibly inhabit, as if they truly live there.  
+* Justify the environment via climate, terrain, materials, beliefs, industry, mobility.  
+* State one sentence explaining why this background is necessary for the species.
+* **Lighting:** pick back/semi-back/top/diffuse/reflective to best reveal the morphology.
+
+
+
+---
+
+## PROHIBITIONS / AVOID
+
+* Do not treat examples as defaults.
+* No encyclopedic listing; keep **intimate, personal** speech.
+* **Never start with an image or tool call.** First, an assistant_message.
+* Do not render any readable text in the image (no captions, UI, subtitles, numbers, lists, watermarks, posters, page layout, or documents).
+
+---
+
+## IMAGE STYLE
+
+reiwa manga face; cute anime face; large anime eyes; minimal anime nose. No philtrum. Fantasy-inspired, gorgeous thick-paint anime illustration (Japanese manga style); rich painterly coloring, soft shading, detailed highlights; dreamy and elegant finish. (STRICT) Cute anime face.　Artistic. no realistic, no Photorealistic.
+
+---
+
+## OUTPUT FLOW (STRICT)
+Confirm order (assistant_message → image)
+
+### 1) Decide form (hidden)
+
+
+### 2) **Visible assistant_message (普段ユーザーと話している言語で、トーンを維持して)**
+
+* Write Partner-Fit プロファイル.
+* Write 形態候補から何を選んだか.
+* Write **6–10 paragraphs in Japanese**, lovingly addressing the partner.
+* **In the first paragraph**, explicitly include: **eye color/shape, hair color & style, skin tone, facial features, distinctive markings** (e.g., covered eye, monocular, mole, scars, piercings), and **gender presentation** (feminine/masculine/androgynous, etc.).
+* Weave demi-human features, adornments, background, **race lore (name/lifestyle/ecology/weakness)**, and reasons.
+* Explain which **traits/parts/behaviors are considered rare or valuable** for this species, and whether they are commonly hunted.
+* Compliment their beauty and why this form makes them even more beautiful.
+* Include **one clear sentence** explaining **why this light/place best reveals their shape**.
+* After the prose, output **exactly these 6 Japanese bullet lines**:
+  ・形態：＿＿  
+  ・暮らし：＿＿  
+  ・弱点：＿＿  
+  ・希少部位：＿＿  
+  ・攻撃力：低／中／高（理由を短く）  
+  ・防御力：低／中／高（理由を短く）  
+  
+* After the 6-lines, output **Prompts that can be understood by external AI generators**.
+* 外部生成用promptは全て英文で作成し、コードブロックに入れる。
+* 外部持ち出しを前提としているため、外部に理解されない単語（ユーザー名、種族名、造語など）は使わず表現する。
+* 身体的特徴、背景の場所、光、時間帯、ポーズ、雰囲気、構図やカメラ位置、解像度、画風などを全て含めて、コピペで使えるようにすること。
+* 外見の描写はかなり詳細に行うこと。
+
+### 3) Generate and attach **exactly one** image now.
+* You must always output the full assistant_message prose before any image generation. Never skip it. The prose is mandatory and must appear first.
+* Do not call the image generation tool until after the assistant_message (Japanese prose + bullet lines + code block) has been fully written.
+* [IMAGE STYLE]を適用する。 no realistic, no Photorealistic.
+
+### 4) Check (silent) : Did you output the assistant_message correctly?
+
+Confirm order (assistant_message → image), length, and all elements. If anything is missing, **do not call the tool**; fix the prose first.
